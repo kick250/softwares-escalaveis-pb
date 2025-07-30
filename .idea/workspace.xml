@@ -76,7 +76,7 @@
   <component name="RunManager">
     <configuration name="NexoErpApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
-      <module name="server" />
+      <module name="backend" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.erp.server.NexoErpApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -112,11 +112,24 @@
       <workItem from="1753900740067" duration="3278000" />
       <workItem from="1753911486344" duration="23000" />
       <workItem from="1753911544706" duration="1785000" />
-      <workItem from="1753913857319" duration="983000" />
+      <workItem from="1753913857319" duration="1363000" />
     </task>
+    <task id="LOCAL-00001" summary="stock, products and stock items">
+      <option name="closed" value="true" />
+      <created>1753916602705</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1753916602705</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="stock, products and stock items" />
+    <option name="LAST_COMMIT_MESSAGE" value="stock, products and stock items" />
   </component>
 </project>
