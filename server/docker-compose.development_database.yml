@@ -1,0 +1,16 @@
+services:
+    database:
+        image: postgres:latest
+        container_name: database_container
+        networks:
+            - development_network
+        environment:
+            POSTGRES_USER: adminuser
+            POSTGRES_PASSWORD: AdminPassword
+            POSTGRES_DB: nexo_erp
+        ports:
+            - "5432:5432"
+
+networks:
+    development_network:
+        driver: bridge

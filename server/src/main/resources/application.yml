@@ -1,0 +1,7 @@
+spring:
+    application:
+        name: 'NexoERP'
+    datasource:
+        url: 'jdbc:postgresql://localhost:5432/nexo_erp'
+        username: 'adminuser'
+        password: 'AdminPassword'

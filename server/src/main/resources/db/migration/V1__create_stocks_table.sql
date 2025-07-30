@@ -1,0 +1,4 @@
+CREATE TABLE stocks (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
