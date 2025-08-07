@@ -5,3 +5,5 @@ spring:
         url: 'jdbc:postgresql://localhost:5432/nexo_erp'
         username: 'adminuser'
         password: 'AdminPassword'
+frontend:
+    host: 'http://localhost:8081'
