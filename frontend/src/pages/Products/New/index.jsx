@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {newStore} from "@/store/Products/newStore.js";
 import {useNavigate} from "react-router-dom";
 
@@ -6,7 +6,11 @@ export default function New() {
     const navigate = useNavigate();
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const { loading, setName, setDescription, setImage, getErrorMessage, createProduct } = newStore();
+    const { loading, startNewProduct, setName, setDescription, setImage, getErrorMessage, createProduct } = newStore();
+
+    useEffect(() => {
+        startNewProduct();
+    }, []);
 
     const updateName = ({target}) => {
         setName(target.value);

@@ -5,8 +5,9 @@ import {useEffect, useState} from "react";
 export default function Edit() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { stockParams, loading, loadingUpdate, loadStock, updateName, updateStock } = editStore();
+    const { stockParams, loading, loadingUpdate, loadStock, updateName, getErrorMessage, updateStock } = editStore();
     const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         (async () => {
@@ -14,7 +15,18 @@ export default function Edit() {
         })();
     }, []);
 
+    const checkFields = () => {
+        const message = getErrorMessage();
+        if (message) {
+            setErrorMessage(message);
+            return false;
+        }
+        return true;
+    };
+
     const update = async () => {
+        if (!checkFields()) return;
+
         const successMessage = await updateStock();
         setSuccessMessage(successMessage);
         setTimeout(() => navigate(`/stocks/${id}`), 1500);
@@ -28,6 +40,9 @@ export default function Edit() {
                     <div className="spinner-border text-primary mt-5"></div>
                 :
                     <>
+                        {
+                            errorMessage && <span className="text-danger">{errorMessage}</span>
+                        }
                         {
                             successMessage && <span className="text-success">{successMessage}</span>
                         }

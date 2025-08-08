@@ -1,4 +1,5 @@
 import ApiClient from "@/ApiClient.js";
+import StockOperationErrorResponse from "@/Errors/StockOperationErrorResponse.js";
 
 const PATH = "/stocks";
 
@@ -16,7 +17,7 @@ export default class StocksService {
             const response = await this._apiClient.get(PATH);
             return response.data.stocks;
         } catch (error) {
-            console.log(error);
+            throw new StockOperationErrorResponse(error.response.data);
         }
     }
 
@@ -25,7 +26,7 @@ export default class StocksService {
             const response = await this._apiClient.get(`${PATH}/${id}`);
             return response.data;
         } catch (error) {
-            console.log(error);
+            throw new StockOperationErrorResponse(error.response.data);
         }
     }
 
@@ -34,7 +35,7 @@ export default class StocksService {
             const response = await this._apiClient.post(PATH, { name });
             return response.data;
         } catch (error) {
-            console.log(error);
+            throw new StockOperationErrorResponse(error.response.data);
         }
     }
 
@@ -43,7 +44,7 @@ export default class StocksService {
             const response = await this._apiClient.put(`${PATH}/${id}`, { name });
             return response.data;
         } catch (error) {
-            console.log(error);
+            throw new StockOperationErrorResponse(error.response.data);
         }
     }
 
@@ -52,7 +53,7 @@ export default class StocksService {
             const response = await this._apiClient.delete(`${PATH}/${id}`);
             return response.data;
         } catch (error) {
-            console.log(error);
+            throw new StockOperationErrorResponse(error.response.data);
         }
     }
 }

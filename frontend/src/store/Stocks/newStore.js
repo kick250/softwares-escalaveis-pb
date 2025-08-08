@@ -6,8 +6,20 @@ const stockService = StocksService.build();
 export const newStore = create(((set, get) => ({
     name: '',
     loading: false,
+    startNewStock() {
+        set({
+            name: '',
+            loading: false
+        });
+    },
     setName(name) {
         set({name});
+    },
+    getErrorMessage() {
+        if (!get().name) {
+            return "O nome do estoque é obrigatório.";
+        }
+        return "";
     },
     async createStock() {
         set({ loading: true });

@@ -1,4 +1,5 @@
 import ApiClient from "@/ApiClient.js";
+import ProductOperationErrorResponse from "@/Errors/ProductOperationErrorResponse.js";
 
 export default class ProductsService {
     static build() {
@@ -14,7 +15,7 @@ export default class ProductsService {
             const response = await this._apiClient.get('/products');
             return response.data;
         } catch (error) {
-            console.error(error);
+            throw new ProductOperationErrorResponse(error.response.data);
         }
     }
 
@@ -23,7 +24,7 @@ export default class ProductsService {
             const response = await this._apiClient.get(`/products/${id}`);
             return response.data;
         } catch (error) {
-            console.error(error);
+            throw new ProductOperationErrorResponse(error.response.data);
         }
     }
 
@@ -37,7 +38,7 @@ export default class ProductsService {
             const response = await this._apiClient.post('/products', formData, {headers: {'Content-Type': 'multipart/form-data'}});
             return response.data;
         } catch (error) {
-            console.log(error);
+            throw new ProductOperationErrorResponse(error.response.data);
         }
     }
 
@@ -53,7 +54,7 @@ export default class ProductsService {
             const response = await this._apiClient.put(`/products/${id}`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
             return response.data;
         } catch (error) {
-            console.error(error);
+            throw new ProductOperationErrorResponse(error.response.data);
         }
     }
 
@@ -62,7 +63,7 @@ export default class ProductsService {
             const response = await this._apiClient.delete(`/products/${id}`);
             return response.data;
         } catch (error) {
-            console.error(error);
+            throw new ProductOperationErrorResponse(error.response.data);
         }
     }
 }

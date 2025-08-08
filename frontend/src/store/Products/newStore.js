@@ -10,6 +10,16 @@ export const newStore = create(((set, get) => ({
         image: undefined
     },
     loading: false,
+    startNewProduct() {
+        set({
+            productData: {
+                name: "",
+                description: "",
+                image: undefined
+            },
+            loading: false
+        });
+    },
     setName(name) {
         set(state => ({productData: {...state.productData, name}}));
     },

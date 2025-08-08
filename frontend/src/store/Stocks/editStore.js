@@ -17,7 +17,14 @@ export const editStore = create((set, get) => ({
         set({stock, stockParams: stock.toParams(), loading: false});
     },
     updateName(name) {
-        set((state)({ stockParams: { ...state.stockParams, name } }));
+        set((state) => ({ stockParams: { ...state.stockParams, name } }));
+    },
+    getErrorMessage() {
+        const { stockParams } = get();
+        if (!stockParams.name) {
+            return "O nome do estoque é obrigatório.";
+        }
+        return "";
     },
     async updateStock() {
         set({loadingUpdate: true});
