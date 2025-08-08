@@ -17,8 +17,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Record" />
-        <option value="Class" />
         <option value="CSS File" />
+        <option value="Class" />
         <option value="JSX File" />
         <option value="JavaScript File" />
       </list>
@@ -42,14 +42,17 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found": "New/updated database configurations found",
+    "Notification.DoNotAsk-DatabaseConfigFileWatcher.found": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Spring Boot.NexoErpApplication.executor": "Run",
+    "Spring Boot.NexoErpApplication.executor": "Debug",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/kick/workspace/facul/software_escalaveis/app/frontend",
@@ -62,7 +65,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "MTHome",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "ts.external.directory.path": "/Users/kick/Library/Application Support/JetBrains/IntelliJIdea2025.2/plugins/javascript-plugin/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
   },
@@ -77,6 +80,9 @@
     ]
   }
 }]]></component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.erp.server.responses" />
@@ -85,6 +91,7 @@
       <recent name="$PROJECT_DIR$/frontend" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/src/pages/Products/Edit" />
       <recent name="$PROJECT_DIR$/frontend/src/pages/NotFound" />
       <recent name="$PROJECT_DIR$/frontend/src/store/Stocks" />
       <recent name="$PROJECT_DIR$/frontend/src/pages/Stocks" />
@@ -145,7 +152,11 @@
       <workItem from="1754351948848" duration="5998000" />
       <workItem from="1754428473396" duration="13233000" />
       <workItem from="1754522353453" duration="115000" />
-      <workItem from="1754522481896" duration="4281000" />
+      <workItem from="1754522481896" duration="15881000" />
+      <workItem from="1754598936924" duration="7260000" />
+      <workItem from="1754614504007" duration="746000" />
+      <workItem from="1754616531674" duration="8000" />
+      <workItem from="1754651178037" duration="4151000" />
     </task>
     <task id="LOCAL-00001" summary="stock, products and stock items">
       <option name="closed" value="true" />
@@ -163,7 +174,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753916867024</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Frontend CRUD stocks">
+      <option name="closed" value="true" />
+      <created>1754526899172</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1754526899172</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,7 +191,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="stock, products and stock items" />
     <MESSAGE value="Corrigir nome" />
-    <option name="LAST_COMMIT_MESSAGE" value="Corrigir nome" />
+    <MESSAGE value="Frontend CRUD stocks" />
+    <option name="LAST_COMMIT_MESSAGE" value="Frontend CRUD stocks" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

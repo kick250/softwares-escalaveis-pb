@@ -1,0 +1,1 @@
+ALTER TABLE products ADD COLUMN attachment_id INT REFERENCES attachments(id);

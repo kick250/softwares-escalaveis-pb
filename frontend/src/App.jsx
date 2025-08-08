@@ -8,6 +8,10 @@ import DetailsStock from "@/pages/Stocks/Details";
 import EditStock from "@/pages/Stocks/Edit";
 import DeleteStock from "@/pages/Stocks/Delete";
 import ProductsHome from "@/pages/Products/Home";
+import NewProduct from "@/pages/Products/New";
+import DetailsProduct from "@/pages/Products/Details";
+import EditProduct from "@/pages/Products/Edit";
+import DeleteProduct from "@/pages/Products/Delete";
 
 export default function App() {
     return (
@@ -22,6 +26,10 @@ export default function App() {
                 <Route path="/stocks/:id/edit" element={<EditStock />} />
                 <Route path="/stocks/:id/delete" element={<DeleteStock />} />
                 <Route path="/products" element={<ProductsHome />} />
+                <Route path="/products/new" element={<NewProduct />} />
+                <Route path="/products/:id" element={<DetailsProduct />} />
+                <Route path="/products/:id/edit" element={<EditProduct />} />
+                <Route path="/products/:id/delete" element={<DeleteProduct />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>

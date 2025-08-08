@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name="products")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class Product extends Attachable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Getter
@@ -29,12 +29,34 @@ public class Product {
     private List<StockItem> stockItems;
 
 
-    public Product(String name, String description) {
+    public Product(String name, String description, Attachment attachment) {
         this.name = name;
         this.description = description;
+        this.attachment = attachment;
     }
 
     public void delete() {
         this.deleted = true;
+        if (attachment != null) {
+            attachment.delete();
+        }
+    }
+
+    public boolean hasAttachment() {
+        return attachment != null;
+    }
+
+    public String getImageBase64() {
+        if (attachment != null)
+            return attachment.getFileBase64();
+
+        return null;
+    }
+
+    public String getImageType() {
+        if (attachment != null)
+            return attachment.getFileType();
+
+        return null;
     }
 }

@@ -11,7 +11,7 @@ export default function Home() {
                 await loadProducts();
            }
         )()
-    })
+    }, [])
 
     return (
         <div className="m-3">
@@ -25,17 +25,21 @@ export default function Home() {
                 {
                     products.map((product) => (
                         <div className="col-3 px-3" key={product.id}>
-                            <div className="card">
-                                <div className="card-body">
-                                    <h5 className="card-title text-center mb-3"><span className="text-muted">#{product.id}</span> {product.name}</h5>
+                            <div className="card h-100">
+                                <img src={product.imageUrl} className="card-img-top" alt={product.name} />
+                                <div className="card-body d-flex flex-column justify-content-end">
+                                    <h5 className="card-title text-center mb-3"><span
+                                        className="text-muted">#{product.id}</span> {product.name}</h5>
                                     <div className="d-flex flex-column align-items-center">
                                         <Link to={`/products/${product.id}`} className="btn btn-primary w-100">
                                             Ver detalhes
                                         </Link>
-                                        <Link to={`/products/${product.id}/edit`} className="btn btn-secondary w-100 mt-2">
+                                        <Link to={`/products/${product.id}/edit`}
+                                              className="btn btn-secondary w-100 mt-2">
                                             Editar
                                         </Link>
-                                        <Link to={`/products/${product.id}/delete`} className="btn btn-danger w-100 mt-2">
+                                        <Link to={`/products/${product.id}/delete`}
+                                              className="btn btn-danger w-100 mt-2">
                                             Excluir
                                         </Link>
                                     </div>
