@@ -15,6 +15,7 @@ public class StockItem {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Getter
     private Long id;
+    @Getter
     private boolean deleted = false;
     @Getter
     @Setter
@@ -52,5 +53,9 @@ public class StockItem {
 
     public void delete() {
         this.deleted = true;
+    }
+
+    public long getStockId() {
+        return stock.getId();
     }
 }

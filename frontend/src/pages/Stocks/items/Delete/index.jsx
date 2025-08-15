@@ -1,18 +1,18 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useState} from "react";
-import {deleteStore} from "@/store/Products/deleteStore.js";
+import {deleteStore} from "@/store/Stocks/Items/deleteStore.js";
 
 export default function Delete() {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { id, stockId } = useParams();
     const [successMessage, setSuccessMessage] = useState("");
-    const { loading, destroyProduct } = deleteStore();
+    const { loading, deleteStockItem } = deleteStore();
 
     const confirmDestroy = async () => {
-        const result = await destroyProduct(id);
-        setSuccessMessage(result);
+        const message = await deleteStockItem(id);
+        setSuccessMessage(message);
         setTimeout(() => {
-            navigate("/products");
+            navigate(`/stocks/${stockId}`);
         }, 1500);
     }
 
@@ -25,7 +25,7 @@ export default function Delete() {
             {
                 successMessage && <div className="alert alert-success">{successMessage}</div>
             }
-            <h1>Tem certeza que deseja excluir esse produto?</h1>
+            <h1>Tem certeza que deseja excluir esse item?</h1>
             <button className="btn btn-danger mt-3" onClick={confirmDestroy} disabled={loading}>
                 Confirmar exclusão
             </button>

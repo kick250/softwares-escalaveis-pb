@@ -14,6 +14,10 @@ export default function Delete() {
         setTimeout(() => navigate('/stocks'), 1500);
     }
 
+    const cancelDestroy = () => {
+        navigate(-1);
+    }
+
     return (
         <div className="mt-3 d-flex flex-column align-items-center">
             {
@@ -22,6 +26,9 @@ export default function Delete() {
             <h1>Tem certeza que deseja excluir esse estoque?</h1>
             <button className="btn btn-danger mt-3" onClick={confirmDestroy} disabled={loading}>
                 Confirmar exclusão
+            </button>
+            <button className="btn btn-secondary mt-3" onClick={cancelDestroy}>
+                Cancelar exclusão
             </button>
         </div>
     );

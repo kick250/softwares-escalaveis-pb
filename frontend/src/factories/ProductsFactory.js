@@ -15,7 +15,7 @@ export default class ProductsFactory {
     }
 
     create(productData) {
-        const imageUrl = this._apiUrl + productData.imagePath
+        const imageUrl = this._apiUrl + productData.imagePath;
 
         return new Product(
             productData.id,

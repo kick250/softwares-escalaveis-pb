@@ -9,8 +9,6 @@ public record StockItemUpdateRequest(
         Double price,
         @NotNull
         @Positive
-        Integer quantity,
-        @NotNull
-        Long productId
+        Integer quantity
 ) {
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class Stock {
     private String name;
     @OneToMany
     @JoinColumn(name = "stock_id")
+    @SQLRestriction("deleted = false")
     @Getter
     private List<StockItem> stockItems;
 
@@ -31,6 +33,11 @@ public class Stock {
     }
 
     public void delete() {
+        stockItems.forEach(StockItem::delete);
         this.deleted = true;
+    }
+
+    public boolean hasItemWithProduct(Product product) {
+        return stockItems.stream().anyMatch(item -> item.getProduct().getId().equals(product.getId()) && !item.isDeleted());
     }
 }

@@ -18,9 +18,10 @@
       <list>
         <option value="Record" />
         <option value="CSS File" />
+        <option value="Class" />
+        <option value="Exception" />
         <option value="JSX File" />
         <option value="JavaScript File" />
-        <option value="Class" />
       </list>
     </option>
   </component>
@@ -55,7 +56,7 @@
     &quot;Spring Boot.NexoErpApplication.executor&quot;: &quot;Debug&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/kick/workspace/facul/software_escalaveis/app/frontend&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/kick/workspace/facul/software_escalaveis/bloco/app&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -91,9 +92,9 @@
       <recent name="$PROJECT_DIR$/frontend" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/src/store/Stocks" />
       <recent name="$PROJECT_DIR$/frontend/src/pages/Products/Edit" />
       <recent name="$PROJECT_DIR$/frontend/src/pages/NotFound" />
-      <recent name="$PROJECT_DIR$/frontend/src/store/Stocks" />
       <recent name="$PROJECT_DIR$/frontend/src/pages/Stocks" />
     </key>
   </component>
@@ -158,7 +159,10 @@
       <workItem from="1754616531674" duration="8000" />
       <workItem from="1754651178037" duration="8544000" />
       <workItem from="1754689168484" duration="1900000" />
-      <workItem from="1754693655153" duration="2003000" />
+      <workItem from="1754693655153" duration="13009000" />
+      <workItem from="1754870937898" duration="125000" />
+      <workItem from="1755209032786" duration="460000" />
+      <workItem from="1755209505793" duration="13418000" />
     </task>
     <task id="LOCAL-00001" summary="stock, products and stock items">
       <option name="closed" value="true" />
@@ -192,7 +196,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754655489244</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Tratar alguns erros">
+      <option name="closed" value="true" />
+      <created>1754696747751</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1754696747751</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -203,7 +215,8 @@
     <MESSAGE value="Corrigir nome" />
     <MESSAGE value="Frontend CRUD stocks" />
     <MESSAGE value="Frontend CRUD produtos" />
-    <option name="LAST_COMMIT_MESSAGE" value="Frontend CRUD produtos" />
+    <MESSAGE value="Tratar alguns erros" />
+    <option name="LAST_COMMIT_MESSAGE" value="Tratar alguns erros" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

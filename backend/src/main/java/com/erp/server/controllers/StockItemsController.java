@@ -1,9 +1,7 @@
 package com.erp.server.controllers;
 
 import com.erp.server.entities.StockItem;
-import com.erp.server.exceptions.ProductNotFoundException;
-import com.erp.server.exceptions.StockItemNotFoundException;
-import com.erp.server.exceptions.StockNotFoundException;
+import com.erp.server.exceptions.*;
 import com.erp.server.requests.StockItemCreateRequest;
 import com.erp.server.requests.StockItemUpdateRequest;
 import com.erp.server.responses.DefaultErrorResponse;
@@ -39,6 +37,8 @@ public class StockItemsController {
         try {
             stockItemsService.create(request.price(), request.quantity(), request.productId(), request.stockId());
             return ResponseEntity.status(201).body("Item de estoque criado com sucesso.");
+        } catch (StockAlreadyHasProductException | InvalidItemPriceOrQuantityException e) {
+            return ResponseEntity.status(400).body(new DefaultErrorResponse(e.getMessage()));
         } catch (ProductNotFoundException | StockNotFoundException e) {
             return ResponseEntity.status(404).body(new DefaultErrorResponse(e.getMessage()));
         }
@@ -48,9 +48,9 @@ public class StockItemsController {
     @Transactional
     public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody StockItemUpdateRequest request) {
         try {
-            stockItemsService.update(id, request.price(), request.quantity(), request.productId());
+            stockItemsService.update(id, request.price(), request.quantity());
             return ResponseEntity.ok("Item de estoque atualizado com sucesso.");
-        } catch (StockItemNotFoundException | ProductNotFoundException e) {
+        } catch (StockItemNotFoundException e) {
             return ResponseEntity.status(404).body(new DefaultErrorResponse(e.getMessage()));
         }
     }

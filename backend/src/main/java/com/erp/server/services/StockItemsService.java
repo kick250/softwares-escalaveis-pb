@@ -3,9 +3,7 @@ package com.erp.server.services;
 import com.erp.server.entities.Product;
 import com.erp.server.entities.Stock;
 import com.erp.server.entities.StockItem;
-import com.erp.server.exceptions.ProductNotFoundException;
-import com.erp.server.exceptions.StockItemNotFoundException;
-import com.erp.server.exceptions.StockNotFoundException;
+import com.erp.server.exceptions.*;
 import com.erp.server.repositories.ProductsRepository;
 import com.erp.server.repositories.StockItemsRepository;
 import com.erp.server.repositories.StocksRepository;
@@ -28,11 +26,23 @@ public class StockItemsService {
                 .orElseThrow(StockItemNotFoundException::new);
     }
 
-    public void create(double price, int quantity, Long productId, Long stockId) throws ProductNotFoundException, StockNotFoundException {
+    public void create(double price, int quantity, Long productId, Long stockId) throws ProductNotFoundException, StockNotFoundException, StockAlreadyHasProductException, InvalidItemPriceOrQuantityException {
         Product product = getProductById(productId);
         Stock stock = getStockById(stockId);
+
+        if (price <= 0 || quantity <= 0) this.throwInvalidPriceOrQuantityException();
+        if (stock.hasItemWithProduct(product)) this.throwStockAlreadyHasProductException();
+
         StockItem stockItem = new StockItem(price, quantity, product, stock);
         stockItemsRepository.save(stockItem);
+    }
+
+    private void throwInvalidPriceOrQuantityException() throws InvalidItemPriceOrQuantityException {
+        throw new InvalidItemPriceOrQuantityException();
+    }
+
+    private void throwStockAlreadyHasProductException() throws StockAlreadyHasProductException {
+        throw new StockAlreadyHasProductException();
     }
 
     private Product getProductById(Long productId) throws ProductNotFoundException {
@@ -45,12 +55,10 @@ public class StockItemsService {
                 .orElseThrow(StockNotFoundException::new);
     }
 
-    public void update(Long id, double price, int quantity, Long productId) throws StockItemNotFoundException, ProductNotFoundException {
+    public void update(Long id, double price, int quantity) throws StockItemNotFoundException {
         StockItem stockItem = getById(id);
-        Product product = getProductById(productId);
         stockItem.setPrice(price);
         stockItem.setQuantity(quantity);
-        stockItem.setProduct(product);
         stockItemsRepository.save(stockItem);
     }
 
