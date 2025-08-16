@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import {BrowserRouter, Routes, Route, useNavigate} from 'react-router-dom';
 import StockHome from './pages/Stocks/Home';
 import About from './pages/About';
 import DefaultHeader from "@/components/DefaultHeader";
@@ -16,8 +16,22 @@ import NewItem from "@/pages/Stocks/NewItem";
 import DetailsStockItem from "@/pages/Stocks/items/Details";
 import EditStockItem from "@/pages/Stocks/items/Edit";
 import DeleteStockItem from "@/pages/Stocks/items/Delete";
+import Login from "@/pages/Login";
+import {authStore} from "@/store/authStore.js";
+import {useEffect} from "react";
 
 export default function App() {
+    const { isAuthenticated, loadSession } = authStore();
+
+    useEffect(() => {
+        loadSession();
+    }, []);
+
+
+    if (!isAuthenticated()) {
+        return <Login />;
+    }
+
     return (
         <BrowserRouter>
             <DefaultHeader />
