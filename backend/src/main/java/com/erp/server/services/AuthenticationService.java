@@ -1,6 +1,5 @@
 package com.erp.server.services;
 
-import com.erp.server.entities.User;
 import com.erp.server.repositories.UsersRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;

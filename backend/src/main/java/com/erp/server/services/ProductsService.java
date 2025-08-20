@@ -2,6 +2,9 @@ package com.erp.server.services;
 
 import com.erp.server.entities.Attachment;
 import com.erp.server.entities.Product;
+import com.erp.server.exceptions.ProductDescriptionRequiredException;
+import com.erp.server.exceptions.ProductImageRequiredException;
+import com.erp.server.exceptions.ProductNameRequiredException;
 import com.erp.server.exceptions.ProductNotFoundException;
 import com.erp.server.repositories.AttachmentsRepository;
 import com.erp.server.repositories.ProductsRepository;
@@ -33,14 +36,33 @@ public class ProductsService {
                 .orElseThrow(ProductNotFoundException::new);
     }
 
-    public void create(String name, String description, byte[] image, String imageType) {
+    public void create(String name, String description, byte[] image, String imageType) throws ProductNameRequiredException, ProductDescriptionRequiredException, ProductImageRequiredException {
+        if (name == null || name.isEmpty()) throwProductNameRequiredException();
+        if (description == null || description.isEmpty()) throwProductDescriptionRequiredException();
+        if (image == null || imageType == null) throwProductImageRequiredException();
+
         Attachment attachment = new Attachment(Base64.getEncoder().encodeToString(image), imageType);
         attachmentsRepository.save(attachment);
         Product product = new Product(name, description, attachment);
         productsRepository.save(product);
     }
 
-    public void update(Long id, String name, String description, byte[] image, String imageContentType) throws ProductNotFoundException {
+    private void throwProductImageRequiredException() throws ProductImageRequiredException {
+        throw new ProductImageRequiredException();
+    }
+
+    private void throwProductDescriptionRequiredException() throws ProductDescriptionRequiredException {
+        throw new ProductDescriptionRequiredException();
+    }
+
+    private void throwProductNameRequiredException() throws ProductNameRequiredException {
+        throw new ProductNameRequiredException();
+    }
+
+    public void update(Long id, String name, String description, byte[] image, String imageContentType) throws ProductNotFoundException, ProductNameRequiredException, ProductDescriptionRequiredException {
+        if (name == null || name.isEmpty()) throwProductNameRequiredException();
+        if (description == null || description.isEmpty()) throwProductDescriptionRequiredException();
+
         Attachment attachment = null;
         Attachment oldAttachment = null;
         if (image != null && imageContentType != null) {
@@ -78,7 +100,7 @@ public class ProductsService {
 
     public byte[] getProductImage(Long productId) throws ProductNotFoundException {
         byte[] cachedImage = getCachedImage(productId);
-        if (cachedImage != null)  return cachedImage;
+        if (cachedImage != null) return cachedImage;
 
         Product product = cacheProductData(productId);
         if (product == null) return null;
@@ -123,7 +145,7 @@ public class ProductsService {
         return "product:image:type:" + productId;
     }
 
-    public String getImageType(Long productId) throws ProductNotFoundException {
+    public String getProductImageType(Long productId) throws ProductNotFoundException {
         String cachedImageType = getCachedImageType(productId);
         if (cachedImageType != null) return cachedImageType;
 

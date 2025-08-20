@@ -5,7 +5,7 @@ services:
         networks:
             - development_network
         environment:
-            POSTGRES_USER: adminuser
+            POSTGRES_USER: postgres
             POSTGRES_PASSWORD: AdminPassword
             POSTGRES_DB: nexo_erp
         ports:

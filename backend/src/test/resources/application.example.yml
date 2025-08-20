@@ -10,7 +10,7 @@ spring:
       token:
         secret: "123456"
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/nexo_erp'
+    url: 'jdbc:postgresql://localhost:5432/nexo_erp_tests'
     username: 'postgres'
     password: 'AdminPassword'
   cache:

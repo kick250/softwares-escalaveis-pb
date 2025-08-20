@@ -11,4 +11,6 @@ public interface StockItemsRepository extends JpaRepository<StockItem, Long> {
     public List<StockItem> findAllByDeletedFalse();
 
     public Optional<StockItem> findByIdAndDeletedFalse(Long id);
+
+    public int countAllByDeletedFalse();
 }

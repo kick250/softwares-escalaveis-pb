@@ -1,21 +1,23 @@
 package com.erp.server.controllers;
 
 import com.erp.server.entities.Product;
+import com.erp.server.exceptions.ProductDescriptionRequiredException;
+import com.erp.server.exceptions.ProductImageRequiredException;
+import com.erp.server.exceptions.ProductNameRequiredException;
 import com.erp.server.exceptions.ProductNotFoundException;
 import com.erp.server.requests.ProductCreateRequest;
 import com.erp.server.requests.ProductUpdateRequest;
+import com.erp.server.responses.DefaultErrorResponse;
 import com.erp.server.responses.ProductResponse;
 import com.erp.server.responses.ProductsResponse;
 import com.erp.server.services.ProductsService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -44,19 +46,25 @@ public class ProductsController {
 
     @PostMapping(consumes = "multipart/form-data")
     @Transactional
-    public ResponseEntity<String> create(@Valid @ModelAttribute ProductCreateRequest request) throws IOException {
-        productsService.create(request.getName(), request.getDescription(), request.getImageBytes(), request.getImageContentType());
-        return ResponseEntity.status(201).body("Produto criado com sucesso");
+    public ResponseEntity<?> create(@Valid @ModelAttribute ProductCreateRequest request) throws IOException {
+        try {
+            productsService.create(request.getName(), request.getDescription(), request.getImageBytes(), request.getImageContentType());
+            return ResponseEntity.status(201).body("Produto criado com sucesso");
+        } catch (ProductNameRequiredException | ProductDescriptionRequiredException | ProductImageRequiredException e) {
+            return ResponseEntity.badRequest().body(new DefaultErrorResponse(e.getMessage()));
+        }
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> update(@PathVariable Long id, @Valid @ModelAttribute ProductUpdateRequest request) throws IOException {
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @ModelAttribute ProductUpdateRequest request) throws IOException {
         try {
             productsService.update(id, request.getName(), request.getDescription(), request.getImageBytes(), request.getImageContentType());
             return ResponseEntity.ok("Produto atualizado com sucesso");
         } catch (ProductNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (ProductNameRequiredException | ProductDescriptionRequiredException e) {
+            return ResponseEntity.badRequest().body(new DefaultErrorResponse(e.getMessage()));
         }
     }
 
@@ -76,7 +84,7 @@ public class ProductsController {
     public ResponseEntity<byte[]> getProductImage(@PathVariable Long id) {
         try {
             byte[] imageBytes = productsService.getProductImage(id);
-            String imageType = productsService.getImageType(id);
+            String imageType = productsService.getProductImageType(id);
 
             return ResponseEntity
                     .ok()

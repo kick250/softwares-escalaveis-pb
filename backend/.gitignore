@@ -34,3 +34,4 @@ build/
 
 ### PROJECT FILES ###
 src/main/resources/application.yml
+src/test/resources/application.yml

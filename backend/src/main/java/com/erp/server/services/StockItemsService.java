@@ -55,8 +55,11 @@ public class StockItemsService {
                 .orElseThrow(StockNotFoundException::new);
     }
 
-    public void update(Long id, double price, int quantity) throws StockItemNotFoundException {
+    public void update(Long id, double price, int quantity) throws StockItemNotFoundException, InvalidItemPriceOrQuantityException {
         StockItem stockItem = getById(id);
+
+        if (price <= 0 || quantity <= 0) this.throwInvalidPriceOrQuantityException();
+
         stockItem.setPrice(price);
         stockItem.setQuantity(quantity);
         stockItemsRepository.save(stockItem);

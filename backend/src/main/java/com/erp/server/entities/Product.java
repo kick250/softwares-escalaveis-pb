@@ -40,6 +40,7 @@ public class Product extends Attachable {
         if (attachment != null) {
             attachment.delete();
         }
+        stockItems.forEach(StockItem::delete);
     }
 
     public boolean hasAttachment() {

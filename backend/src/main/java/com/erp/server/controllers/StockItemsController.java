@@ -50,6 +50,8 @@ public class StockItemsController {
         try {
             stockItemsService.update(id, request.price(), request.quantity());
             return ResponseEntity.ok("Item de estoque atualizado com sucesso.");
+        } catch (InvalidItemPriceOrQuantityException e) {
+            return ResponseEntity.status(400).body(new DefaultErrorResponse(e.getMessage()));
         } catch (StockItemNotFoundException e) {
             return ResponseEntity.status(404).body(new DefaultErrorResponse(e.getMessage()));
         }

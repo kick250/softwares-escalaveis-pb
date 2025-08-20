@@ -40,4 +40,10 @@ public class Stock {
     public boolean hasItemWithProduct(Product product) {
         return stockItems.stream().anyMatch(item -> item.getProduct().getId().equals(product.getId()) && !item.isDeleted());
     }
+
+    public void addStockItem(StockItem stockItem) {
+        if (stockItem != null && !hasItemWithProduct(stockItem.getProduct())) {
+            stockItems.add(stockItem);
+        }
+    }
 }

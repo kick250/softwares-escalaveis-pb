@@ -1,9 +1,11 @@
 package com.erp.server.controllers;
 
 import com.erp.server.entities.Stock;
+import com.erp.server.exceptions.InvalidStockNameException;
 import com.erp.server.exceptions.StockNotFoundException;
 import com.erp.server.requests.StockCreateRequest;
 import com.erp.server.requests.StockUpdateRequest;
+import com.erp.server.responses.DefaultErrorResponse;
 import com.erp.server.responses.StockResponse;
 import com.erp.server.responses.StocksResponse;
 import com.erp.server.services.StocksService;
@@ -33,7 +35,7 @@ public class StocksController {
     public ResponseEntity<StockResponse> getById(@PathVariable("id") Long id) {
         try {
             Stock stock = stocksService.getById(id);
-            return ResponseEntity.status(201).body(new StockResponse(stock));
+            return ResponseEntity.ok().body(new StockResponse(stock));
         } catch (StockNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -41,17 +43,23 @@ public class StocksController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<String> create(@Valid @RequestBody StockCreateRequest request) {
-        stocksService.create(request.name());
-        return ResponseEntity.ok("Estoque criado com sucesso");
+    public ResponseEntity<?> create(@Valid @RequestBody StockCreateRequest request) {
+        try {
+            stocksService.create(request.name());
+            return ResponseEntity.status(201).body("Estoque criado com sucesso");
+        } catch (InvalidStockNameException e) {
+            return ResponseEntity.badRequest().body(new DefaultErrorResponse(e.getMessage()));
+        }
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> update(@PathVariable("id") Long id, @Valid @RequestBody StockUpdateRequest request) {
+    public ResponseEntity<?> update(@PathVariable("id") Long id, @Valid @RequestBody StockUpdateRequest request) {
         try {
             stocksService.update(id, request.name());
             return ResponseEntity.ok("Estoque atualizado com sucesso");
+        } catch (InvalidStockNameException e) {
+            return ResponseEntity.badRequest().body(new DefaultErrorResponse(e.getMessage()));
         } catch (StockNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

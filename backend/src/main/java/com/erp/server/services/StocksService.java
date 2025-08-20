@@ -1,6 +1,7 @@
 package com.erp.server.services;
 
 import com.erp.server.entities.Stock;
+import com.erp.server.exceptions.InvalidStockNameException;
 import com.erp.server.exceptions.StockNotFoundException;
 import com.erp.server.repositories.StocksRepository;
 import org.springframework.stereotype.Service;
@@ -24,13 +25,23 @@ public class StocksService {
                 .orElseThrow(StockNotFoundException::new);
     }
 
-    public void create(String name) {
+    public void create(String name) throws InvalidStockNameException {
         Stock stock = new Stock(name);
+
+        if (name.isBlank()) this.throwsInvalidStockNameException();
+
         stocksRepository.save(stock);
     }
 
-    public void update(Long id, String name) throws StockNotFoundException {
+    private void throwsInvalidStockNameException() throws InvalidStockNameException {
+        throw new InvalidStockNameException();
+    }
+
+    public void update(Long id, String name) throws StockNotFoundException, InvalidStockNameException {
+        if (name.isBlank()) this.throwsInvalidStockNameException();
+
         Stock stock = getById(id);
+
         stock.setName(name);
         stocksRepository.save(stock);
     }
