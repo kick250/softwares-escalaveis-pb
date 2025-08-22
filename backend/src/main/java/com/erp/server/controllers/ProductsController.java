@@ -1,6 +1,6 @@
 package com.erp.server.controllers;
 
-import com.erp.server.entities.Product;
+import infra.global.entities.ProductEntity;
 import com.erp.server.exceptions.ProductDescriptionRequiredException;
 import com.erp.server.exceptions.ProductImageRequiredException;
 import com.erp.server.exceptions.ProductNameRequiredException;
@@ -29,16 +29,16 @@ public class ProductsController {
     @GetMapping
     @Transactional
     public ResponseEntity<ProductsResponse> getProducts() {
-        List<Product> products = productsService.getAll();
-        return ResponseEntity.ok(new ProductsResponse(products));
+        List<ProductEntity> productEntities = productsService.getAll();
+        return ResponseEntity.ok(new ProductsResponse(productEntities));
     }
 
     @GetMapping("/{id}")
     @Transactional
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         try {
-            Product product = productsService.getById(id);
-            return ResponseEntity.ok(new ProductResponse(product));
+            ProductEntity productEntity = productsService.getById(id);
+            return ResponseEntity.ok(new ProductResponse(productEntity));
         } catch (ProductNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

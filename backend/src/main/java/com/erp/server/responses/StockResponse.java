@@ -1,6 +1,6 @@
 package com.erp.server.responses;
 
-import com.erp.server.entities.Stock;
+import infra.global.entities.StockEntity;
 
 import java.util.List;
 
@@ -9,11 +9,11 @@ public record StockResponse(
         String name,
         List<StockItemResponse> stockItems
 ) {
-    public StockResponse(Stock stock) {
+    public StockResponse(StockEntity stockEntity) {
         this(
-                stock.getId(),
-                stock.getName(),
-                stock.getStockItems().stream().map(StockItemResponse::new).toList()
+                stockEntity.getId(),
+                stockEntity.getName(),
+                stockEntity.getStockItems().stream().map(StockItemResponse::new).toList()
         );
     }
 }

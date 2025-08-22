@@ -1,6 +1,6 @@
 package com.erp.server.factories;
 
-import com.erp.server.entities.User;
+import infra.global.entities.UserEntity;
 import com.erp.server.enums.Role;
 import org.instancio.Instancio;
 import org.instancio.Select;
@@ -14,8 +14,8 @@ public class UsersFactory {
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 
-    public User createUser() {
-        return Instancio.of(User.class)
+    public UserEntity createUser() {
+        return Instancio.of(UserEntity.class)
                 .set(Select.field("id"), null)
                 .set(Select.field("name"), "testuser")
                 .set(Select.field("username"), "test@test.com.br")

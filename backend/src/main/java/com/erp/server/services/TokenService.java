@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.erp.server.entities.User;
+import infra.global.entities.UserEntity;
 import com.erp.server.exceptions.InvalidTokenException;
 import com.erp.server.infra.TimeConfig;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,13 +25,13 @@ public class TokenService {
         this.timeConfig = timeConfig;
     }
 
-    public String generateToken(User user) {
+    public String generateToken(UserEntity userEntity) {
         var algorithm = Algorithm.HMAC256(secret);
 
         return JWT
                 .create()
                 .withIssuer(issuer)
-                .withSubject(user.getUsername())
+                .withSubject(userEntity.getUsername())
                 .withExpiresAt(this.getExpiresAT())
                 .sign(algorithm);
     }

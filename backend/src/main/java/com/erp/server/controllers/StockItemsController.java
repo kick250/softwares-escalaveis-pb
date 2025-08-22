@@ -1,6 +1,6 @@
 package com.erp.server.controllers;
 
-import com.erp.server.entities.StockItem;
+import infra.global.entities.StockItemEntity;
 import com.erp.server.exceptions.*;
 import com.erp.server.requests.StockItemCreateRequest;
 import com.erp.server.requests.StockItemUpdateRequest;
@@ -24,7 +24,7 @@ public class StockItemsController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         try {
-            StockItem stockItem = stockItemsService.getById(id);
+            StockItemEntity stockItem = stockItemsService.getById(id);
             return ResponseEntity.ok(new StockItemResponse(stockItem));
         } catch (StockItemNotFoundException e) {
             return ResponseEntity.notFound().build();

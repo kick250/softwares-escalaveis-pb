@@ -1,4 +1,4 @@
-package com.erp.server.entities;
+package infra.global.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Table(name="attachments")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Attachment {
+public class AttachmentEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +21,7 @@ public class Attachment {
     @Getter
     private String fileType;
 
-    public Attachment(String fileBase64, String fileType) {
+    public AttachmentEntity(String fileBase64, String fileType) {
         this.fileBase64 = fileBase64;
         this.fileType = fileType;
     }

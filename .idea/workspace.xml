@@ -21,8 +21,9 @@
         <option value="Exception" />
         <option value="JSX File" />
         <option value="JavaScript File" />
-        <option value="Class" />
         <option value="JUnit5 Test Class" />
+        <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -33,10 +34,20 @@
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
   <component name="ProjectId" id="30ZSbXXt7XBbel1UviYJeDRACwP" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Remove" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -147,7 +158,7 @@
     "Spring Boot.NexoErpApplication.executor": "Run",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/create-orders-controller",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/kick/workspace/facul/software_escalaveis/bloco/app/backend/src/test/resources",
     "list.type.of.created.stylesheet": "CSS",
@@ -157,8 +168,8 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "preferences.pluginManager",
     "ts.external.directory.path": "/Users/kick/Library/Application Support/JetBrains/IntelliJIdea2025.2/plugins/javascript-plugin/jsLanguageServicesImpl/external",
@@ -188,6 +199,7 @@
       <recent name="$PROJECT_DIR$/frontend" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/infra/src/main/java/infra/global" />
       <recent name="$PROJECT_DIR$/frontend/src/store/Stocks" />
       <recent name="$PROJECT_DIR$/frontend/src/pages/Products/Edit" />
       <recent name="$PROJECT_DIR$/frontend/src/pages/NotFound" />
@@ -282,6 +294,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="tests" factoryName="Autodetect">
+      <module name="backend" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.server in backend" />
@@ -368,6 +395,10 @@
       <workItem from="1755643228428" duration="8711000" />
       <workItem from="1755724704202" duration="1845000" />
       <workItem from="1755726619754" duration="3329000" />
+      <workItem from="1755813780353" duration="340000" />
+      <workItem from="1755814135369" duration="262000" />
+      <workItem from="1755814400525" duration="97000" />
+      <workItem from="1755814525930" duration="12804000" />
     </task>
     <task id="LOCAL-00001" summary="stock, products and stock items">
       <option name="closed" value="true" />

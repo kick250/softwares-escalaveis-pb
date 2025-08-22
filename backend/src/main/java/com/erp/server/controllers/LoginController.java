@@ -1,6 +1,6 @@
 package com.erp.server.controllers;
 
-import com.erp.server.entities.User;
+import infra.global.entities.UserEntity;
 import com.erp.server.requests.LoginRequest;
 import com.erp.server.responses.TokenResponse;
 import com.erp.server.services.TokenService;
@@ -31,7 +31,7 @@ public class LoginController {
             var token = new UsernamePasswordAuthenticationToken(request.username(), request.password());
             var authentication = this.authenticationManager.authenticate(token);
 
-            String jwtToken = this.tokenService.generateToken((User) authentication.getPrincipal());
+            String jwtToken = this.tokenService.generateToken((UserEntity) authentication.getPrincipal());
             return ResponseEntity.ok(new TokenResponse(jwtToken));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(401).build();

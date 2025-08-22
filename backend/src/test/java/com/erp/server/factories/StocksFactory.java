@@ -1,6 +1,6 @@
 package com.erp.server.factories;
 
-import com.erp.server.entities.Stock;
+import infra.global.entities.StockEntity;
 import org.instancio.Instancio;
 import org.instancio.Select;
 
@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 public class StocksFactory {
 
-    public Stock createStock() {
-        return Instancio.of(Stock.class)
+    public StockEntity createStock() {
+        return Instancio.of(StockEntity.class)
                 .set(Select.field("id"), null)
                 .set(Select.field("deleted"), false)
                 .set(Select.field("name"), "Test Stock")

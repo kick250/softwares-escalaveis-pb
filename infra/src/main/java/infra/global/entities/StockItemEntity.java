@@ -1,4 +1,4 @@
-package com.erp.server.entities;
+package infra.global.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Table(name="stock_items")
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockItem {
+public class StockItemEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Getter
@@ -27,12 +27,12 @@ public class StockItem {
     @JoinColumn(name = "product_id")
     @Getter
     @Setter
-    private Product product;
+    private ProductEntity product;
     @ManyToOne
     @JoinColumn(name = "stock_id")
-    private Stock stock;
+    private StockEntity stock;
 
-    public StockItem(double price, int quantity, Product product, Stock stock) {
+    public StockItemEntity(double price, int quantity, ProductEntity product, StockEntity stock) {
         this.price = price;
         this.quantity = quantity;
         this.product = product;

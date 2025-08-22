@@ -1,13 +1,13 @@
 package com.erp.server.services;
 
-import com.erp.server.entities.Attachment;
-import com.erp.server.entities.Product;
+import infra.global.entities.AttachmentEntity;
+import infra.global.entities.ProductEntity;
 import com.erp.server.exceptions.ProductDescriptionRequiredException;
 import com.erp.server.exceptions.ProductImageRequiredException;
 import com.erp.server.exceptions.ProductNameRequiredException;
 import com.erp.server.exceptions.ProductNotFoundException;
-import com.erp.server.repositories.AttachmentsRepository;
-import com.erp.server.repositories.ProductsRepository;
+import infra.global.repositories.AttachmentsRepository;
+import infra.global.repositories.ProductsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -44,28 +44,28 @@ class ProductsServiceTest {
 
     @Test
     public void testGetAll() {
-        List<Product> products = new ArrayList<>();
-        Product product1 = mock(Product.class);
-        Product product2 = mock(Product.class);
-        products.add(product1);
-        products.add(product2);
+        List<ProductEntity> productEntities = new ArrayList<>();
+        ProductEntity productEntity1 = mock(ProductEntity.class);
+        ProductEntity productEntity2 = mock(ProductEntity.class);
+        productEntities.add(productEntity1);
+        productEntities.add(productEntity2);
 
-        Mockito.when(productsRepository.findAllByDeletedFalse()).thenReturn(products);
+        Mockito.when(productsRepository.findAllByDeletedFalse()).thenReturn(productEntities);
 
-        List<Product> loadedProducts = productsService.getAll();
-        assertEquals(2, loadedProducts.size());
-        assertTrue(loadedProducts.contains(product1));
-        assertTrue(loadedProducts.contains(product2));
+        List<ProductEntity> loadedProductEntities = productsService.getAll();
+        assertEquals(2, loadedProductEntities.size());
+        assertTrue(loadedProductEntities.contains(productEntity1));
+        assertTrue(loadedProductEntities.contains(productEntity2));
     }
 
     @Test
     public void testGetById() throws ProductNotFoundException {
         Long productId = 1L;
-        Product product = mock(Product.class);
-        Mockito.when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
+        ProductEntity productEntity = mock(ProductEntity.class);
+        Mockito.when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(productEntity));
 
-        Product loadedProduct = productsService.getById(productId);
-        assertEquals(product, loadedProduct);
+        ProductEntity loadedProductEntity = productsService.getById(productId);
+        assertEquals(productEntity, loadedProductEntity);
     }
 
     @Test
@@ -139,20 +139,20 @@ class ProductsServiceTest {
         String description = "Updated Description";
         byte[] image = new byte[]{4, 5, 6};
         String imageContentType = "image/jpeg";
-        Attachment oldAttachment = mock(Attachment.class);
+        AttachmentEntity oldAttachmentEntity = mock(AttachmentEntity.class);
 
-        Product product = mock(Product.class);
-        when(product.getAttachment()).thenReturn(oldAttachment);
-        Mockito.when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
+        ProductEntity productEntity = mock(ProductEntity.class);
+        when(productEntity.getAttachmentEntity()).thenReturn(oldAttachmentEntity);
+        Mockito.when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(productEntity));
 
         productsService.update(productId, name, description, image, imageContentType);
 
-        verify(productsRepository).save(product);
+        verify(productsRepository).save(productEntity);
         verify(attachmentsRepository, Mockito.times(2)).save(Mockito.any());
-        verify(product).setName(name);
-        verify(product).setDescription(description);
-        verify(product).setAttachment(Mockito.any());
-        verify(oldAttachment).delete();
+        verify(productEntity).setName(name);
+        verify(productEntity).setDescription(description);
+        verify(productEntity).setAttachmentEntity(Mockito.any());
+        verify(oldAttachmentEntity).delete();
         verify(redisImageTemplate).delete("product:image:" + productId);
         verify(redisImageTypeTemplate).delete("product:image:type:" + productId);
     }
@@ -191,13 +191,13 @@ class ProductsServiceTest {
     public void testDeleteById() throws ProductNotFoundException {
         Long productId = 1L;
 
-        Product product = mock(Product.class);
-        Mockito.when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
+        ProductEntity productEntity = mock(ProductEntity.class);
+        Mockito.when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(productEntity));
 
         productsService.deleteById(productId);
 
-        verify(product).delete();
-        verify(productsRepository).save(product);
+        verify(productEntity).delete();
+        verify(productsRepository).save(productEntity);
     }
 
     @Test
@@ -226,13 +226,13 @@ class ProductsServiceTest {
         Long productId = 1L;
         byte[] image = new byte[]{1, 2, 3};
         String imageType = "image/png";
-        Product product = mock(Product.class);
+        ProductEntity productEntity = mock(ProductEntity.class);
 
-        when(product.hasAttachment()).thenReturn(true);
-        when(product.getImageBase64()).thenReturn(Base64.getEncoder().encodeToString(image));
-        when(product.getImageType()).thenReturn(imageType);
+        when(productEntity.hasAttachment()).thenReturn(true);
+        when(productEntity.getImageBase64()).thenReturn(Base64.getEncoder().encodeToString(image));
+        when(productEntity.getImageType()).thenReturn(imageType);
         when(redisImageTemplate.opsForValue().get("product:image:" + productId)).thenReturn(null);
-        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
+        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(productEntity));
 
         byte[] result = productsService.getProductImage(productId);
 
@@ -261,13 +261,13 @@ class ProductsServiceTest {
         Long productId = 1L;
         byte[] image = new byte[]{1, 2, 3};
         String imageType = "image/png";
-        Product product = mock(Product.class);
+        ProductEntity productEntity = mock(ProductEntity.class);
 
-        when(product.hasAttachment()).thenReturn(true);
-        when(product.getImageBase64()).thenReturn(Base64.getEncoder().encodeToString(image));
-        when(product.getImageType()).thenReturn(imageType);
+        when(productEntity.hasAttachment()).thenReturn(true);
+        when(productEntity.getImageBase64()).thenReturn(Base64.getEncoder().encodeToString(image));
+        when(productEntity.getImageType()).thenReturn(imageType);
         when(redisImageTemplate.opsForValue().get("product:image:type:" + productId)).thenReturn(null);
-        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
+        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(productEntity));
 
         String result = productsService.getProductImageType(productId);
 

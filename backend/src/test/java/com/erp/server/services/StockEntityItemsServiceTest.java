@@ -1,12 +1,12 @@
 package com.erp.server.services;
 
-import com.erp.server.entities.Product;
-import com.erp.server.entities.Stock;
-import com.erp.server.entities.StockItem;
+import infra.global.entities.ProductEntity;
+import infra.global.entities.StockEntity;
+import infra.global.entities.StockItemEntity;
 import com.erp.server.exceptions.*;
-import com.erp.server.repositories.ProductsRepository;
-import com.erp.server.repositories.StockItemsRepository;
-import com.erp.server.repositories.StocksRepository;
+import infra.global.repositories.ProductsRepository;
+import infra.global.repositories.StockItemsRepository;
+import infra.global.repositories.StocksRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class StockItemsServiceTest {
+class StockEntityItemsServiceTest {
     private StockItemsService stockItemsService;
     private StockItemsRepository stockItemsRepository;
     private ProductsRepository productsRepository;
@@ -33,10 +33,10 @@ class StockItemsServiceTest {
     @Test
     public void testGetById() throws StockItemNotFoundException {
         Long stockItemId = 1L;
-        StockItem stockItem = mock(StockItem.class);
+        StockItemEntity stockItem = mock(StockItemEntity.class);
         when(stockItemsRepository.findByIdAndDeletedFalse(stockItemId)).thenReturn(Optional.of(stockItem));
 
-        StockItem result = stockItemsService.getById(stockItemId);
+        StockItemEntity result = stockItemsService.getById(stockItemId);
         assertNotNull(result);
         assertEquals(stockItem, result);
     }
@@ -56,16 +56,16 @@ class StockItemsServiceTest {
         Long productId = 1L;
         Long stockId = 2L;
 
-        Product product = mock(Product.class);
-        Stock stock = mock(Stock.class);
+        ProductEntity productEntity = mock(ProductEntity.class);
+        StockEntity stockEntity = mock(StockEntity.class);
 
-        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
-        when(stocksRepository.findByIdAndDeletedFalse(stockId)).thenReturn(Optional.of(stock));
-        when(stock.hasItemWithProduct(product)).thenReturn(false);
+        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(productEntity));
+        when(stocksRepository.findByIdAndDeletedFalse(stockId)).thenReturn(Optional.of(stockEntity));
+        when(stockEntity.hasItemWithProduct(productEntity)).thenReturn(false);
 
         stockItemsService.create(price, quantity, productId, stockId);
 
-        verify(stockItemsRepository).save(any(StockItem.class));
+        verify(stockItemsRepository).save(any(StockItemEntity.class));
     }
 
     @Test
@@ -88,9 +88,9 @@ class StockItemsServiceTest {
         Long productId = 1L;
         Long stockId = 2L;
 
-        Product product = mock(Product.class);
+        ProductEntity productEntity = mock(ProductEntity.class);
 
-        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
+        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(productEntity));
         when(stocksRepository.findByIdAndDeletedFalse(stockId)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(StockNotFoundException.class, () -> stockItemsService.create(price, quantity, productId, stockId));
@@ -104,11 +104,11 @@ class StockItemsServiceTest {
         Long productId = 1L;
         Long stockId = 2L;
 
-        Product product = mock(Product.class);
-        Stock stock = mock(Stock.class);
+        ProductEntity productEntity = mock(ProductEntity.class);
+        StockEntity stockEntity = mock(StockEntity.class);
 
-        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
-        when(stocksRepository.findByIdAndDeletedFalse(stockId)).thenReturn(Optional.of(stock));
+        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(productEntity));
+        when(stocksRepository.findByIdAndDeletedFalse(stockId)).thenReturn(Optional.of(stockEntity));
 
         Exception exception = assertThrows(InvalidItemPriceOrQuantityException.class, () -> stockItemsService.create(price, quantity, productId, stockId));
         assertEquals("Preço ou quantidade inválidos", exception.getMessage());
@@ -121,11 +121,11 @@ class StockItemsServiceTest {
         Long productId = 1L;
         Long stockId = 2L;
 
-        Product product = mock(Product.class);
-        Stock stock = mock(Stock.class);
+        ProductEntity productEntity = mock(ProductEntity.class);
+        StockEntity stockEntity = mock(StockEntity.class);
 
-        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
-        when(stocksRepository.findByIdAndDeletedFalse(stockId)).thenReturn(Optional.of(stock));
+        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(productEntity));
+        when(stocksRepository.findByIdAndDeletedFalse(stockId)).thenReturn(Optional.of(stockEntity));
 
         Exception exception = assertThrows(InvalidItemPriceOrQuantityException.class, () -> stockItemsService.create(price, quantity, productId, stockId));
         assertEquals("Preço ou quantidade inválidos", exception.getMessage());
@@ -138,12 +138,12 @@ class StockItemsServiceTest {
         Long productId = 1L;
         Long stockId = 2L;
 
-        Product product = mock(Product.class);
-        Stock stock = mock(Stock.class);
+        ProductEntity productEntity = mock(ProductEntity.class);
+        StockEntity stockEntity = mock(StockEntity.class);
 
-        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
-        when(stocksRepository.findByIdAndDeletedFalse(stockId)).thenReturn(Optional.of(stock));
-        when(stock.hasItemWithProduct(product)).thenReturn(true);
+        when(productsRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(productEntity));
+        when(stocksRepository.findByIdAndDeletedFalse(stockId)).thenReturn(Optional.of(stockEntity));
+        when(stockEntity.hasItemWithProduct(productEntity)).thenReturn(true);
 
         Exception exception = assertThrows(StockAlreadyHasProductException.class, () -> stockItemsService.create(price, quantity, productId, stockId));
         assertEquals("Esse estoque já possui um item com esse produto.", exception.getMessage());
@@ -155,7 +155,7 @@ class StockItemsServiceTest {
         double newPrice = 150.00;
         int newQuantity = 20;
 
-        StockItem stockItem = mock(StockItem.class);
+        StockItemEntity stockItem = mock(StockItemEntity.class);
 
         when(stockItemsRepository.findByIdAndDeletedFalse(stockItemId)).thenReturn(Optional.of(stockItem));
 
@@ -184,7 +184,7 @@ class StockItemsServiceTest {
         double newPrice = -150.00;
         int newQuantity = 20;
 
-        when(stockItemsRepository.findByIdAndDeletedFalse(stockItemId)).thenReturn(Optional.of(mock(StockItem.class)));
+        when(stockItemsRepository.findByIdAndDeletedFalse(stockItemId)).thenReturn(Optional.of(mock(StockItemEntity.class)));
 
         Exception exception = assertThrows(InvalidItemPriceOrQuantityException.class, () -> stockItemsService.update(stockItemId, newPrice, newQuantity));
         assertEquals("Preço ou quantidade inválidos", exception.getMessage());
@@ -196,7 +196,7 @@ class StockItemsServiceTest {
         double newPrice = 150.00;
         int newQuantity = -20;
 
-        when(stockItemsRepository.findByIdAndDeletedFalse(stockItemId)).thenReturn(Optional.of(mock(StockItem.class)));
+        when(stockItemsRepository.findByIdAndDeletedFalse(stockItemId)).thenReturn(Optional.of(mock(StockItemEntity.class)));
 
         Exception exception = assertThrows(InvalidItemPriceOrQuantityException.class, () -> stockItemsService.update(stockItemId, newPrice, newQuantity));
         assertEquals("Preço ou quantidade inválidos", exception.getMessage());
@@ -206,7 +206,7 @@ class StockItemsServiceTest {
     public void testDeleteById() throws StockItemNotFoundException {
         Long stockItemId = 1L;
 
-        StockItem stockItem = mock(StockItem.class);
+        StockItemEntity stockItem = mock(StockItemEntity.class);
 
         when(stockItemsRepository.findByIdAndDeletedFalse(stockItemId)).thenReturn(Optional.of(stockItem));
 

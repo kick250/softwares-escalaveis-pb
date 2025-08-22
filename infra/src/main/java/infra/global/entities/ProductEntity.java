@@ -1,4 +1,4 @@
-package com.erp.server.entities;
+package infra.global.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name="products")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product extends Attachable {
+public class ProductEntity extends Attachable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Getter
@@ -26,37 +26,37 @@ public class Product extends Attachable {
     private String description;
     @OneToMany
     @JoinColumn(name = "product_id")
-    private List<StockItem> stockItems;
+    private List<StockItemEntity> stockItems;
 
 
-    public Product(String name, String description, Attachment attachment) {
+    public ProductEntity(String name, String description, AttachmentEntity attachmentEntity) {
         this.name = name;
         this.description = description;
-        this.attachment = attachment;
+        this.attachmentEntity = attachmentEntity;
     }
 
     public void delete() {
         this.deleted = true;
-        if (attachment != null) {
-            attachment.delete();
+        if (attachmentEntity != null) {
+            attachmentEntity.delete();
         }
-        stockItems.forEach(StockItem::delete);
+        stockItems.forEach(StockItemEntity::delete);
     }
 
     public boolean hasAttachment() {
-        return attachment != null;
+        return attachmentEntity != null;
     }
 
     public String getImageBase64() {
-        if (attachment != null)
-            return attachment.getFileBase64();
+        if (attachmentEntity != null)
+            return attachmentEntity.getFileBase64();
 
         return null;
     }
 
     public String getImageType() {
-        if (attachment != null)
-            return attachment.getFileType();
+        if (attachmentEntity != null)
+            return attachmentEntity.getFileType();
 
         return null;
     }

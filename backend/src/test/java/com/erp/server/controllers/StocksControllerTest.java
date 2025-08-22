@@ -1,11 +1,11 @@
 package com.erp.server.controllers;
 
-import com.erp.server.entities.*;
 import com.erp.server.factories.*;
-import com.erp.server.repositories.*;
 import com.erp.server.requests.StockCreateRequest;
 import com.erp.server.services.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import infra.global.entities.*;
+import infra.global.repositories.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +46,8 @@ class StocksControllerTest {
     @Autowired
     private TokenService tokenService;
 
-    private Stock stock1;
-    private Stock stock2;
+    private StockEntity stockEntity1;
+    private StockEntity stockEntity2;
 
 
     @BeforeEach
@@ -59,42 +59,42 @@ class StocksControllerTest {
         attachmentsRepository.deleteAll();
 
         UsersFactory usersFactory = new UsersFactory();
-        User user = usersFactory.createUser();
-        usersRepository.save(user);
+        UserEntity userEntity = usersFactory.createUser();
+        usersRepository.save(userEntity);
 
-        token = "Bearer " + tokenService.generateToken(user);
+        token = "Bearer " + tokenService.generateToken(userEntity);
 
-        stock1 = stocksFactory.createStock();
-        stock2 = stocksFactory.createStock();
+        stockEntity1 = stocksFactory.createStock();
+        stockEntity2 = stocksFactory.createStock();
 
-        stocksRepository.save(stock1);
-        stocksRepository.save(stock2);
+        stocksRepository.save(stockEntity1);
+        stocksRepository.save(stockEntity2);
 
-        Attachment attachment1 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachment1);
-        Attachment attachment2 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachment2);
+        AttachmentEntity attachmentEntity1 = attachmentsFactory.createAttachment();
+        attachmentsRepository.save(attachmentEntity1);
+        AttachmentEntity attachmentEntity2 = attachmentsFactory.createAttachment();
+        attachmentsRepository.save(attachmentEntity2);
 
-        Product product1 = productsFactory.createProduct();
-        product1.setAttachment(attachment1);
-        productsRepository.save(product1);
-        Product product2 = productsFactory.createProduct();
-        product2.setAttachment(attachment2);
-        productsRepository.save(product2);
+        ProductEntity productEntity1 = productsFactory.createProduct();
+        productEntity1.setAttachmentEntity(attachmentEntity1);
+        productsRepository.save(productEntity1);
+        ProductEntity productEntity2 = productsFactory.createProduct();
+        productEntity2.setAttachmentEntity(attachmentEntity2);
+        productsRepository.save(productEntity2);
 
-        StockItem stockItem1 = stockItemsFactory.createStockItemWithProduct(product1);
+        StockItemEntity stockItem1 = stockItemsFactory.createStockItemWithProduct(productEntity1);
         stockItemsRepository.save(stockItem1);
-        StockItem stockItem2 = stockItemsFactory.createStockItemWithProduct(product2);
+        StockItemEntity stockItem2 = stockItemsFactory.createStockItemWithProduct(productEntity2);
         stockItemsRepository.save(stockItem2);
-        StockItem stockItem3 = stockItemsFactory.createStockItemWithProduct(product1);
+        StockItemEntity stockItem3 = stockItemsFactory.createStockItemWithProduct(productEntity1);
         stockItemsRepository.save(stockItem3);
 
-        stock1.addStockItem(stockItem1);
-        stock1.addStockItem(stockItem2);
-        stock2.addStockItem(stockItem3);
+        stockEntity1.addStockItem(stockItem1);
+        stockEntity1.addStockItem(stockItem2);
+        stockEntity2.addStockItem(stockItem3);
 
-        stocksRepository.save(stock1);
-        stocksRepository.save(stock2);
+        stocksRepository.save(stockEntity1);
+        stocksRepository.save(stockEntity2);
     }
 
     @Test
@@ -104,58 +104,58 @@ class StocksControllerTest {
                     .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.count").value(2))
-                .andExpect(jsonPath("$.stocks[0].id").value(stock1.getId()))
-                .andExpect(jsonPath("$.stocks[0].name").value(stock1.getName()))
+                .andExpect(jsonPath("$.stocks[0].id").value(stockEntity1.getId()))
+                .andExpect(jsonPath("$.stocks[0].name").value(stockEntity1.getName()))
                 .andExpect(jsonPath("$.stocks[0].stockItems.length()").value(2))
-                .andExpect(jsonPath("$.stocks[0].stockItems[0].id").value(stock1.getStockItems().get(0).getId()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[0].quantity").value(stock1.getStockItems().get(0).getQuantity()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[0].price").value(stock1.getStockItems().get(0).getPrice()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[0].product.id").value(stock1.getStockItems().get(0).getProduct().getId()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[0].product.name").value(stock1.getStockItems().get(0).getProduct().getName()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[0].product.description").value(stock1.getStockItems().get(0).getProduct().getDescription()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[0].product.imagePath").value("/products/" + stock1.getStockItems().get(0).getProduct().getId() + "/image"))
-                .andExpect(jsonPath("$.stocks[0].stockItems[1].id").value(stock1.getStockItems().get(1).getId()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[1].quantity").value(stock1.getStockItems().get(1).getQuantity()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[1].price").value(stock1.getStockItems().get(1).getPrice()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[1].product.id").value(stock1.getStockItems().get(1).getProduct().getId()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[1].product.name").value(stock1.getStockItems().get(1).getProduct().getName()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[1].product.description").value(stock1.getStockItems().get(1).getProduct().getDescription()))
-                .andExpect(jsonPath("$.stocks[0].stockItems[1].product.imagePath").value("/products/" + stock1.getStockItems().get(1).getProduct().getId() + "/image"))
-                .andExpect(jsonPath("$.stocks[1].id").value(stock2.getId()))
-                .andExpect(jsonPath("$.stocks[1].name").value(stock2.getName()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[0].id").value(stockEntity1.getStockItems().get(0).getId()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[0].quantity").value(stockEntity1.getStockItems().get(0).getQuantity()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[0].price").value(stockEntity1.getStockItems().get(0).getPrice()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[0].product.id").value(stockEntity1.getStockItems().get(0).getProduct().getId()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[0].product.name").value(stockEntity1.getStockItems().get(0).getProduct().getName()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[0].product.description").value(stockEntity1.getStockItems().get(0).getProduct().getDescription()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[0].product.imagePath").value("/products/" + stockEntity1.getStockItems().get(0).getProduct().getId() + "/image"))
+                .andExpect(jsonPath("$.stocks[0].stockItems[1].id").value(stockEntity1.getStockItems().get(1).getId()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[1].quantity").value(stockEntity1.getStockItems().get(1).getQuantity()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[1].price").value(stockEntity1.getStockItems().get(1).getPrice()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[1].product.id").value(stockEntity1.getStockItems().get(1).getProduct().getId()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[1].product.name").value(stockEntity1.getStockItems().get(1).getProduct().getName()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[1].product.description").value(stockEntity1.getStockItems().get(1).getProduct().getDescription()))
+                .andExpect(jsonPath("$.stocks[0].stockItems[1].product.imagePath").value("/products/" + stockEntity1.getStockItems().get(1).getProduct().getId() + "/image"))
+                .andExpect(jsonPath("$.stocks[1].id").value(stockEntity2.getId()))
+                .andExpect(jsonPath("$.stocks[1].name").value(stockEntity2.getName()))
                 .andExpect(jsonPath("$.stocks[1].stockItems.length()").value(1))
-                .andExpect(jsonPath("$.stocks[1].stockItems[0].id").value(stock2.getStockItems().get(0).getId()))
-                .andExpect(jsonPath("$.stocks[1].stockItems[0].quantity").value(stock2.getStockItems().get(0).getQuantity()))
-                .andExpect(jsonPath("$.stocks[1].stockItems[0].price").value(stock2.getStockItems().get(0).getPrice()))
-                .andExpect(jsonPath("$.stocks[1].stockItems[0].product.id").value(stock2.getStockItems().get(0).getProduct().getId()))
-                .andExpect(jsonPath("$.stocks[1].stockItems[0].product.name").value(stock2.getStockItems().get(0).getProduct().getName()))
-                .andExpect(jsonPath("$.stocks[1].stockItems[0].product.description").value(stock2.getStockItems().get(0).getProduct().getDescription()))
-                .andExpect(jsonPath("$.stocks[1].stockItems[0].product.imagePath").value("/products/" + stock2.getStockItems().get(0).getProduct().getId() + "/image"));
+                .andExpect(jsonPath("$.stocks[1].stockItems[0].id").value(stockEntity2.getStockItems().get(0).getId()))
+                .andExpect(jsonPath("$.stocks[1].stockItems[0].quantity").value(stockEntity2.getStockItems().get(0).getQuantity()))
+                .andExpect(jsonPath("$.stocks[1].stockItems[0].price").value(stockEntity2.getStockItems().get(0).getPrice()))
+                .andExpect(jsonPath("$.stocks[1].stockItems[0].product.id").value(stockEntity2.getStockItems().get(0).getProduct().getId()))
+                .andExpect(jsonPath("$.stocks[1].stockItems[0].product.name").value(stockEntity2.getStockItems().get(0).getProduct().getName()))
+                .andExpect(jsonPath("$.stocks[1].stockItems[0].product.description").value(stockEntity2.getStockItems().get(0).getProduct().getDescription()))
+                .andExpect(jsonPath("$.stocks[1].stockItems[0].product.imagePath").value("/products/" + stockEntity2.getStockItems().get(0).getProduct().getId() + "/image"));
     }
 
     @Test
     public void testGetStockById() throws Exception {
-        mockMvc.perform(get("/stocks/" + stock1.getId())
+        mockMvc.perform(get("/stocks/" + stockEntity1.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(stock1.getId()))
-                .andExpect(jsonPath("$.name").value(stock1.getName()))
+                .andExpect(jsonPath("$.id").value(stockEntity1.getId()))
+                .andExpect(jsonPath("$.name").value(stockEntity1.getName()))
                 .andExpect(jsonPath("$.stockItems.length()").value(2))
-                .andExpect(jsonPath("$.stockItems[0].id").value(stock1.getStockItems().get(0).getId()))
-                .andExpect(jsonPath("$.stockItems[0].quantity").value(stock1.getStockItems().get(0).getQuantity()))
-                .andExpect(jsonPath("$.stockItems[0].price").value(stock1.getStockItems().get(0).getPrice()))
-                .andExpect(jsonPath("$.stockItems[0].product.id").value(stock1.getStockItems().get(0).getProduct().getId()))
-                .andExpect(jsonPath("$.stockItems[0].product.name").value(stock1.getStockItems().get(0).getProduct().getName()))
-                .andExpect(jsonPath("$.stockItems[0].product.description").value(stock1.getStockItems().get(0).getProduct().getDescription()))
-                .andExpect(jsonPath("$.stockItems[0].product.imagePath").value("/products/" + stock1.getStockItems().get(0).getProduct().getId() + "/image"))
-                .andExpect(jsonPath("$.stockItems[1].id").value(stock1.getStockItems().get(1).getId()))
-                .andExpect(jsonPath("$.stockItems[1].quantity").value(stock1.getStockItems().get(1).getQuantity()))
-                .andExpect(jsonPath("$.stockItems[1].price").value(stock1.getStockItems().get(1).getPrice()))
-                .andExpect(jsonPath("$.stockItems[1].product.id").value(stock1.getStockItems().get(1).getProduct().getId()))
-                .andExpect(jsonPath("$.stockItems[1].product.name").value(stock1.getStockItems().get(1).getProduct().getName()))
-                .andExpect(jsonPath("$.stockItems[1].product.description").value(stock1.getStockItems().get(1).getProduct().getDescription()))
-                .andExpect(jsonPath("$.stockItems[1].product.imagePath").value("/products/" + stock1.getStockItems().get(1).getProduct().getId() + "/image"));
+                .andExpect(jsonPath("$.stockItems[0].id").value(stockEntity1.getStockItems().get(0).getId()))
+                .andExpect(jsonPath("$.stockItems[0].quantity").value(stockEntity1.getStockItems().get(0).getQuantity()))
+                .andExpect(jsonPath("$.stockItems[0].price").value(stockEntity1.getStockItems().get(0).getPrice()))
+                .andExpect(jsonPath("$.stockItems[0].product.id").value(stockEntity1.getStockItems().get(0).getProduct().getId()))
+                .andExpect(jsonPath("$.stockItems[0].product.name").value(stockEntity1.getStockItems().get(0).getProduct().getName()))
+                .andExpect(jsonPath("$.stockItems[0].product.description").value(stockEntity1.getStockItems().get(0).getProduct().getDescription()))
+                .andExpect(jsonPath("$.stockItems[0].product.imagePath").value("/products/" + stockEntity1.getStockItems().get(0).getProduct().getId() + "/image"))
+                .andExpect(jsonPath("$.stockItems[1].id").value(stockEntity1.getStockItems().get(1).getId()))
+                .andExpect(jsonPath("$.stockItems[1].quantity").value(stockEntity1.getStockItems().get(1).getQuantity()))
+                .andExpect(jsonPath("$.stockItems[1].price").value(stockEntity1.getStockItems().get(1).getPrice()))
+                .andExpect(jsonPath("$.stockItems[1].product.id").value(stockEntity1.getStockItems().get(1).getProduct().getId()))
+                .andExpect(jsonPath("$.stockItems[1].product.name").value(stockEntity1.getStockItems().get(1).getProduct().getName()))
+                .andExpect(jsonPath("$.stockItems[1].product.description").value(stockEntity1.getStockItems().get(1).getProduct().getDescription()))
+                .andExpect(jsonPath("$.stockItems[1].product.imagePath").value("/products/" + stockEntity1.getStockItems().get(1).getProduct().getId() + "/image"));
     }
 
     @Test
@@ -179,8 +179,8 @@ class StocksControllerTest {
                 .andExpect(status().isCreated());
 
         assertEquals(3, stocksRepository.count());
-        Stock stock = stocksRepository.findAll().getLast();
-        assertEquals(request.name(), stock.getName());
+        StockEntity stockEntity = stocksRepository.findAll().getLast();
+        assertEquals(request.name(), stockEntity.getName());
     }
 
     @Test
@@ -200,11 +200,11 @@ class StocksControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        Long id = stock1.getId();
+        Long id = stockEntity1.getId();
         StockCreateRequest request = new StockCreateRequest("Updated Stock");
 
-        Stock stock = stocksRepository.findById(id).orElseThrow();
-        assertNotEquals(request.name(), stock.getName());
+        StockEntity stockEntity = stocksRepository.findById(id).orElseThrow();
+        assertNotEquals(request.name(), stockEntity.getName());
 
         mockMvc.perform(put("/stocks/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -213,17 +213,17 @@ class StocksControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value("Estoque atualizado com sucesso"));
 
-        stock = stocksRepository.findById(id).orElseThrow();
-        assertEquals(request.name(), stock.getName());
+        stockEntity = stocksRepository.findById(id).orElseThrow();
+        assertEquals(request.name(), stockEntity.getName());
     }
 
     @Test
     public void testUpdate_withInvalidName() throws Exception {
-        Long id = stock1.getId();
+        Long id = stockEntity1.getId();
         StockCreateRequest request = new StockCreateRequest("");
 
-        Stock stock = stocksRepository.findById(id).orElseThrow();
-        assertNotEquals(request.name(), stock.getName());
+        StockEntity stockEntity = stocksRepository.findById(id).orElseThrow();
+        assertNotEquals(request.name(), stockEntity.getName());
 
         mockMvc.perform(put("/stocks/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -231,13 +231,13 @@ class StocksControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
 
-        stock = stocksRepository.findById(id).orElseThrow();
-        assertNotEquals(request.name(), stock.getName());
+        stockEntity = stocksRepository.findById(id).orElseThrow();
+        assertNotEquals(request.name(), stockEntity.getName());
     }
 
     @Test
     public void testDeleteById() throws Exception {
-        Long id = stock1.getId();
+        Long id = stockEntity1.getId();
 
         assertEquals(2, stocksRepository.count());
 
@@ -252,7 +252,7 @@ class StocksControllerTest {
 
     @Test
     public void testDeleteById_whenNotFound() throws Exception {
-        Long id = stock1.getId();
+        Long id = stockEntity1.getId();
 
         assertEquals(2, stocksRepository.count());
 

@@ -1,8 +1,8 @@
 package com.erp.server.controllers;
 
-import com.erp.server.entities.User;
+import infra.global.entities.UserEntity;
 import com.erp.server.factories.UsersFactory;
-import com.erp.server.repositories.UsersRepository;
+import infra.global.repositories.UsersRepository;
 import com.erp.server.requests.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,7 @@ class LoginControllerTest {
     private MockMvc mockMvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private User user;
+    private UserEntity userEntity;
 
     @Autowired
     private UsersRepository usersRepository;
@@ -35,14 +35,14 @@ class LoginControllerTest {
         usersRepository.deleteAll();
 
         UsersFactory usersFactory = new UsersFactory();
-        user = usersFactory.createUser();
+        userEntity = usersFactory.createUser();
 
-        usersRepository.save(user);
+        usersRepository.save(userEntity);
     }
 
     @Test
     public void testLogin() throws Exception {
-        var body = new LoginRequest(user.getUsername(), UsersFactory.DEFAULT_PASSWORD);
+        var body = new LoginRequest(userEntity.getUsername(), UsersFactory.DEFAULT_PASSWORD);
 
         mockMvc.perform(post("/login")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -63,7 +63,7 @@ class LoginControllerTest {
 
     @Test
     public void testLogin_whenIncorrectPassword() throws Exception {
-        var body = new LoginRequest(user.getUsername(), "batata");
+        var body = new LoginRequest(userEntity.getUsername(), "batata");
 
         mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -48,8 +48,8 @@ export default function New() {
             }
             <div className="d-flex flex-column bg-light w-25 py-3 px-5 rounded-3 shadow">
                 <div>
-                    <label htmlFor="stock-name" className="form-label">Nome</label>
-                    <input id="stock-name" name="stock-name" className="form-control" onInput={updateName} placeholder="Nome"/>
+                    <label htmlFor="stockEntity-name" className="form-label">Nome</label>
+                    <input id="stockEntity-name" name="stockEntity-name" className="form-control" onInput={updateName} placeholder="Nome"/>
                 </div>
                 <button className="btn btn-primary mt-3" onClick={create} disabled={loading}>
                     Criar

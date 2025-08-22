@@ -1,6 +1,6 @@
 package com.erp.server.responses;
 
-import com.erp.server.entities.StockItem;
+import infra.global.entities.StockItemEntity;
 
 public record StockItemResponse(
         Long id,
@@ -8,7 +8,7 @@ public record StockItemResponse(
         Double price,
         ProductResponse product
 ) {
-    public StockItemResponse(StockItem stockItem) {
+    public StockItemResponse(StockItemEntity stockItem) {
         this(
                 stockItem.getId(),
                 stockItem.getQuantity(),

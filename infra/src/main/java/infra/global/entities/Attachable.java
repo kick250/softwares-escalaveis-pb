@@ -1,4 +1,4 @@
-package com.erp.server.entities;
+package infra.global.entities;
 
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -13,5 +13,5 @@ public abstract class Attachable {
     @JoinColumn(name = "attachment_id")
     @Setter
     @Getter
-    protected Attachment attachment;
+    protected AttachmentEntity attachmentEntity;
 }

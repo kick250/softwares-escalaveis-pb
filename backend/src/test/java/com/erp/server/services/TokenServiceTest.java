@@ -2,7 +2,7 @@ package com.erp.server.services;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.erp.server.entities.User;
+import infra.global.entities.UserEntity;
 import com.erp.server.infra.TimeConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,11 +32,11 @@ class TokenServiceTest {
     void testGenerateToken() {
         String username = "usertest@test.com.br";
 
-        User user = mock(User.class);
+        UserEntity userEntity = mock(UserEntity.class);
 
-        when(user.getUsername()).thenReturn(username);
+        when(userEntity.getUsername()).thenReturn(username);
 
-        String token = tokenService.generateToken(user);
+        String token = tokenService.generateToken(userEntity);
 
         assertNotNull(token);
         assertFalse(token.isEmpty());
@@ -54,10 +54,10 @@ class TokenServiceTest {
     void testVerifyToken() {
         String username = "usertest@test.com.br";
 
-        User user = mock(User.class);
-        when(user.getUsername()).thenReturn(username);
+        UserEntity userEntity = mock(UserEntity.class);
+        when(userEntity.getUsername()).thenReturn(username);
 
-        String token = tokenService.generateToken(user);
+        String token = tokenService.generateToken(userEntity);
 
         var result = tokenService.decodeToken(token);
         assertNotNull(result);

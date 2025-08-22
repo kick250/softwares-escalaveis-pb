@@ -13,8 +13,8 @@ export default function DefaultHeader() {
             <div className="collapse navbar-collapse justify-content-between" id="navbarNavAltMarkup">
                 <div className="navbar-nav">
                     <Link className="nav-item nav-link" to="/">Home</Link>
-                    <Link className="nav-item nav-link" to="/stocks">Estoques</Link>
-                    <Link className="nav-item nav-link" to="/products">Produtos</Link>
+                    <Link className="nav-item nav-link" to="/stockEntities">Estoques</Link>
+                    <Link className="nav-item nav-link" to="/productEntities">Produtos</Link>
                     <Link className="nav-item nav-link" to="/about">Sobre</Link>
                 </div>
                 <button className="btn btn-secondary me-5" onClick={logout}>Logout</button>

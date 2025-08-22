@@ -1,14 +1,14 @@
 package com.erp.server.controllers;
 
-import com.erp.server.entities.Attachment;
-import com.erp.server.entities.Product;
-import com.erp.server.entities.User;
+import infra.global.entities.AttachmentEntity;
+import infra.global.entities.ProductEntity;
+import infra.global.entities.UserEntity;
 import com.erp.server.factories.AttachmentsFactory;
 import com.erp.server.factories.ProductsFactory;
 import com.erp.server.factories.UsersFactory;
-import com.erp.server.repositories.AttachmentsRepository;
-import com.erp.server.repositories.ProductsRepository;
-import com.erp.server.repositories.UsersRepository;
+import infra.global.repositories.AttachmentsRepository;
+import infra.global.repositories.ProductsRepository;
+import infra.global.repositories.UsersRepository;
 import com.erp.server.services.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,8 +46,8 @@ class ProductsControllerTest {
     @Autowired
     private TokenService tokenService;
 
-    private Product createdProduct1;
-    private Product createdProduct2;
+    private ProductEntity createdProductEntity1;
+    private ProductEntity createdProductEntity2;
 
     @BeforeEach
     void setUp() {
@@ -56,24 +56,24 @@ class ProductsControllerTest {
         attachmentsRepository.deleteAll();
 
         UsersFactory usersFactory = new UsersFactory();
-        User user = usersFactory.createUser();
+        UserEntity userEntity = usersFactory.createUser();
 
-        usersRepository.save(user);
+        usersRepository.save(userEntity);
 
-        token = "Bearer " + tokenService.generateToken(user);
+        token = "Bearer " + tokenService.generateToken(userEntity);
 
-        Attachment attachment1 = attachmentsFactory.createAttachment();
-        Attachment attachment2 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachment1);
-        attachmentsRepository.save(attachment2);
+        AttachmentEntity attachmentEntity1 = attachmentsFactory.createAttachment();
+        AttachmentEntity attachmentEntity2 = attachmentsFactory.createAttachment();
+        attachmentsRepository.save(attachmentEntity1);
+        attachmentsRepository.save(attachmentEntity2);
 
-        createdProduct1 = productsFactory.createProduct();
-        createdProduct1.setAttachment(attachment1);
-        createdProduct2 = productsFactory.createProduct();
-        createdProduct2.setAttachment(attachment2);
+        createdProductEntity1 = productsFactory.createProduct();
+        createdProductEntity1.setAttachmentEntity(attachmentEntity1);
+        createdProductEntity2 = productsFactory.createProduct();
+        createdProductEntity2.setAttachmentEntity(attachmentEntity2);
 
-        productsRepository.save(createdProduct1);
-        productsRepository.save(createdProduct2);
+        productsRepository.save(createdProductEntity1);
+        productsRepository.save(createdProductEntity2);
     }
 
     @Test
@@ -83,42 +83,42 @@ class ProductsControllerTest {
                     .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.products.length()").value(2))
-                .andExpect(jsonPath("$.products[0].id").value(createdProduct1.getId()))
-                .andExpect(jsonPath("$.products[0].name").value(createdProduct1.getName()))
-                .andExpect(jsonPath("$.products[0].description").value(createdProduct1.getDescription()))
-                .andExpect(jsonPath("$.products[0].imagePath").value("/products/" + createdProduct1.getId() + "/image"))
-                .andExpect(jsonPath("$.products[1].id").value(createdProduct2.getId()))
-                .andExpect(jsonPath("$.products[1].name").value(createdProduct2.getName()))
-                .andExpect(jsonPath("$.products[1].description").value(createdProduct2.getDescription()))
-                .andExpect(jsonPath("$.products[1].imagePath").value("/products/" + createdProduct2.getId() + "/image"));
+                .andExpect(jsonPath("$.products[0].id").value(createdProductEntity1.getId()))
+                .andExpect(jsonPath("$.products[0].name").value(createdProductEntity1.getName()))
+                .andExpect(jsonPath("$.products[0].description").value(createdProductEntity1.getDescription()))
+                .andExpect(jsonPath("$.products[0].imagePath").value("/products/" + createdProductEntity1.getId() + "/image"))
+                .andExpect(jsonPath("$.products[1].id").value(createdProductEntity2.getId()))
+                .andExpect(jsonPath("$.products[1].name").value(createdProductEntity2.getName()))
+                .andExpect(jsonPath("$.products[1].description").value(createdProductEntity2.getDescription()))
+                .andExpect(jsonPath("$.products[1].imagePath").value("/products/" + createdProductEntity2.getId() + "/image"));
     }
 
     @Test
     public void testGetProducts_whenOneProductIsDeleted() throws Exception {
-        createdProduct1.delete();
-        productsRepository.save(createdProduct1);
+        createdProductEntity1.delete();
+        productsRepository.save(createdProductEntity1);
 
         mockMvc.perform(get("/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.products.length()").value(1))
-                .andExpect(jsonPath("$.products[0].id").value(createdProduct2.getId()))
-                .andExpect(jsonPath("$.products[0].name").value(createdProduct2.getName()))
-                .andExpect(jsonPath("$.products[0].description").value(createdProduct2.getDescription()))
-                .andExpect(jsonPath("$.products[0].imagePath").value("/products/" + createdProduct2.getId() + "/image"));
+                .andExpect(jsonPath("$.products[0].id").value(createdProductEntity2.getId()))
+                .andExpect(jsonPath("$.products[0].name").value(createdProductEntity2.getName()))
+                .andExpect(jsonPath("$.products[0].description").value(createdProductEntity2.getDescription()))
+                .andExpect(jsonPath("$.products[0].imagePath").value("/products/" + createdProductEntity2.getId() + "/image"));
     }
 
     @Test
     public void testGetProductById() throws Exception {
-        mockMvc.perform(get("/products/" + createdProduct1.getId())
+        mockMvc.perform(get("/products/" + createdProductEntity1.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(createdProduct1.getId()))
-                .andExpect(jsonPath("$.name").value(createdProduct1.getName()))
-                .andExpect(jsonPath("$.description").value(createdProduct1.getDescription()))
-                .andExpect(jsonPath("$.imagePath").value("/products/" + createdProduct1.getId() + "/image"));
+                .andExpect(jsonPath("$.id").value(createdProductEntity1.getId()))
+                .andExpect(jsonPath("$.name").value(createdProductEntity1.getName()))
+                .andExpect(jsonPath("$.description").value(createdProductEntity1.getDescription()))
+                .andExpect(jsonPath("$.imagePath").value("/products/" + createdProductEntity1.getId() + "/image"));
     }
 
     @Test
@@ -147,9 +147,9 @@ class ProductsControllerTest {
                 .andExpect(status().isCreated());
 
         assertEquals(3, productsRepository.count());
-        Product product = productsRepository.findAll().getLast();
-        assertEquals(name, product.getName());
-        assertEquals(description, product.getDescription());
+        ProductEntity productEntity = productsRepository.findAll().getLast();
+        assertEquals(name, productEntity.getName());
+        assertEquals(description, productEntity.getDescription());
         assertEquals(3, attachmentsRepository.count());
     }
 
@@ -220,7 +220,7 @@ class ProductsControllerTest {
         String name = "Nome atualizado";
         String description = "Descrição atualizada";
 
-        mockMvc.perform(multipart("/products/" + createdProduct1.getId())
+        mockMvc.perform(multipart("/products/" + createdProductEntity1.getId())
                         .file(imageFile)
                         .param("name", name)
                         .param("description", description)
@@ -229,9 +229,9 @@ class ProductsControllerTest {
                         .with(req -> { req.setMethod("PUT"); return req; }))
                 .andExpect(status().isOk());
 
-        Product updatedProduct = productsRepository.findById(createdProduct1.getId()).orElseThrow();
-        assertEquals(name, updatedProduct.getName());
-        assertEquals(description, updatedProduct.getDescription());
+        ProductEntity updatedProductEntity = productsRepository.findById(createdProductEntity1.getId()).orElseThrow();
+        assertEquals(name, updatedProductEntity.getName());
+        assertEquals(description, updatedProductEntity.getDescription());
         assertEquals(2, attachmentsRepository.countAllByDeletedFalse());
         assertEquals(3, attachmentsRepository.count());
     }
@@ -242,7 +242,7 @@ class ProductsControllerTest {
         String name = "";
         String description = "Descrição atualizada";
 
-        mockMvc.perform(multipart("/products/" + createdProduct1.getId())
+        mockMvc.perform(multipart("/products/" + createdProductEntity1.getId())
                         .file(imageFile)
                         .param("name", name)
                         .param("description", description)
@@ -251,9 +251,9 @@ class ProductsControllerTest {
                         .with(req -> { req.setMethod("PUT"); return req; }))
                 .andExpect(status().isBadRequest());
 
-        Product updatedProduct = productsRepository.findById(createdProduct1.getId()).orElseThrow();
-        assertNotEquals(name, updatedProduct.getName());
-        assertNotEquals(description, updatedProduct.getDescription());
+        ProductEntity updatedProductEntity = productsRepository.findById(createdProductEntity1.getId()).orElseThrow();
+        assertNotEquals(name, updatedProductEntity.getName());
+        assertNotEquals(description, updatedProductEntity.getDescription());
         assertEquals(2, attachmentsRepository.countAllByDeletedFalse());
         assertEquals(2, attachmentsRepository.count());
     }
@@ -264,7 +264,7 @@ class ProductsControllerTest {
         String name = "Nome atualizado";
         String description = "";
 
-        mockMvc.perform(multipart("/products/" + createdProduct1.getId())
+        mockMvc.perform(multipart("/products/" + createdProductEntity1.getId())
                         .file(imageFile)
                         .param("name", name)
                         .param("description", description)
@@ -273,9 +273,9 @@ class ProductsControllerTest {
                         .with(req -> { req.setMethod("PUT"); return req; }))
                 .andExpect(status().isBadRequest());
 
-        Product updatedProduct = productsRepository.findById(createdProduct1.getId()).orElseThrow();
-        assertNotEquals(name, updatedProduct.getName());
-        assertNotEquals(description, updatedProduct.getDescription());
+        ProductEntity updatedProductEntity = productsRepository.findById(createdProductEntity1.getId()).orElseThrow();
+        assertNotEquals(name, updatedProductEntity.getName());
+        assertNotEquals(description, updatedProductEntity.getDescription());
         assertEquals(2, attachmentsRepository.countAllByDeletedFalse());
         assertEquals(2, attachmentsRepository.count());
     }
@@ -285,7 +285,7 @@ class ProductsControllerTest {
         String name = "Nome atualizado";
         String description = "Descrição atualizada";
 
-        mockMvc.perform(multipart("/products/" + createdProduct1.getId())
+        mockMvc.perform(multipart("/products/" + createdProductEntity1.getId())
                         .param("name", name)
                         .param("description", description)
                         .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -293,16 +293,16 @@ class ProductsControllerTest {
                         .with(req -> { req.setMethod("PUT"); return req; }))
                 .andExpect(status().isOk());
 
-        Product updatedProduct = productsRepository.findById(createdProduct1.getId()).orElseThrow();
-        assertEquals(name, updatedProduct.getName());
-        assertEquals(description, updatedProduct.getDescription());
+        ProductEntity updatedProductEntity = productsRepository.findById(createdProductEntity1.getId()).orElseThrow();
+        assertEquals(name, updatedProductEntity.getName());
+        assertEquals(description, updatedProductEntity.getDescription());
         assertEquals(2, attachmentsRepository.countAllByDeletedFalse());
         assertEquals(2, attachmentsRepository.count());
     }
 
     @Test
     public void testDelete() throws Exception {
-        mockMvc.perform(delete("/products/" + createdProduct1.getId())
+        mockMvc.perform(delete("/products/" + createdProductEntity1.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isOk());
@@ -324,7 +324,7 @@ class ProductsControllerTest {
 
     @Test
     public void testGetProductImage() throws Exception {
-        mockMvc.perform(get("/products/" + createdProduct1.getId() + "/image")
+        mockMvc.perform(get("/products/" + createdProductEntity1.getId() + "/image")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isOk());
@@ -332,7 +332,7 @@ class ProductsControllerTest {
 
     @Test
     public void testGetProductImage_whenWithoutToken() throws Exception {
-        mockMvc.perform(get("/products/" + createdProduct1.getId() + "/image")
+        mockMvc.perform(get("/products/" + createdProductEntity1.getId() + "/image")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

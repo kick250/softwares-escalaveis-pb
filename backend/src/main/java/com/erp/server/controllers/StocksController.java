@@ -1,6 +1,6 @@
 package com.erp.server.controllers;
 
-import com.erp.server.entities.Stock;
+import infra.global.entities.StockEntity;
 import com.erp.server.exceptions.InvalidStockNameException;
 import com.erp.server.exceptions.StockNotFoundException;
 import com.erp.server.requests.StockCreateRequest;
@@ -27,15 +27,15 @@ public class StocksController {
 
     @GetMapping
     public ResponseEntity<StocksResponse> getStocks() {
-        List<Stock> stocks = stocksService.getAll();
-        return ResponseEntity.ok(new StocksResponse(stocks));
+        List<StockEntity> stockEntities = stocksService.getAll();
+        return ResponseEntity.ok(new StocksResponse(stockEntities));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StockResponse> getById(@PathVariable("id") Long id) {
         try {
-            Stock stock = stocksService.getById(id);
-            return ResponseEntity.ok().body(new StockResponse(stock));
+            StockEntity stockEntity = stocksService.getById(id);
+            return ResponseEntity.ok().body(new StockResponse(stockEntity));
         } catch (StockNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

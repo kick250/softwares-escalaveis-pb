@@ -38,20 +38,20 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<StockHome />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/stocks" element={<StockHome />} />
-                <Route path="/stocks/new" element={<NewStock />} />
-                <Route path="/stocks/:id" element={<DetailsStock />} />
-                <Route path="/stocks/:id/edit" element={<EditStock />} />
-                <Route path="/stocks/:id/delete" element={<DeleteStock />} />
-                <Route path="/stocks/:id/new_item" element={<NewItem />} />
-                <Route path="/stocks/:stockId/items/:id" element={<DetailsStockItem />} />
-                <Route path="/stocks/:stockId/items/:id/edit" element={<EditStockItem />} />
-                <Route path="/stocks/:stockId/items/:id/delete" element={<DeleteStockItem />} />
-                <Route path="/products" element={<ProductsHome />} />
-                <Route path="/products/new" element={<NewProduct />} />
-                <Route path="/products/:id" element={<DetailsProduct />} />
-                <Route path="/products/:id/edit" element={<EditProduct />} />
-                <Route path="/products/:id/delete" element={<DeleteProduct />} />
+                <Route path="/stockEntities" element={<StockHome />} />
+                <Route path="/stockEntities/new" element={<NewStock />} />
+                <Route path="/stockEntities/:id" element={<DetailsStock />} />
+                <Route path="/stockEntities/:id/edit" element={<EditStock />} />
+                <Route path="/stockEntities/:id/delete" element={<DeleteStock />} />
+                <Route path="/stockEntities/:id/new_item" element={<NewItem />} />
+                <Route path="/stockEntities/:stockId/items/:id" element={<DetailsStockItem />} />
+                <Route path="/stockEntities/:stockId/items/:id/edit" element={<EditStockItem />} />
+                <Route path="/stockEntities/:stockId/items/:id/delete" element={<DeleteStockItem />} />
+                <Route path="/productEntities" element={<ProductsHome />} />
+                <Route path="/productEntities/new" element={<NewProduct />} />
+                <Route path="/productEntities/:id" element={<DetailsProduct />} />
+                <Route path="/productEntities/:id/edit" element={<EditProduct />} />
+                <Route path="/productEntities/:id/delete" element={<DeleteProduct />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>

@@ -1,4 +1,4 @@
-package com.erp.server.entities;
+package infra.global.entities;
 
 import com.erp.server.enums.Role;
 import jakarta.persistence.*;
@@ -21,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of="id")
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @JdbcTypeCode(SqlTypes.JSON)
     private Set<Role> roles;
 
-    public User(String name, String username, String password, Role role) {
+    public UserEntity(String name, String username, String password, Role role) {
         this.name = name;
         this.username = username;
         this.password = password;

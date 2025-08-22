@@ -1,4 +1,4 @@
-package com.erp.server.entities;
+package infra.global.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name="stocks")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Stock {
+public class StockEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Getter
@@ -26,22 +26,22 @@ public class Stock {
     @JoinColumn(name = "stock_id")
     @SQLRestriction("deleted = false")
     @Getter
-    private List<StockItem> stockItems;
+    private List<StockItemEntity> stockItems;
 
-    public Stock(String name) {
+    public StockEntity(String name) {
         this.name = name;
     }
 
     public void delete() {
-        stockItems.forEach(StockItem::delete);
+        stockItems.forEach(StockItemEntity::delete);
         this.deleted = true;
     }
 
-    public boolean hasItemWithProduct(Product product) {
-        return stockItems.stream().anyMatch(item -> item.getProduct().getId().equals(product.getId()) && !item.isDeleted());
+    public boolean hasItemWithProduct(ProductEntity productEntity) {
+        return stockItems.stream().anyMatch(item -> item.getProduct().getId().equals(productEntity.getId()) && !item.isDeleted());
     }
 
-    public void addStockItem(StockItem stockItem) {
+    public void addStockItem(StockItemEntity stockItem) {
         if (stockItem != null && !hasItemWithProduct(stockItem.getProduct())) {
             stockItems.add(stockItem);
         }
