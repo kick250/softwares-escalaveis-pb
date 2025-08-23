@@ -2,6 +2,8 @@ package infra.orders;
 
 import application.orders.actions.CreateOrder;
 import application.orders.repositories.AllOrders;
+import application.orders.repositories.AllItems;
+import application.orders.repositories.AllUsers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class OrdersConfiguration {
 
     @Bean
-    public CreateOrder createOrder(AllOrders allOrders) {
-        return new CreateOrder(allOrders);
+    public CreateOrder createOrder(AllOrders allOrders, AllUsers allUsers, AllItems allProducts) {
+        return new CreateOrder(allOrders, allUsers, allProducts);
     }
 }

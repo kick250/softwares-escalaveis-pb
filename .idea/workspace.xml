@@ -16,12 +16,12 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Record" />
         <option value="CSS File" />
         <option value="Exception" />
         <option value="JSX File" />
         <option value="JavaScript File" />
         <option value="JUnit5 Test Class" />
+        <option value="Record" />
         <option value="Interface" />
         <option value="Class" />
       </list>
@@ -59,6 +59,8 @@
     "JUnit.LoginControllerTest.testLogin.executor": "Run",
     "JUnit.LoginControllerTest.testLogin_whenIncorrectPassword.executor": "Run",
     "JUnit.LoginControllerTest.testLogin_whenIncorrectUsername.executor": "Run",
+    "JUnit.OrdersControllerTest.testCreate.executor": "Run",
+    "JUnit.OrdersControllerTest.testCreate_whenExceedsQuota.executor": "Run",
     "JUnit.ProductsControllerTest,testCreateProduct and 2 more.executor": "Run",
     "JUnit.ProductsControllerTest.executor": "Run",
     "JUnit.ProductsControllerTest.testCreateProduct.executor": "Run",
@@ -97,7 +99,7 @@
     "JUnit.StockItemsControllerTest.testCreate_whenInvalidQuantity.executor": "Run",
     "JUnit.StockItemsControllerTest.testCreate_whenStockAlreadyHasProduct.executor": "Run",
     "JUnit.StockItemsControllerTest.testDelete.executor": "Run",
-    "JUnit.StockItemsControllerTest.testDelete_whenNotFound.executor": "Run",
+    "JUnit.StockItemsControllerTest.testDelete_whenNotFound.executor": "Debug",
     "JUnit.StockItemsControllerTest.testGetById.executor": "Debug",
     "JUnit.StockItemsControllerTest.testGetById_whenNotFound.executor": "Run",
     "JUnit.StockItemsControllerTest.testUpdate.executor": "Run",
@@ -191,6 +193,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.erp.server.requests" />
       <recent name="com.erp.server.exceptions" />
       <recent name="com.erp.server.responses" />
     </key>
@@ -209,11 +212,44 @@
       <recent name="" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.erp.server.controllers.portal" />
       <recent name="com.erp.server.controllers" />
       <recent name="com.erp.server.services" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.server in backend">
+  <component name="RunManager" selected="JUnit.OrdersControllerTest.testCreate_whenExceedsQuota">
+    <configuration name="OrdersControllerTest.testCreate" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.erp.server.controllers.portal.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.erp.server.controllers.portal" />
+      <option name="MAIN_CLASS_NAME" value="com.erp.server.controllers.portal.OrdersControllerTest" />
+      <option name="METHOD_NAME" value="testCreate" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrdersControllerTest.testCreate_whenExceedsQuota" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.erp.server.controllers.portal.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.erp.server.controllers.portal" />
+      <option name="MAIN_CLASS_NAME" value="com.erp.server.controllers.portal.OrdersControllerTest" />
+      <option name="METHOD_NAME" value="testCreate_whenExceedsQuota" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="StockItemsControllerTest.testDelete" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <extension name="coverage">
@@ -241,38 +277,6 @@
       <option name="PACKAGE_NAME" value="com.erp.server.controllers" />
       <option name="MAIN_CLASS_NAME" value="com.erp.server.controllers.StockItemsControllerTest" />
       <option name="METHOD_NAME" value="testDelete_whenNotFound" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="StockItemsControllerTest.testUpdate_whenInvalidQuantity" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="backend" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.erp.server.controllers.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.erp.server.controllers" />
-      <option name="MAIN_CLASS_NAME" value="com.erp.server.controllers.StockItemsControllerTest" />
-      <option name="METHOD_NAME" value="testUpdate_whenInvalidQuantity" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="StockItemsControllerTest.testUpdate_whenNotFound" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="backend" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.erp.server.controllers.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.erp.server.controllers" />
-      <option name="MAIN_CLASS_NAME" value="com.erp.server.controllers.StockItemsControllerTest" />
-      <option name="METHOD_NAME" value="testUpdate_whenNotFound" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -311,11 +315,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.server in backend" />
+        <item itemvalue="JUnit.OrdersControllerTest.testCreate_whenExceedsQuota" />
+        <item itemvalue="JUnit.OrdersControllerTest.testCreate" />
         <item itemvalue="JUnit.StockItemsControllerTest.testDelete_whenNotFound" />
+        <item itemvalue="JUnit.server in backend" />
         <item itemvalue="JUnit.StockItemsControllerTest.testDelete" />
-        <item itemvalue="JUnit.StockItemsControllerTest.testUpdate_whenNotFound" />
-        <item itemvalue="JUnit.StockItemsControllerTest.testUpdate_whenInvalidQuantity" />
       </list>
     </recent_temporary>
   </component>
@@ -398,7 +402,8 @@
       <workItem from="1755813780353" duration="340000" />
       <workItem from="1755814135369" duration="262000" />
       <workItem from="1755814400525" duration="97000" />
-      <workItem from="1755814525930" duration="12804000" />
+      <workItem from="1755814525930" duration="15291000" />
+      <workItem from="1755895597710" duration="20810000" />
     </task>
     <task id="LOCAL-00001" summary="stock, products and stock items">
       <option name="closed" value="true" />
@@ -456,7 +461,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755380601527</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Configurar multi modulo">
+      <option name="closed" value="true" />
+      <created>1755829281976</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1755829281976</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -470,7 +483,24 @@
     <MESSAGE value="Tratar alguns erros" />
     <MESSAGE value="Crud de itens front" />
     <MESSAGE value="Criar login" />
-    <option name="LAST_COMMIT_MESSAGE" value="Criar login" />
+    <MESSAGE value="Configurar multi modulo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Configurar multi modulo" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/com/erp/server/infra/GlobalExceptionHandler.java</url>
+          <line>49</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="infra.global.entities.UserEntity" memberName="roles" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

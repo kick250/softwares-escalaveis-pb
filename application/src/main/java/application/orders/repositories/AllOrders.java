@@ -2,10 +2,9 @@ package application.orders.repositories;
 
 import application.orders.domain.Order;
 import application.orders.exceptions.OrderNotFoundException;
+import application.orders.exceptions.OrderOwnerNotFoundException;
 
 public interface AllOrders {
 
-    public void update(Order order) throws OrderNotFoundException;
-
-    public void create(Order order);
+    public void create(Order order) throws OrderOwnerNotFoundException;
 }
