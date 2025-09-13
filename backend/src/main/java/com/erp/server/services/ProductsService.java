@@ -24,7 +24,6 @@ public class ProductsService {
     private final RedisTemplate<String, byte[]> redisImageTemplate;
     private final RedisTemplate<String, String> redisImageTypeTemplate;
 
-
     private final long IMAGE_CACHE_EXPIRATION = 60 * 60;
 
     public List<ProductEntity> getAll() {

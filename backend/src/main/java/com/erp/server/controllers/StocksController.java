@@ -10,6 +10,7 @@ import com.erp.server.responses.StockResponse;
 import com.erp.server.responses.StocksResponse;
 import com.erp.server.services.StocksService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +19,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/stocks")
+@AllArgsConstructor
 public class StocksController {
     private final StocksService stocksService;
-
-    public StocksController(StocksService stocksService) {
-        this.stocksService = stocksService;
-    }
 
     @GetMapping
     public ResponseEntity<StocksResponse> getStocks() {

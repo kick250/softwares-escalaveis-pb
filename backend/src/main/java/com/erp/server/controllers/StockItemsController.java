@@ -8,18 +8,16 @@ import com.erp.server.responses.DefaultErrorResponse;
 import com.erp.server.responses.StockItemResponse;
 import com.erp.server.services.StockItemsService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/stock_items")
+@AllArgsConstructor
 public class StockItemsController {
     private final StockItemsService stockItemsService;
-
-    public StockItemsController(StockItemsService stockItemsService) {
-        this.stockItemsService = stockItemsService;
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {

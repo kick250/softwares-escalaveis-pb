@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 public class UsersMapper {
 
     public User toDomain(UserEntity userEntity) {
-        return new User(userEntity.getId());
+        return new User(userEntity.getId(), userEntity.isAdmin());
     }
 }

@@ -14,6 +14,7 @@ public class StockItemEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Getter
+    @Setter
     private Long id;
     @Getter
     private boolean deleted = false;

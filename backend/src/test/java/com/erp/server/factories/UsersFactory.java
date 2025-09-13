@@ -33,4 +33,14 @@ public class UsersFactory {
                 .set(Select.field("roles"), Set.of(Role.PORTAL_USER))
                 .create();
     }
+
+    public UserEntity createAdminUser() {
+        return Instancio.of(UserEntity.class)
+                .set(Select.field("id"), null)
+                .set(Select.field("name"), "portaladminuser")
+                .set(Select.field("username"), "portaladmin@test.com.br")
+                .set(Select.field("password"), this.encoder.encode(DEFAULT_PASSWORD))
+                .set(Select.field("roles"), Set.of(Role.PORTAL_USER, Role.ADMIN_PERMISSION))
+                .create();
+    }
 }

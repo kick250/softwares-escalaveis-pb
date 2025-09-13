@@ -4,17 +4,15 @@ import infra.global.entities.StockEntity;
 import com.erp.server.exceptions.InvalidStockNameException;
 import com.erp.server.exceptions.StockNotFoundException;
 import infra.global.repositories.StocksRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class StocksService {
     private final StocksRepository stocksRepository;
-
-    public StocksService(StocksRepository stocksRepository) {
-        this.stocksRepository = stocksRepository;
-    }
 
     public List<StockEntity> getAll() {
         return stocksRepository.findAllByDeletedFalse();

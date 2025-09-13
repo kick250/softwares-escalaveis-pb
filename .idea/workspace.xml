@@ -59,8 +59,11 @@
     "JUnit.LoginControllerTest.testLogin.executor": "Run",
     "JUnit.LoginControllerTest.testLogin_whenIncorrectPassword.executor": "Run",
     "JUnit.LoginControllerTest.testLogin_whenIncorrectUsername.executor": "Run",
+    "JUnit.OrdersControllerTest.executor": "Run",
     "JUnit.OrdersControllerTest.testCreate.executor": "Run",
     "JUnit.OrdersControllerTest.testCreate_whenExceedsQuota.executor": "Run",
+    "JUnit.OrdersControllerTest.testCreate_whenExceedsQuota_whenIsAdmin.executor": "Run",
+    "JUnit.OrdersControllerTest.testCreate_whenUnavailableItemQuanitity.executor": "Run",
     "JUnit.ProductsControllerTest,testCreateProduct and 2 more.executor": "Run",
     "JUnit.ProductsControllerTest.executor": "Run",
     "JUnit.ProductsControllerTest.testCreateProduct.executor": "Run",
@@ -193,6 +196,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="application.orders.exceptions" />
       <recent name="com.erp.server.requests" />
       <recent name="com.erp.server.exceptions" />
       <recent name="com.erp.server.responses" />
@@ -217,7 +221,22 @@
       <recent name="com.erp.server.services" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.OrdersControllerTest.testCreate_whenExceedsQuota">
+  <component name="RunManager" selected="JUnit.OrdersControllerTest.testCreate_whenExceedsQuota_whenIsAdmin">
+    <configuration name="OrdersControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.erp.server.controllers.portal.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.erp.server.controllers.portal" />
+      <option name="MAIN_CLASS_NAME" value="com.erp.server.controllers.portal.OrdersControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="OrdersControllerTest.testCreate" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <extension name="coverage">
@@ -250,42 +269,34 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StockItemsControllerTest.testDelete" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="OrdersControllerTest.testCreate_whenExceedsQuota_whenIsAdmin" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.erp.server.controllers.*" />
+          <option name="PATTERN" value="com.erp.server.controllers.portal.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.erp.server.controllers" />
-      <option name="MAIN_CLASS_NAME" value="com.erp.server.controllers.StockItemsControllerTest" />
-      <option name="METHOD_NAME" value="testDelete" />
+      <option name="PACKAGE_NAME" value="com.erp.server.controllers.portal" />
+      <option name="MAIN_CLASS_NAME" value="com.erp.server.controllers.portal.OrdersControllerTest" />
+      <option name="METHOD_NAME" value="testCreate_whenExceedsQuota_whenIsAdmin" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StockItemsControllerTest.testDelete_whenNotFound" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="OrdersControllerTest.testCreate_whenUnavailableItemQuanitity" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.erp.server.controllers.*" />
+          <option name="PATTERN" value="com.erp.server.controllers.portal.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.erp.server.controllers" />
-      <option name="MAIN_CLASS_NAME" value="com.erp.server.controllers.StockItemsControllerTest" />
-      <option name="METHOD_NAME" value="testDelete_whenNotFound" />
+      <option name="PACKAGE_NAME" value="com.erp.server.controllers.portal" />
+      <option name="MAIN_CLASS_NAME" value="com.erp.server.controllers.portal.OrdersControllerTest" />
+      <option name="METHOD_NAME" value="testCreate_whenUnavailableItemQuanitity" />
       <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="server in backend" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="backend" />
-      <option name="TEST_OBJECT" value="directory" />
-      <dir value="$PROJECT_DIR$/backend/src/test/java/com/erp/server" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -315,19 +326,19 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.OrdersControllerTest.testCreate_whenExceedsQuota_whenIsAdmin" />
+        <item itemvalue="JUnit.OrdersControllerTest" />
         <item itemvalue="JUnit.OrdersControllerTest.testCreate_whenExceedsQuota" />
         <item itemvalue="JUnit.OrdersControllerTest.testCreate" />
-        <item itemvalue="JUnit.StockItemsControllerTest.testDelete_whenNotFound" />
-        <item itemvalue="JUnit.server in backend" />
-        <item itemvalue="JUnit.StockItemsControllerTest.testDelete" />
+        <item itemvalue="JUnit.OrdersControllerTest.testCreate_whenUnavailableItemQuanitity" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
-        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
       </set>
     </attachedChunks>
   </component>
@@ -403,7 +414,17 @@
       <workItem from="1755814135369" duration="262000" />
       <workItem from="1755814400525" duration="97000" />
       <workItem from="1755814525930" duration="15291000" />
-      <workItem from="1755895597710" duration="20810000" />
+      <workItem from="1755895597710" duration="22840000" />
+      <workItem from="1756057553906" duration="3000" />
+      <workItem from="1756057605456" duration="56000" />
+      <workItem from="1756058412167" duration="11000" />
+      <workItem from="1756058655384" duration="26000" />
+      <workItem from="1756059528378" duration="16000" />
+      <workItem from="1756059745890" duration="641000" />
+      <workItem from="1756154879032" duration="4952000" />
+      <workItem from="1756846844108" duration="6080000" />
+      <workItem from="1757174029771" duration="639000" />
+      <workItem from="1757456536674" duration="5674000" />
     </task>
     <task id="LOCAL-00001" summary="stock, products and stock items">
       <option name="closed" value="true" />
@@ -469,7 +490,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755829281976</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Permitir criar order">
+      <option name="closed" value="true" />
+      <created>1755983210684</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1755983210684</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -484,7 +513,8 @@
     <MESSAGE value="Crud de itens front" />
     <MESSAGE value="Criar login" />
     <MESSAGE value="Configurar multi modulo" />
-    <option name="LAST_COMMIT_MESSAGE" value="Configurar multi modulo" />
+    <MESSAGE value="Permitir criar order" />
+    <option name="LAST_COMMIT_MESSAGE" value="Permitir criar order" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

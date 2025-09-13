@@ -6,6 +6,7 @@ import com.erp.server.services.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import infra.global.entities.*;
 import infra.global.repositories.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,15 @@ class StocksControllerTest {
 
         stocksRepository.save(stockEntity1);
         stocksRepository.save(stockEntity2);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        usersRepository.deleteAll();
+        stockItemsRepository.deleteAll();
+        stocksRepository.deleteAll();
+        productsRepository.deleteAll();
+        attachmentsRepository.deleteAll();
     }
 
     @Test

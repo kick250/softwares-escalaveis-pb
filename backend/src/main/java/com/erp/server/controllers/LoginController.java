@@ -5,6 +5,7 @@ import com.erp.server.requests.LoginRequest;
 import com.erp.server.responses.TokenResponse;
 import com.erp.server.services.TokenService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,14 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
+@AllArgsConstructor
 public class LoginController {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
-
-    public LoginController(AuthenticationManager authenticationManager, TokenService tokenService) {
-        this.authenticationManager = authenticationManager;
-        this.tokenService = tokenService;
-    }
 
     @PostMapping
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest request) {

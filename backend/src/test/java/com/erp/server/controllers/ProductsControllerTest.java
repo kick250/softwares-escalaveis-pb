@@ -11,6 +11,7 @@ import infra.global.repositories.ProductsRepository;
 import infra.global.repositories.UsersRepository;
 import com.erp.server.services.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,13 @@ class ProductsControllerTest {
 
         productsRepository.save(createdProductEntity1);
         productsRepository.save(createdProductEntity2);
+    }
+
+    @AfterEach
+    void tearDown() {
+        usersRepository.deleteAll();
+        productsRepository.deleteAll();
+        attachmentsRepository.deleteAll();
     }
 
     @Test

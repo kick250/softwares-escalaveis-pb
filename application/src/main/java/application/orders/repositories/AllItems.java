@@ -9,4 +9,6 @@ import java.util.Set;
 public interface AllItems {
 
     public List<Item> getByIds(Set<Long> ids) throws SomeItemsWereNotFoundException;
+
+    public void updateAll(List<Item> items);
 }

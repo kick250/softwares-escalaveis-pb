@@ -5,6 +5,7 @@ import com.erp.server.factories.UsersFactory;
 import infra.global.repositories.UsersRepository;
 import com.erp.server.requests.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -38,6 +39,11 @@ class LoginControllerTest {
         userEntity = usersFactory.createUser();
 
         usersRepository.save(userEntity);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        usersRepository.deleteAll();
     }
 
     @Test

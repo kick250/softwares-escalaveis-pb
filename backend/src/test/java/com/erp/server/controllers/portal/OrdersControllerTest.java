@@ -8,6 +8,7 @@ import com.erp.server.services.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import infra.global.entities.*;
 import infra.global.repositories.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,8 @@ class OrdersControllerTest {
 
     private UserEntity currentUser;
     private String token;
+    private UserEntity adminUser;
+    private String adminToken;
 
     @Autowired
     private UsersRepository usersRepository;
@@ -72,8 +75,11 @@ class OrdersControllerTest {
 
         currentUser = usersFactory.createPortalUser();
         usersRepository.save(currentUser);
-
         token = "Bearer " + tokenService.generateToken(currentUser);
+
+        adminUser = usersFactory.createAdminUser();
+        usersRepository.save(adminUser);
+        adminToken = "Bearer " + tokenService.generateToken(adminUser);
 
         stock1 = stocksFactory.createStock();
 
@@ -102,6 +108,17 @@ class OrdersControllerTest {
         stocksRepository.save(stock1);
     }
 
+    @AfterEach
+    public void tearDown() {
+        ordersItemsRepository.deleteAll();
+        ordersRepository.deleteAll();
+        usersRepository.deleteAll();
+        stockItemsRepository.deleteAll();
+        stocksRepository.deleteAll();
+        productsRepository.deleteAll();
+        attachmentsRepository.deleteAll();
+    }
+
     @Test
     public void testCreate() throws Exception {
         List<OrderItemRequest> itemsRequest = new ArrayList<>();
@@ -128,16 +145,18 @@ class OrdersControllerTest {
         OrderItemEntity orderItem1 = order.getItems().stream().filter(i -> i.getStockItem().getId().equals(stockItem1.getId())).findFirst().get();
         assertEquals(10, orderItem1.getQuantity());
         assertEquals(stockItem1.getPrice(), orderItem1.getPrice());
+        assertEquals(90, orderItem1.getStockItem().getQuantity());
         OrderItemEntity orderItem2 = order.getItems().stream().filter(i -> i.getStockItem().getId().equals(stockItem2.getId())).findFirst().get();
         assertEquals(5, orderItem2.getQuantity());
         assertEquals(stockItem2.getPrice(), orderItem2.getPrice());
+        assertEquals(95, orderItem2.getStockItem().getQuantity());
     }
 
     @Test
     public void testCreate_whenExceedsQuota() throws Exception {
         List<OrderItemRequest> itemsRequest = new ArrayList<>();
-        itemsRequest.add(new OrderItemRequest(stockItem1.getId(), 100));
-        itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 100));
+        itemsRequest.add(new OrderItemRequest(stockItem1.getId(), 60));
+        itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 60));
         OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
 
         assertEquals(0, ordersRepository.count());
@@ -157,10 +176,63 @@ class OrdersControllerTest {
         assertEquals(currentUser, order.getOwner());
         assertEquals(2, order.getItems().size());
         OrderItemEntity orderItem1 = order.getItems().stream().filter(i -> i.getStockItem().getId().equals(stockItem1.getId())).findFirst().get();
-        assertEquals(100, orderItem1.getQuantity());
+        assertEquals(60, orderItem1.getQuantity());
         assertEquals(stockItem1.getPrice(), orderItem1.getPrice());
+        assertEquals(40, orderItem1.getStockItem().getQuantity());
         OrderItemEntity orderItem2 = order.getItems().stream().filter(i -> i.getStockItem().getId().equals(stockItem2.getId())).findFirst().get();
-        assertEquals(100, orderItem2.getQuantity());
+        assertEquals(60, orderItem2.getQuantity());
         assertEquals(stockItem2.getPrice(), orderItem2.getPrice());
+        assertEquals(40, orderItem2.getStockItem().getQuantity());
+    }
+
+    @Test
+    public void testCreate_whenExceedsQuota_whenIsAdmin() throws Exception {
+        List<OrderItemRequest> itemsRequest = new ArrayList<>();
+        itemsRequest.add(new OrderItemRequest(stockItem1.getId(), 60));
+        itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 60));
+        OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
+
+        assertEquals(0, ordersRepository.count());
+
+        mockMvc.perform(post("/portal/orders")
+                        .header("Authorization", adminToken)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(body)))
+                .andExpect(status().isCreated());
+
+        assertEquals(1, ordersRepository.count());
+        OrderEntity order = ordersRepository.findAll().getLast();
+        order = ordersRepository.findByIdWithItems(order.getId()).get();
+        assertNotNull(order);
+        assertEquals(OrderStatus.APPROVED, order.getStatus());
+        assertNotNull(order.getCreatedAt());
+        assertEquals(adminUser, order.getOwner());
+        assertEquals(2, order.getItems().size());
+        OrderItemEntity orderItem1 = order.getItems().stream().filter(i -> i.getStockItem().getId().equals(stockItem1.getId())).findFirst().get();
+        assertEquals(60, orderItem1.getQuantity());
+        assertEquals(stockItem1.getPrice(), orderItem1.getPrice());
+        assertEquals(40, orderItem1.getStockItem().getQuantity());
+        OrderItemEntity orderItem2 = order.getItems().stream().filter(i -> i.getStockItem().getId().equals(stockItem2.getId())).findFirst().get();
+        assertEquals(60, orderItem2.getQuantity());
+        assertEquals(stockItem2.getPrice(), orderItem2.getPrice());
+        assertEquals(40, orderItem2.getStockItem().getQuantity());
+    }
+
+    @Test
+    public void testCreate_whenUnavailableItemQuantity() throws Exception {
+        List<OrderItemRequest> itemsRequest = new ArrayList<>();
+        itemsRequest.add(new OrderItemRequest(stockItem1.getId(), 1000));
+        itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 5));
+        OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
+
+        assertEquals(0, ordersRepository.count());
+
+        mockMvc.perform(post("/portal/orders")
+                        .header("Authorization", token)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(body)))
+                .andExpect(status().isBadRequest());
+
+        assertEquals(0, ordersRepository.count());
     }
 }

@@ -28,4 +28,16 @@ public class ItemsJpaRepository implements AllItems {
 
         return stockItems.stream().map(itemMapper::toDomain).toList();
     }
+
+    @Override
+    public void updateAll(List<Item> items) {
+        items.forEach(this::update);
+    }
+
+    public void update(Item item) {
+        var stockItemEntity = stockItemsRepository.findById(item.getId()).orElse(null);
+        var stockItemToUpdate = itemMapper.toEntity(item, stockItemEntity);
+
+        stockItemsRepository.save(stockItemToUpdate);
+    }
 }

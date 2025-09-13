@@ -1,18 +1,22 @@
 package application.orders.domain;
 
+import lombok.Getter;
+
 public class User {
+    @Getter
     private Long id;
+    private boolean isAdmin;
 
-    public User(Long id) {
+    private static final double DEFAULT_USER_QUOTA = 10000.0;
+
+    public User(Long id, boolean isAdmin) {
         this.id = id;
+        this.isAdmin = isAdmin;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public boolean exceedQuota(OrderItems items) {
+        if (isAdmin) return false;
 
-    public boolean exceedQuota(double amount) {
-        double userQuota = 10000.0;
-        return amount > userQuota;
+        return items.totalAmount() > DEFAULT_USER_QUOTA;
     }
 }

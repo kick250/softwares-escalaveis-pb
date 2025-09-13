@@ -43,4 +43,8 @@ public class UserEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
     }
+
+    public boolean isAdmin() {
+        return roles.contains(Role.ADMIN_PERMISSION);
+    }
 }

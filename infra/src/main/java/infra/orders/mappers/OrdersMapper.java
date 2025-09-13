@@ -27,7 +27,7 @@ public class OrdersMapper {
         orderEntity.setOwner(owner);
         orderEntity.setStock(stock);
 
-        List<OrderItemEntity> items = order.getItems().stream().map(item -> itemToEntity(orderEntity, item)).toList();
+        List<OrderItemEntity> items = order.getOrderItems().stream().map(item -> itemToEntity(orderEntity, item)).toList();
         orderEntity.setItems(items);
 
         return orderEntity;

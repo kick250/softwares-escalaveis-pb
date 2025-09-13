@@ -7,19 +7,15 @@ import com.erp.server.exceptions.*;
 import infra.global.repositories.ProductsRepository;
 import infra.global.repositories.StockItemsRepository;
 import infra.global.repositories.StocksRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class StockItemsService {
     private final StockItemsRepository stockItemsRepository;
     private final ProductsRepository productsRepository;
     private final StocksRepository stocksRepository;
-
-    public StockItemsService(StockItemsRepository stockItemsRepository, ProductsRepository productsRepository, StocksRepository stocksRepository) {
-        this.stockItemsRepository = stockItemsRepository;
-        this.productsRepository = productsRepository;
-        this.stocksRepository = stocksRepository;
-    }
 
     public StockItemEntity getById(Long id) throws StockItemNotFoundException {
         return stockItemsRepository.findByIdAndDeletedFalse(id)

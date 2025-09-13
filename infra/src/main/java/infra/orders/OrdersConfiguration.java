@@ -1,6 +1,6 @@
 package infra.orders;
 
-import application.orders.actions.CreateOrder;
+import application.orders.useCases.CreateOrder;
 import application.orders.repositories.AllOrders;
 import application.orders.repositories.AllItems;
 import application.orders.repositories.AllUsers;
