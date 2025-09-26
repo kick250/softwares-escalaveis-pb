@@ -11,7 +11,7 @@
     <groupId>com.erp</groupId>
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>NexoERP</name>
+    <name>backend</name>
     <description>ERP</description>
     <url/>
     <licenses>
@@ -67,6 +67,11 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>4.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.erp</groupId>
+            <artifactId>infra</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>

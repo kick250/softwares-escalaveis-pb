@@ -1,6 +1,6 @@
 package com.erp.server.infra;
 
-import com.erp.server.repositories.UsersRepository;
+import infra.global.repositories.UsersRepository;
 import com.erp.server.services.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,36 +1,34 @@
 package com.erp.server.services;
 
-import com.erp.server.entities.Stock;
+import infra.global.entities.StockEntity;
 import com.erp.server.exceptions.InvalidStockNameException;
 import com.erp.server.exceptions.StockNotFoundException;
-import com.erp.server.repositories.StocksRepository;
+import infra.global.repositories.StocksRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class StocksService {
     private final StocksRepository stocksRepository;
 
-    public StocksService(StocksRepository stocksRepository) {
-        this.stocksRepository = stocksRepository;
-    }
-
-    public List<Stock> getAll() {
+    public List<StockEntity> getAll() {
         return stocksRepository.findAllByDeletedFalse();
     }
 
-    public Stock getById(Long id) throws StockNotFoundException {
+    public StockEntity getById(Long id) throws StockNotFoundException {
         return stocksRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(StockNotFoundException::new);
     }
 
     public void create(String name) throws InvalidStockNameException {
-        Stock stock = new Stock(name);
+        StockEntity stockEntity = new StockEntity(name);
 
         if (name.isBlank()) this.throwsInvalidStockNameException();
 
-        stocksRepository.save(stock);
+        stocksRepository.save(stockEntity);
     }
 
     private void throwsInvalidStockNameException() throws InvalidStockNameException {
@@ -40,15 +38,15 @@ public class StocksService {
     public void update(Long id, String name) throws StockNotFoundException, InvalidStockNameException {
         if (name.isBlank()) this.throwsInvalidStockNameException();
 
-        Stock stock = getById(id);
+        StockEntity stockEntity = getById(id);
 
-        stock.setName(name);
-        stocksRepository.save(stock);
+        stockEntity.setName(name);
+        stocksRepository.save(stockEntity);
     }
 
     public void deleteById(Long id) throws StockNotFoundException {
-        Stock stock = getById(id);
-        stock.delete();
-        stocksRepository.save(stock);
+        StockEntity stockEntity = getById(id);
+        stockEntity.delete();
+        stocksRepository.save(stockEntity);
     }
 }

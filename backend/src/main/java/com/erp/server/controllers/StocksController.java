@@ -1,6 +1,6 @@
 package com.erp.server.controllers;
 
-import com.erp.server.entities.Stock;
+import infra.global.entities.StockEntity;
 import com.erp.server.exceptions.InvalidStockNameException;
 import com.erp.server.exceptions.StockNotFoundException;
 import com.erp.server.requests.StockCreateRequest;
@@ -10,6 +10,7 @@ import com.erp.server.responses.StockResponse;
 import com.erp.server.responses.StocksResponse;
 import com.erp.server.services.StocksService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -18,24 +19,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/stocks")
+@AllArgsConstructor
 public class StocksController {
     private final StocksService stocksService;
 
-    public StocksController(StocksService stocksService) {
-        this.stocksService = stocksService;
-    }
-
     @GetMapping
     public ResponseEntity<StocksResponse> getStocks() {
-        List<Stock> stocks = stocksService.getAll();
-        return ResponseEntity.ok(new StocksResponse(stocks));
+        List<StockEntity> stockEntities = stocksService.getAll();
+        return ResponseEntity.ok(new StocksResponse(stockEntities));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StockResponse> getById(@PathVariable("id") Long id) {
         try {
-            Stock stock = stocksService.getById(id);
-            return ResponseEntity.ok().body(new StockResponse(stock));
+            StockEntity stockEntity = stocksService.getById(id);
+            return ResponseEntity.ok().body(new StockResponse(stockEntity));
         } catch (StockNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

@@ -65,15 +65,15 @@ export default function Edit() {
                     :
                     <div className="mt-3 d-flex flex-column bg-light w-25 py-3 px-5 rounded-3 shadow">
                         <div className="mb-2">
-                            <label htmlFor="stock-price" className="form-label text-center w-100">Preço</label>
+                            <label htmlFor="stockEntity-price" className="form-label text-center w-100">Preço</label>
                             <div className="d-flex align-items-center">
                                 <span className="me-2">R$</span>
-                                <input id="stock-price" name="stock-price" type="text" className="form-control" value={price} onInput={updatePrice} placeholder="Preço"/>
+                                <input id="stockEntity-price" name="stockEntity-price" type="text" className="form-control" value={price} onInput={updatePrice} placeholder="Preço"/>
                             </div>
                         </div>
                         <div className="mb-2">
-                            <label htmlFor="stock-quantity" className="form-label text-center w-100">Quantidade</label>
-                            <input id="stock-quantity" name="stock-quantity" type="text" className="form-control" placeholder="Quantidade"
+                            <label htmlFor="stockEntity-quantity" className="form-label text-center w-100">Quantidade</label>
+                            <input id="stockEntity-quantity" name="stockEntity-quantity" type="text" className="form-control" placeholder="Quantidade"
                                    value={quantity}
                                    onInput={updateQuantity}
                             />

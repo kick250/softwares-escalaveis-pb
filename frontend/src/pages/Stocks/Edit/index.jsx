@@ -48,8 +48,8 @@ export default function Edit() {
                         }
                         <div className="d-flex flex-column bg-light w-25 py-3 px-5 rounded-3 shadow">
                             <div>
-                                <label htmlFor="stock-name" className="form-label">Nome</label>
-                                <input id="stock-name" name="stock-name" className="form-control" value={stockParams.name} placeholder="Nome"
+                                <label htmlFor="stockEntity-name" className="form-label">Nome</label>
+                                <input id="stockEntity-name" name="stockEntity-name" className="form-control" value={stockParams.name} placeholder="Nome"
                                        onInput={({target}) => updateName(target.value)}
                                 />
                             </div>

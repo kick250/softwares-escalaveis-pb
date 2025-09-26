@@ -1,9 +1,9 @@
 package com.erp.server.services;
 
-import com.erp.server.entities.Stock;
+import infra.global.entities.StockEntity;
 import com.erp.server.exceptions.InvalidStockNameException;
 import com.erp.server.exceptions.StockNotFoundException;
-import com.erp.server.repositories.StocksRepository;
+import infra.global.repositories.StocksRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,29 +27,29 @@ class StocksServiceTest {
 
     @Test
     public void testGetAll() {
-        List<Stock> stocks = new ArrayList<>();
-        stocks.add(mock(Stock.class));
-        stocks.add(mock(Stock.class));
-        stocks.add(mock(Stock.class));
+        List<StockEntity> stockEntities = new ArrayList<>();
+        stockEntities.add(mock(StockEntity.class));
+        stockEntities.add(mock(StockEntity.class));
+        stockEntities.add(mock(StockEntity.class));
 
-        when(stocksRepository.findAllByDeletedFalse()).thenReturn(stocks);
+        when(stocksRepository.findAllByDeletedFalse()).thenReturn(stockEntities);
 
-        List<Stock> result = stocksService.getAll();
+        List<StockEntity> result = stocksService.getAll();
 
-        assertEquals(stocks, result);
+        assertEquals(stockEntities, result);
     }
 
     @Test
     public void testGetById() throws StockNotFoundException {
         Long id = 1L;
 
-        Stock stock = mock(Stock.class);
+        StockEntity stockEntity = mock(StockEntity.class);
 
-        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stock));
+        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stockEntity));
 
-        Stock result = stocksService.getById(id);
+        StockEntity result = stocksService.getById(id);
 
-        assertEquals(stock, result);
+        assertEquals(stockEntity, result);
     }
 
     @Test
@@ -68,7 +68,7 @@ class StocksServiceTest {
 
         stocksService.create(name);
 
-        verify(stocksRepository).save(any(Stock.class));
+        verify(stocksRepository).save(any(StockEntity.class));
     }
 
     @Test
@@ -84,14 +84,14 @@ class StocksServiceTest {
         Long id = 1L;
         String name = "New name";
 
-        Stock stock = mock(Stock.class);
+        StockEntity stockEntity = mock(StockEntity.class);
 
-        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stock));
+        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stockEntity));
 
         stocksService.update(id, name);
 
-        verify(stock).setName(name);
-        verify(stocksRepository).save(any(Stock.class));
+        verify(stockEntity).setName(name);
+        verify(stocksRepository).save(any(StockEntity.class));
     }
 
     @Test
@@ -118,14 +118,14 @@ class StocksServiceTest {
     public void testDeleteById() throws StockNotFoundException {
         Long id = 1L;
 
-        Stock stock = mock(Stock.class);
+        StockEntity stockEntity = mock(StockEntity.class);
 
-        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stock));
+        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stockEntity));
 
         stocksService.deleteById(id);
 
-        verify(stock).delete();
-        verify(stocksRepository).save(any(Stock.class));
+        verify(stockEntity).delete();
+        verify(stocksRepository).save(any(StockEntity.class));
     }
 
     @Test

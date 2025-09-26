@@ -1,6 +1,6 @@
 package com.erp.server.controllers;
 
-import com.erp.server.entities.StockItem;
+import infra.global.entities.StockItemEntity;
 import com.erp.server.exceptions.*;
 import com.erp.server.requests.StockItemCreateRequest;
 import com.erp.server.requests.StockItemUpdateRequest;
@@ -8,23 +8,21 @@ import com.erp.server.responses.DefaultErrorResponse;
 import com.erp.server.responses.StockItemResponse;
 import com.erp.server.services.StockItemsService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/stock_items")
+@AllArgsConstructor
 public class StockItemsController {
     private final StockItemsService stockItemsService;
-
-    public StockItemsController(StockItemsService stockItemsService) {
-        this.stockItemsService = stockItemsService;
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         try {
-            StockItem stockItem = stockItemsService.getById(id);
+            StockItemEntity stockItem = stockItemsService.getById(id);
             return ResponseEntity.ok(new StockItemResponse(stockItem));
         } catch (StockItemNotFoundException e) {
             return ResponseEntity.notFound().build();

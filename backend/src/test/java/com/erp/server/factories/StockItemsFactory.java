@@ -1,13 +1,13 @@
 package com.erp.server.factories;
 
-import com.erp.server.entities.Product;
-import com.erp.server.entities.StockItem;
+import infra.global.entities.ProductEntity;
+import infra.global.entities.StockItemEntity;
 import org.instancio.Instancio;
 import org.instancio.Select;
 
 public class StockItemsFactory {
-    public StockItem createStockItem() {
-        return Instancio.of(StockItem.class)
+    public StockItemEntity createStockItem() {
+        return Instancio.of(StockItemEntity.class)
                 .set(Select.field("id"), null)
                 .set(Select.field("deleted"), false)
                 .set(Select.field("price"), 199.99)
@@ -17,13 +17,13 @@ public class StockItemsFactory {
                 .create();
     }
 
-    public StockItem createStockItemWithProduct(Product product) {
-        return Instancio.of(StockItem.class)
+    public StockItemEntity createStockItemWithProduct(ProductEntity productEntity) {
+        return Instancio.of(StockItemEntity.class)
                 .set(Select.field("id"), null)
                 .set(Select.field("deleted"), false)
                 .set(Select.field("price"), 199.99)
                 .set(Select.field("quantity"), 100)
-                .set(Select.field("product"), product)
+                .set(Select.field("product"), productEntity)
                 .set(Select.field("stock"), null)
                 .create();
     }

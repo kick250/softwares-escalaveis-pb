@@ -40,6 +40,7 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers(HttpMethod.POST, "/login").permitAll();
                     request.requestMatchers(HttpMethod.GET, "/products/{id}/image").permitAll();
+                    request.requestMatchers("/portal/**").hasRole(Role.PORTAL_USER.toString());
                     request.requestMatchers("/**").hasRole(Role.ERP_USER.toString());
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

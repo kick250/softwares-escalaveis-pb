@@ -1,6 +1,6 @@
 package com.erp.server.responses;
 
-import com.erp.server.entities.Product;
+import infra.global.entities.ProductEntity;
 
 public record ProductResponse(
         Long id,
@@ -8,16 +8,16 @@ public record ProductResponse(
         String description,
         String imagePath
 ) {
-    public ProductResponse(Product product) {
+    public ProductResponse(ProductEntity productEntity) {
         this(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                getImagePath(product)
+                productEntity.getId(),
+                productEntity.getName(),
+                productEntity.getDescription(),
+                getImagePath(productEntity)
         );
     }
 
-    private static String getImagePath(Product product) {
-        return "/products/" + product.getId() + "/image";
+    private static String getImagePath(ProductEntity productEntity) {
+        return "/products/" + productEntity.getId() + "/image";
     }
 }

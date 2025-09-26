@@ -1,13 +1,13 @@
 package com.erp.server.services;
 
-import com.erp.server.entities.Attachment;
-import com.erp.server.entities.Product;
+import infra.global.entities.AttachmentEntity;
+import infra.global.entities.ProductEntity;
 import com.erp.server.exceptions.ProductDescriptionRequiredException;
 import com.erp.server.exceptions.ProductImageRequiredException;
 import com.erp.server.exceptions.ProductNameRequiredException;
 import com.erp.server.exceptions.ProductNotFoundException;
-import com.erp.server.repositories.AttachmentsRepository;
-import com.erp.server.repositories.ProductsRepository;
+import infra.global.repositories.AttachmentsRepository;
+import infra.global.repositories.ProductsRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -24,14 +24,13 @@ public class ProductsService {
     private final RedisTemplate<String, byte[]> redisImageTemplate;
     private final RedisTemplate<String, String> redisImageTypeTemplate;
 
-
     private final long IMAGE_CACHE_EXPIRATION = 60 * 60;
 
-    public List<Product> getAll() {
+    public List<ProductEntity> getAll() {
         return productsRepository.findAllByDeletedFalse();
     }
 
-    public Product getById(Long id) throws ProductNotFoundException {
+    public ProductEntity getById(Long id) throws ProductNotFoundException {
         return productsRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(ProductNotFoundException::new);
     }
@@ -41,10 +40,10 @@ public class ProductsService {
         if (description == null || description.isEmpty()) throwProductDescriptionRequiredException();
         if (image == null || imageType == null) throwProductImageRequiredException();
 
-        Attachment attachment = new Attachment(Base64.getEncoder().encodeToString(image), imageType);
-        attachmentsRepository.save(attachment);
-        Product product = new Product(name, description, attachment);
-        productsRepository.save(product);
+        AttachmentEntity attachmentEntity = new AttachmentEntity(Base64.getEncoder().encodeToString(image), imageType);
+        attachmentsRepository.save(attachmentEntity);
+        ProductEntity productEntity = new ProductEntity(name, description, attachmentEntity);
+        productsRepository.save(productEntity);
     }
 
     private void throwProductImageRequiredException() throws ProductImageRequiredException {
@@ -63,25 +62,25 @@ public class ProductsService {
         if (name == null || name.isEmpty()) throwProductNameRequiredException();
         if (description == null || description.isEmpty()) throwProductDescriptionRequiredException();
 
-        Attachment attachment = null;
-        Attachment oldAttachment = null;
+        AttachmentEntity attachmentEntity = null;
+        AttachmentEntity oldAttachmentEntity = null;
         if (image != null && imageContentType != null) {
-            attachment = new Attachment(Base64.getEncoder().encodeToString(image), imageContentType);
-            attachmentsRepository.save(attachment);
+            attachmentEntity = new AttachmentEntity(Base64.getEncoder().encodeToString(image), imageContentType);
+            attachmentsRepository.save(attachmentEntity);
         }
 
-        Product product = getById(id);
-        product.setName(name);
-        product.setDescription(description);
-        if (attachment != null) {
-            oldAttachment = product.getAttachment();
-            oldAttachment.delete();
-            product.setAttachment(attachment);
+        ProductEntity productEntity = getById(id);
+        productEntity.setName(name);
+        productEntity.setDescription(description);
+        if (attachmentEntity != null) {
+            oldAttachmentEntity = productEntity.getAttachmentEntity();
+            oldAttachmentEntity.delete();
+            productEntity.setAttachmentEntity(attachmentEntity);
             clearCachedImage(id);
         }
-        productsRepository.save(product);
-        if (oldAttachment != null) {
-            attachmentsRepository.save(oldAttachment);
+        productsRepository.save(productEntity);
+        if (oldAttachmentEntity != null) {
+            attachmentsRepository.save(oldAttachmentEntity);
         }
     }
 
@@ -93,32 +92,32 @@ public class ProductsService {
     }
 
     public void deleteById(Long id) throws ProductNotFoundException {
-        Product product = getById(id);
-        product.delete();
-        productsRepository.save(product);
+        ProductEntity productEntity = getById(id);
+        productEntity.delete();
+        productsRepository.save(productEntity);
     }
 
     public byte[] getProductImage(Long productId) throws ProductNotFoundException {
         byte[] cachedImage = getCachedImage(productId);
         if (cachedImage != null) return cachedImage;
 
-        Product product = cacheProductData(productId);
-        if (product == null) return null;
+        ProductEntity productEntity = cacheProductData(productId);
+        if (productEntity == null) return null;
 
-        return getDecodedImage(product);
+        return getDecodedImage(productEntity);
     }
 
-    private Product cacheProductData(Long productId) throws ProductNotFoundException {
-        Product product = getById(productId);
-        if (!product.hasAttachment()) return null;
+    private ProductEntity cacheProductData(Long productId) throws ProductNotFoundException {
+        ProductEntity productEntity = getById(productId);
+        if (!productEntity.hasAttachment()) return null;
 
-        byte[] imageBytes = getDecodedImage(product);
-        cacheImage(productId, imageBytes, product.getImageType());
-        return product;
+        byte[] imageBytes = getDecodedImage(productEntity);
+        cacheImage(productId, imageBytes, productEntity.getImageType());
+        return productEntity;
     }
 
-    private static byte[] getDecodedImage(Product product) {
-        return Base64.getDecoder().decode(product.getImageBase64());
+    private static byte[] getDecodedImage(ProductEntity productEntity) {
+        return Base64.getDecoder().decode(productEntity.getImageBase64());
     }
 
     private void cacheImage(Long productId, byte[] imageBytes, String imageType) {
@@ -149,10 +148,10 @@ public class ProductsService {
         String cachedImageType = getCachedImageType(productId);
         if (cachedImageType != null) return cachedImageType;
 
-        Product product = cacheProductData(productId);
-        if (product == null) return null;
+        ProductEntity productEntity = cacheProductData(productId);
+        if (productEntity == null) return null;
 
-        return product.getImageType();
+        return productEntity.getImageType();
     }
 
     private String getCachedImageType(Long productId) {

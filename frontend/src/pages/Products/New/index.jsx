@@ -49,16 +49,16 @@ export default function New() {
             }
             <div className="d-flex flex-column bg-light w-25 py-3 px-5 rounded-3 shadow">
                 <div>
-                    <label htmlFor="stock-name" className="form-label">Nome</label>
-                    <input id="stock-name" name="stock-name" className="form-control" onInput={updateName} placeholder="Nome"/>
+                    <label htmlFor="stockEntity-name" className="form-label">Nome</label>
+                    <input id="stockEntity-name" name="stockEntity-name" className="form-control" onInput={updateName} placeholder="Nome"/>
                 </div>
                 <div className="mt-1">
-                    <label htmlFor="stock-description" className="form-label mt-3">Descrição</label>
-                    <textarea id="stock-description" name="stock-description" className="form-control" onInput={updateDescription} placeholder="Descrição" />
+                    <label htmlFor="stockEntity-description" className="form-label mt-3">Descrição</label>
+                    <textarea id="stockEntity-description" name="stockEntity-description" className="form-control" onInput={updateDescription} placeholder="Descrição" />
                 </div>
                 <div className="mt-1">
-                    <label htmlFor="stock-image" className="form-label mt-3">Imagem</label>
-                    <input id="stock-image" name="stock-image" className="form-control" onInput={updateImage} type="file" accept="image/*" />
+                    <label htmlFor="stockEntity-image" className="form-label mt-3">Imagem</label>
+                    <input id="stockEntity-image" name="stockEntity-image" className="form-control" onInput={updateImage} type="file" accept="image/*" />
                 </div>
                 <button className="btn btn-primary mt-3" onClick={create} disabled={loading}>
                     Criar

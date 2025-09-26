@@ -1,6 +1,7 @@
 package com.erp.server.services;
 
-import com.erp.server.repositories.UsersRepository;
+import infra.global.entities.UserEntity;
+import infra.global.repositories.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,8 +27,8 @@ public class AuthenticationServiceTest {
     public void testLoadUserByUsername_whenUserExists() {
         String username = "test@test.com.br";
 
-        UserDetails user = mock(UserDetails.class);
-        Optional<UserDetails> optionalUser = Optional.of(user);
+        UserEntity user = mock(UserEntity.class);
+        Optional<UserEntity> optionalUser = Optional.of(user);
 
         when(usersRepository.findByUsername(username)).thenReturn(optionalUser);
 
@@ -41,7 +42,7 @@ public class AuthenticationServiceTest {
     public void testLoadUserByUsername_whenUserDoesNotExist() {
         String username = "test@test.com.br";
 
-        Optional<UserDetails> optionalUser = Optional.empty();
+        Optional<UserEntity> optionalUser = Optional.empty();
 
         when(usersRepository.findByUsername(username)).thenReturn(optionalUser);
 

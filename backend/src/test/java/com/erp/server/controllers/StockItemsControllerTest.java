@@ -1,12 +1,13 @@
 package com.erp.server.controllers;
 
-import com.erp.server.entities.*;
 import com.erp.server.factories.*;
-import com.erp.server.repositories.*;
 import com.erp.server.requests.StockItemCreateRequest;
 import com.erp.server.requests.StockItemUpdateRequest;
 import com.erp.server.services.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import infra.global.entities.*;
+import infra.global.repositories.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +46,13 @@ class StockItemsControllerTest {
     @Autowired
     private TokenService tokenService;
 
-    private Stock stock1;
-    private Stock stock2;
-    private StockItem stockItem1;
-    private StockItem stockItem2;
-    private StockItem stockItem3;
-    private Product product1;
-    private Product product2;
+    private StockEntity stockEntity1;
+    private StockEntity stockEntity2;
+    private StockItemEntity stockItem1;
+    private StockItemEntity stockItem2;
+    private StockItemEntity stockItem3;
+    private ProductEntity productEntity1;
+    private ProductEntity productEntity2;
 
     @BeforeEach
     public void setUp() {
@@ -62,42 +63,51 @@ class StockItemsControllerTest {
         attachmentsRepository.deleteAll();
 
         UsersFactory usersFactory = new UsersFactory();
-        User user = usersFactory.createUser();
-        usersRepository.save(user);
+        UserEntity userEntity = usersFactory.createUser();
+        usersRepository.save(userEntity);
 
-        token = "Bearer " + tokenService.generateToken(user);
+        token = "Bearer " + tokenService.generateToken(userEntity);
 
-        stock1 = stocksFactory.createStock();
-        stock2 = stocksFactory.createStock();
+        stockEntity1 = stocksFactory.createStock();
+        stockEntity2 = stocksFactory.createStock();
 
-        stocksRepository.save(stock1);
-        stocksRepository.save(stock2);
+        stocksRepository.save(stockEntity1);
+        stocksRepository.save(stockEntity2);
 
-        Attachment attachment1 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachment1);
-        Attachment attachment2 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachment2);
+        AttachmentEntity attachmentEntity1 = attachmentsFactory.createAttachment();
+        attachmentsRepository.save(attachmentEntity1);
+        AttachmentEntity attachmentEntity2 = attachmentsFactory.createAttachment();
+        attachmentsRepository.save(attachmentEntity2);
 
-        product1 = productsFactory.createProduct();
-        product1.setAttachment(attachment1);
-        productsRepository.save(product1);
-        product2 = productsFactory.createProduct();
-        product2.setAttachment(attachment2);
-        productsRepository.save(product2);
+        productEntity1 = productsFactory.createProduct();
+        productEntity1.setAttachmentEntity(attachmentEntity1);
+        productsRepository.save(productEntity1);
+        productEntity2 = productsFactory.createProduct();
+        productEntity2.setAttachmentEntity(attachmentEntity2);
+        productsRepository.save(productEntity2);
 
-        stockItem1 = stockItemsFactory.createStockItemWithProduct(product1);
+        stockItem1 = stockItemsFactory.createStockItemWithProduct(productEntity1);
         stockItemsRepository.save(stockItem1);
-        stockItem2 = stockItemsFactory.createStockItemWithProduct(product2);
+        stockItem2 = stockItemsFactory.createStockItemWithProduct(productEntity2);
         stockItemsRepository.save(stockItem2);
-        stockItem3 = stockItemsFactory.createStockItemWithProduct(product1);
+        stockItem3 = stockItemsFactory.createStockItemWithProduct(productEntity1);
         stockItemsRepository.save(stockItem3);
 
-        stock1.addStockItem(stockItem1);
-        stock1.addStockItem(stockItem2);
-        stock2.addStockItem(stockItem3);
+        stockEntity1.addStockItem(stockItem1);
+        stockEntity1.addStockItem(stockItem2);
+        stockEntity2.addStockItem(stockItem3);
 
-        stocksRepository.save(stock1);
-        stocksRepository.save(stock2);
+        stocksRepository.save(stockEntity1);
+        stocksRepository.save(stockEntity2);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        usersRepository.deleteAll();
+        stockItemsRepository.deleteAll();
+        stocksRepository.deleteAll();
+        productsRepository.deleteAll();
+        attachmentsRepository.deleteAll();
     }
 
     @Test
@@ -123,7 +133,7 @@ class StockItemsControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        StockItemCreateRequest request = new StockItemCreateRequest(100.0, 10, product2.getId(), stock2.getId());
+        StockItemCreateRequest request = new StockItemCreateRequest(100.0, 10, productEntity2.getId(), stockEntity2.getId());
 
         assertEquals(3, stockItemsRepository.count());
 
@@ -139,7 +149,7 @@ class StockItemsControllerTest {
 
     @Test
     public void testCreate_whenStockAlreadyHasProduct() throws Exception {
-        StockItemCreateRequest request = new StockItemCreateRequest(100.0, 10, product1.getId(), stock1.getId());
+        StockItemCreateRequest request = new StockItemCreateRequest(100.0, 10, productEntity1.getId(), stockEntity1.getId());
 
         assertEquals(3, stockItemsRepository.count());
 
@@ -155,7 +165,7 @@ class StockItemsControllerTest {
 
     @Test
     public void testCreate_whenInvalidPrice() throws Exception {
-        StockItemCreateRequest request = new StockItemCreateRequest(-100.0, 10, product2.getId(), stock2.getId());
+        StockItemCreateRequest request = new StockItemCreateRequest(-100.0, 10, productEntity2.getId(), stockEntity2.getId());
 
         assertEquals(3, stockItemsRepository.count());
 
@@ -170,7 +180,7 @@ class StockItemsControllerTest {
 
     @Test
     public void testCreate_whenInvalidQuantity() throws Exception {
-        StockItemCreateRequest request = new StockItemCreateRequest(100.0, -10, product2.getId(), stock2.getId());
+        StockItemCreateRequest request = new StockItemCreateRequest(100.0, -10, productEntity2.getId(), stockEntity2.getId());
 
         assertEquals(3, stockItemsRepository.count());
 
@@ -187,7 +197,7 @@ class StockItemsControllerTest {
     public void testUpdate() throws Exception {
         StockItemUpdateRequest request = new StockItemUpdateRequest(150.0, 20);
 
-        StockItem stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
+        StockItemEntity stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
         assertNotEquals(request.price(), stockItem.getPrice());
         assertNotEquals(request.quantity(), stockItem.getQuantity());
 
@@ -206,7 +216,7 @@ class StockItemsControllerTest {
     public void testUpdate_whenInvalidPrice() throws Exception {
         StockItemUpdateRequest request = new StockItemUpdateRequest(-150.0, 20);
 
-        StockItem stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
+        StockItemEntity stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
         assertNotEquals(request.price(), stockItem.getPrice());
         assertNotEquals(request.quantity(), stockItem.getQuantity());
 
@@ -225,7 +235,7 @@ class StockItemsControllerTest {
     public void testUpdate_whenInvalidQuantity() throws Exception {
         StockItemUpdateRequest request = new StockItemUpdateRequest(150.0, -20);
 
-        StockItem stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
+        StockItemEntity stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
         assertNotEquals(request.price(), stockItem.getPrice());
         assertNotEquals(request.quantity(), stockItem.getQuantity());
 
