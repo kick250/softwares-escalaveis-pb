@@ -27,4 +27,8 @@ public class OrderItem {
     public void decreaseItemQuantity() throws UnavailableItemQuantityException {
         item.decreaseAvailableQuantity(quantity);
     }
+
+    public void returnToStock() {
+        item.increaseAvailableQuantity(quantity);
+    }
 }

@@ -29,4 +29,12 @@ public class OrderItemEntity {
     @Setter
     @Getter
     private StockItemEntity stockItem;
+
+    public String getName() {
+        return stockItem.getName();
+    }
+
+    public Double getTotalPrice() {
+        return this.price * this.quantity;
+    }
 }

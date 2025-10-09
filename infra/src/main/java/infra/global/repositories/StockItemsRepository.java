@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface StockItemsRepository extends JpaRepository<StockItemEntity, Long> {
+public interface StockItemsRepository extends JpaRepository<StockItemEntity, Long>, StockItemsRepositoryCustom {
 
     public List<StockItemEntity> findAllByDeletedFalse();
 

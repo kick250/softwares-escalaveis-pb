@@ -1,6 +1,9 @@
 package application.orders.domain;
 
 import application.orders.enums.OrderStatus;
+import application.orders.exceptions.InsufficientPermissionException;
+import application.orders.exceptions.InvalidStateToApproveException;
+import application.orders.exceptions.InvalidStateToCancelException;
 import application.orders.exceptions.UnavailableItemQuantityException;
 import lombok.Getter;
 
@@ -20,8 +23,9 @@ public class Order {
     private OrderItems items;
     private boolean stockUpdated = false;
 
-    public Order(Long id, User owner, Instant createdAt, Long stockId, OrderItems items) {
+    public Order(Long id, OrderStatus status, User owner, Instant createdAt, Long stockId, OrderItems items) {
         this.id = id;
+        this.status = status;
         this.owner = owner;
         this.createdAt = createdAt;
         this.stockId = stockId;
@@ -55,5 +59,22 @@ public class Order {
 
         items.decreaseItemsQuantity();
         stockUpdated = true;
+    }
+
+    public void approve(User author) throws InsufficientPermissionException, InvalidStateToApproveException {
+        if (!author.isAdmin()) throw new InsufficientPermissionException();
+
+        if (status != OrderStatus.WAITING_APPROVAL) throw new InvalidStateToApproveException();
+
+        status = OrderStatus.APPROVED;
+    }
+
+    public void cancel(User author) throws InsufficientPermissionException, InvalidStateToCancelException {
+        if (!author.isAdmin()) throw new InsufficientPermissionException();
+
+        if (status != OrderStatus.WAITING_APPROVAL) throw new InvalidStateToCancelException();
+
+        status = OrderStatus.CANCELED;
+        items.returnItemsToStock();
     }
 }

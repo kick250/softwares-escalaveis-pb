@@ -8,6 +8,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Entity(name="Order")
 @Table(name="orders")
@@ -43,4 +44,19 @@ public class OrderEntity {
     @Getter
     private List<OrderItemEntity> items;
 
+    public Long getStockId() {
+        return stock.getId();
+    }
+
+    public Optional<OrderItemEntity> getItemById(Long itemId) {
+        return items.stream().filter(item -> item.getId().equals(itemId)).findFirst();
+    }
+
+    public String getStockName() {
+        return stock.getName();
+    }
+
+    public String getOwnerName() {
+        return owner.getName();
+    }
 }

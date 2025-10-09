@@ -14,6 +14,10 @@ public class User {
         this.isAdmin = isAdmin;
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
     public boolean exceedQuota(OrderItems items) {
         if (isAdmin) return false;
 

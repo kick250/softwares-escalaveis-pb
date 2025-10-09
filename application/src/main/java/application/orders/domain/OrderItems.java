@@ -18,7 +18,10 @@ public class OrderItems {
     }
 
     public void decreaseItemsQuantity() throws UnavailableItemQuantityException {
-        for (OrderItem item : items)
-            item.decreaseItemQuantity();
+        for (OrderItem item : items) item.decreaseItemQuantity();
+    }
+
+    public void returnItemsToStock() {
+        for (OrderItem item : items) item.returnToStock();
     }
 }

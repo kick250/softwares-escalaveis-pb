@@ -6,5 +6,9 @@ import application.orders.exceptions.OrderOwnerNotFoundException;
 
 public interface AllOrders {
 
-    public void create(Order order) throws OrderOwnerNotFoundException;
+    void create(Order order) throws OrderOwnerNotFoundException;
+
+    Order getById(Long orderId) throws OrderNotFoundException;
+
+    void update(Order order) throws OrderNotFoundException;
 }

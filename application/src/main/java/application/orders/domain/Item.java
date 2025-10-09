@@ -31,6 +31,10 @@ public class Item {
         return this.availableQuantity >= quantity;
     }
 
+    public void increaseAvailableQuantity(int quantity) {
+        this.availableQuantity += quantity;
+    }
+
     public void decreaseAvailableQuantity(int quantity) throws UnavailableItemQuantityException {
         if (!hasAvailableQuantity(quantity))
             throw new UnavailableItemQuantityException(this);

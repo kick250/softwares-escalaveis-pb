@@ -1,5 +1,7 @@
 package infra.orders;
 
+import application.orders.useCases.ApproveOrder;
+import application.orders.useCases.CancelOrder;
 import application.orders.useCases.CreateOrder;
 import application.orders.repositories.AllOrders;
 import application.orders.repositories.AllItems;
@@ -13,5 +15,15 @@ public class OrdersConfiguration {
     @Bean
     public CreateOrder createOrder(AllOrders allOrders, AllUsers allUsers, AllItems allProducts) {
         return new CreateOrder(allOrders, allUsers, allProducts);
+    }
+
+    @Bean
+    public ApproveOrder approveOrder(AllOrders allOrders, AllUsers allUsers) {
+        return new ApproveOrder(allOrders, allUsers);
+    }
+
+    @Bean
+    public CancelOrder cancelOrder(AllOrders allOrders, AllUsers allUsers, AllItems allItems) {
+        return new CancelOrder(allOrders, allUsers, allItems);
     }
 }

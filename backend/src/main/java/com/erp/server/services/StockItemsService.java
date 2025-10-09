@@ -10,6 +10,8 @@ import infra.global.repositories.StocksRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class StockItemsService {
@@ -20,6 +22,10 @@ public class StockItemsService {
     public StockItemEntity getById(Long id) throws StockItemNotFoundException {
         return stockItemsRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(StockItemNotFoundException::new);
+    }
+
+    public List<StockItemEntity> getByStockId(Long stockId) {
+        return stockItemsRepository.findAllByStockIdAndDeletedFalse(stockId);
     }
 
     public void create(double price, int quantity, Long productId, Long stockId) throws ProductNotFoundException, StockNotFoundException, StockAlreadyHasProductException, InvalidItemPriceOrQuantityException {
