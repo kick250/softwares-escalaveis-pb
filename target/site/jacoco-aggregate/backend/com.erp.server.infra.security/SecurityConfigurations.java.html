@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfigurations.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">erp-backend</a> &gt; <a href="../index.html" class="el_bundle">backend</a> &gt; <a href="index.source.html" class="el_package">com.erp.server.infra.security</a> &gt; <span class="el_source">SecurityConfigurations.java</span></div><h1>SecurityConfigurations.java</h1><pre class="source lang-java linenums">package com.erp.server.infra.security;
+
+import com.erp.server.enums.Role;
+import com.erp.server.infra.SecurityFilter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfigurations {
+    private final String frontendHost;
+    private final String portalHost;
+    private final SecurityFilter securityFilter;
+
+<span class="fc" id="L28">    public SecurityConfigurations(@Value(&quot;${frontend.host}&quot;) String frontendHost, @Value(&quot;${portal.host}&quot;) String portalHost, SecurityFilter securityFilter) {</span>
+<span class="fc" id="L29">        this.frontendHost = frontendHost;</span>
+<span class="fc" id="L30">        this.portalHost = portalHost;</span>
+<span class="fc" id="L31">        this.securityFilter = securityFilter;</span>
+<span class="fc" id="L32">    }</span>
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+<span class="fc" id="L36">        return http</span>
+<span class="fc" id="L37">                .cors(cors -&gt; cors.configurationSource(corsConfigurationSource()))</span>
+<span class="fc" id="L38">                .csrf(AbstractHttpConfigurer::disable)</span>
+<span class="fc" id="L39">                .sessionManagement(sessionManagement -&gt; {</span>
+<span class="fc" id="L40">                    sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);</span>
+<span class="fc" id="L41">                })</span>
+<span class="fc" id="L42">                .authorizeHttpRequests(request -&gt; {</span>
+<span class="fc" id="L43">                    request.requestMatchers(HttpMethod.POST, &quot;/login&quot;).permitAll();</span>
+<span class="fc" id="L44">                    request.requestMatchers(HttpMethod.GET, &quot;/products/{id}/image&quot;).permitAll();</span>
+<span class="fc" id="L45">                    request.requestMatchers(&quot;/portal/**&quot;).hasRole(Role.PORTAL_USER.toString());</span>
+<span class="fc" id="L46">                    request.requestMatchers(&quot;/**&quot;).hasRole(Role.ERP_USER.toString());</span>
+<span class="fc" id="L47">                })</span>
+<span class="fc" id="L48">                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)</span>
+<span class="fc" id="L49">                .build();</span>
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+<span class="fc" id="L54">        CorsConfiguration configuration = new CorsConfiguration();</span>
+<span class="fc" id="L55">        configuration.addAllowedOrigin(frontendHost);</span>
+<span class="fc" id="L56">        configuration.addAllowedOrigin(portalHost);</span>
+<span class="fc" id="L57">        configuration.addAllowedMethod(&quot;*&quot;);</span>
+<span class="fc" id="L58">        configuration.addAllowedHeader(&quot;*&quot;);</span>
+<span class="fc" id="L59">        configuration.setAllowCredentials(true);</span>
+
+<span class="fc" id="L61">        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();</span>
+<span class="fc" id="L62">        source.registerCorsConfiguration(&quot;/**&quot;, configuration);</span>
+<span class="fc" id="L63">        return source;</span>
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws  Exception {
+<span class="fc" id="L68">        return configuration.getAuthenticationManager();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

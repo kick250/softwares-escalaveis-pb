@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>StocksController.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">erp-backend</a> &gt; <a href="../index.html" class="el_bundle">backend</a> &gt; <a href="index.source.html" class="el_package">com.erp.server.controllers</a> &gt; <span class="el_source">StocksController.java</span></div><h1>StocksController.java</h1><pre class="source lang-java linenums">package com.erp.server.controllers;
+
+import infra.global.entities.StockEntity;
+import com.erp.server.exceptions.InvalidStockNameException;
+import com.erp.server.exceptions.StockNotFoundException;
+import com.erp.server.requests.StockCreateRequest;
+import com.erp.server.requests.StockUpdateRequest;
+import com.erp.server.responses.DefaultErrorResponse;
+import com.erp.server.responses.StockResponse;
+import com.erp.server.responses.StocksResponse;
+import com.erp.server.services.StocksService;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/stocks&quot;)
+@AllArgsConstructor
+public class StocksController {
+    private final StocksService stocksService;
+
+    @GetMapping
+    public ResponseEntity&lt;StocksResponse&gt; getStocks() {
+<span class="fc" id="L28">        List&lt;StockEntity&gt; stockEntities = stocksService.getAll();</span>
+<span class="fc" id="L29">        return ResponseEntity.ok(new StocksResponse(stockEntities));</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;StockResponse&gt; getById(@PathVariable(&quot;id&quot;) Long id) {
+        try {
+<span class="fc" id="L35">            StockEntity stockEntity = stocksService.getById(id);</span>
+<span class="fc" id="L36">            return ResponseEntity.ok().body(new StockResponse(stockEntity));</span>
+<span class="fc" id="L37">        } catch (StockNotFoundException e) {</span>
+<span class="fc" id="L38">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+
+    @PostMapping
+    @Transactional
+    public ResponseEntity&lt;?&gt; create(@Valid @RequestBody StockCreateRequest request) {
+        try {
+<span class="fc" id="L46">            stocksService.create(request.name());</span>
+<span class="fc" id="L47">            return ResponseEntity.status(201).body(&quot;Estoque criado com sucesso&quot;);</span>
+<span class="nc" id="L48">        } catch (InvalidStockNameException e) {</span>
+<span class="nc" id="L49">            return ResponseEntity.badRequest().body(new DefaultErrorResponse(e.getMessage()));</span>
+        }
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    @Transactional
+    public ResponseEntity&lt;?&gt; update(@PathVariable(&quot;id&quot;) Long id, @Valid @RequestBody StockUpdateRequest request) {
+        try {
+<span class="fc" id="L57">            stocksService.update(id, request.name());</span>
+<span class="fc" id="L58">            return ResponseEntity.ok(&quot;Estoque atualizado com sucesso&quot;);</span>
+<span class="nc" id="L59">        } catch (InvalidStockNameException e) {</span>
+<span class="nc" id="L60">            return ResponseEntity.badRequest().body(new DefaultErrorResponse(e.getMessage()));</span>
+<span class="nc" id="L61">        } catch (StockNotFoundException e) {</span>
+<span class="nc" id="L62">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Transactional
+    public ResponseEntity&lt;String&gt; delete(@PathVariable(&quot;id&quot;) Long id) {
+        try {
+<span class="fc" id="L70">            stocksService.deleteById(id);</span>
+<span class="fc" id="L71">            return ResponseEntity.ok(&quot;Estoque deletado com sucesso&quot;);</span>
+<span class="fc" id="L72">        } catch (StockNotFoundException e) {</span>
+<span class="fc" id="L73">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

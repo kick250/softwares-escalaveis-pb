@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OrdersController.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">erp-backend</a> &gt; <a href="../index.html" class="el_bundle">backend</a> &gt; <a href="index.source.html" class="el_package">com.erp.server.controllers.portal</a> &gt; <span class="el_source">OrdersController.java</span></div><h1>OrdersController.java</h1><pre class="source lang-java linenums">package com.erp.server.controllers.portal;
+
+import application.orders.exceptions.*;
+import application.orders.useCases.ApproveOrder;
+import application.orders.useCases.CancelOrder;
+import application.orders.useCases.CreateOrder;
+import com.erp.server.requests.OrderCreateRequest;
+import com.erp.server.responses.portal.OrderResponse;
+import com.erp.server.services.OrdersService;
+import infra.global.entities.OrderEntity;
+import infra.global.entities.UserEntity;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/portal/orders&quot;)
+@AllArgsConstructor
+public class OrdersController {
+    private final OrdersService ordersService;
+    private final CreateOrder createOrder;
+    private final ApproveOrder approveOrder;
+    private final CancelOrder cancelOrder;
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;OrderResponse&gt;&gt; getAll() {
+<span class="nc" id="L32">        List&lt;OrderEntity&gt; orderEntities = ordersService.getAll();</span>
+<span class="nc" id="L33">        return ResponseEntity.ok(orderEntities.stream().map(OrderResponse::new).toList());</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; getById(@PathVariable Long id) {
+        try {
+<span class="nc" id="L39">            OrderEntity orderEntity = ordersService.getById(id);</span>
+<span class="nc" id="L40">            return ResponseEntity.ok(new OrderResponse(orderEntity));</span>
+<span class="nc" id="L41">        } catch (com.erp.server.exceptions.OrderNotFoundException e) {</span>
+<span class="nc" id="L42">            return ResponseEntity.status(404).body(e.getMessage());</span>
+        }
+    }
+
+    @PostMapping
+    @Transactional
+    public ResponseEntity&lt;?&gt; create(@AuthenticationPrincipal UserEntity currentUser, @Valid @RequestBody OrderCreateRequest request) {
+        try {
+<span class="fc" id="L50">            createOrder.execute(currentUser.getId(), request.stockId(), request.itemIdPerQuantity());</span>
+<span class="fc" id="L51">            return ResponseEntity.status(201).body(&quot;Pedido criado com sucesso.&quot;);</span>
+<span class="fc" id="L52">        } catch (InvalidItemStockException | UnavailableItemQuantityException e) {</span>
+<span class="fc" id="L53">            return ResponseEntity.badRequest().body(e.getMessage());</span>
+<span class="nc" id="L54">        } catch (OrderOwnerNotFoundException | UserNotFoundException e) {</span>
+<span class="nc" id="L55">            return ResponseEntity.badRequest().body(&quot;Usuário inválido.&quot;);</span>
+<span class="nc" id="L56">        } catch (SomeItemsWereNotFoundException e) {</span>
+<span class="nc" id="L57">            return ResponseEntity.status(404).body(e.getMessage());</span>
+        }
+    }
+
+    @PostMapping(&quot;/{id}/approve&quot;)
+    @Transactional
+    public ResponseEntity&lt;?&gt; approve(@AuthenticationPrincipal UserEntity currentUser, @PathVariable Long id) {
+        try {
+<span class="nc" id="L65">            approveOrder.execute(currentUser.getId(), id);</span>
+<span class="nc" id="L66">            return ResponseEntity.status(201).body(&quot;Pedido aprovado com sucesso.&quot;);</span>
+<span class="nc" id="L67">        } catch (UserNotFoundException e) {</span>
+<span class="nc" id="L68">            return ResponseEntity.badRequest().body(&quot;Usuário inválido.&quot;);</span>
+<span class="nc" id="L69">        } catch (OrderNotFoundException e) {</span>
+<span class="nc" id="L70">            return ResponseEntity.status(404).body(e.getMessage());</span>
+<span class="nc" id="L71">        } catch (InvalidStateToApproveException | InsufficientPermissionException e) {</span>
+<span class="nc" id="L72">            return ResponseEntity.badRequest().body(e.getMessage());</span>
+        }
+    }
+
+    @PostMapping(&quot;/{id}/cancel&quot;)
+    @Transactional
+    public ResponseEntity&lt;?&gt; cancel(@AuthenticationPrincipal UserEntity currentUser, @PathVariable Long id) {
+        try {
+<span class="nc" id="L80">            cancelOrder.execute(currentUser.getId(), id);</span>
+<span class="nc" id="L81">            return ResponseEntity.ok(&quot;Pedido cancelado com sucesso.&quot;);</span>
+<span class="nc" id="L82">        } catch (UserNotFoundException e) {</span>
+<span class="nc" id="L83">            return ResponseEntity.badRequest().body(&quot;Usuário inválido.&quot;);</span>
+<span class="nc" id="L84">        } catch (OrderNotFoundException e) {</span>
+<span class="nc" id="L85">            return ResponseEntity.status(404).body(e.getMessage());</span>
+<span class="nc" id="L86">        } catch (InvalidStateToCancelException | InsufficientPermissionException e) {</span>
+<span class="nc" id="L87">            return ResponseEntity.badRequest().body(e.getMessage());</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>UsersJpaRepository.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">erp-backend</a> &gt; <a href="../index.html" class="el_bundle">infra</a> &gt; <a href="index.source.html" class="el_package">infra.orders.repositories</a> &gt; <span class="el_source">UsersJpaRepository.java</span></div><h1>UsersJpaRepository.java</h1><pre class="source lang-java linenums">package infra.orders.repositories;
+
+import application.orders.domain.User;
+import application.orders.exceptions.UserNotFoundException;
+import application.orders.repositories.AllUsers;
+import infra.global.entities.UserEntity;
+import infra.global.repositories.UsersRepository;
+import infra.orders.mappers.UsersMapper;
+import org.springframework.stereotype.Component;
+
+@Component
+public class UsersJpaRepository implements AllUsers {
+    private final UsersRepository usersRepository;
+    private final UsersMapper usersMapper;
+
+<span class="fc" id="L16">    public UsersJpaRepository(UsersRepository usersRepository, UsersMapper usersMapper) {</span>
+<span class="fc" id="L17">        this.usersRepository = usersRepository;</span>
+<span class="fc" id="L18">        this.usersMapper = usersMapper;</span>
+<span class="fc" id="L19">    }</span>
+
+    @Override
+    public User getById(Long id) throws UserNotFoundException {
+<span class="fc" id="L23">        UserEntity user = usersRepository.findById(id).orElseThrow(UserNotFoundException::new);</span>
+
+<span class="fc" id="L25">        return usersMapper.toDomain(user);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

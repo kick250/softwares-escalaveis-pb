@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>StockEntity.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">erp-backend</a> &gt; <a href="../index.html" class="el_bundle">infra</a> &gt; <a href="index.source.html" class="el_package">infra.global.entities</a> &gt; <span class="el_source">StockEntity.java</span></div><h1>StockEntity.java</h1><pre class="source lang-java linenums">package infra.global.entities;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
+
+import java.util.List;
+
+@Entity(name=&quot;Stock&quot;)
+@Table(name=&quot;stocks&quot;)
+@AllArgsConstructor
+@NoArgsConstructor
+public class StockEntity {
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Getter
+    private Long id;
+<span class="fc" id="L21">    private boolean deleted = false;</span>
+    @Getter
+    @Setter
+    private String name;
+    @OneToMany
+    @JoinColumn(name = &quot;stock_id&quot;)
+    @SQLRestriction(&quot;deleted = false&quot;)
+    @Getter
+    private List&lt;StockItemEntity&gt; stockItems;
+
+<span class="fc" id="L31">    public StockEntity(String name) {</span>
+<span class="fc" id="L32">        this.name = name;</span>
+<span class="fc" id="L33">    }</span>
+
+    public void delete() {
+<span class="fc" id="L36">        stockItems.forEach(StockItemEntity::delete);</span>
+<span class="fc" id="L37">        this.deleted = true;</span>
+<span class="fc" id="L38">    }</span>
+
+    public boolean hasItemWithProduct(ProductEntity productEntity) {
+<span class="pc bpc" id="L41" title="1 of 4 branches missed.">        return stockItems.stream().anyMatch(item -&gt; item.getProduct().getId().equals(productEntity.getId()) &amp;&amp; !item.isDeleted());</span>
+    }
+
+    public void addStockItem(StockItemEntity stockItem) {
+<span class="pc bpc" id="L45" title="2 of 4 branches missed.">        if (stockItem != null &amp;&amp; !hasItemWithProduct(stockItem.getProduct())) {</span>
+<span class="fc" id="L46">            stockItems.add(stockItem);</span>
+        }
+<span class="fc" id="L48">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

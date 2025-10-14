@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>StocksService.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">erp-backend</a> &gt; <a href="../index.html" class="el_bundle">backend</a> &gt; <a href="index.source.html" class="el_package">com.erp.server.services</a> &gt; <span class="el_source">StocksService.java</span></div><h1>StocksService.java</h1><pre class="source lang-java linenums">package com.erp.server.services;
+
+import infra.global.entities.StockEntity;
+import com.erp.server.exceptions.InvalidStockNameException;
+import com.erp.server.exceptions.StockNotFoundException;
+import infra.global.repositories.StocksRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+public class StocksService {
+    private final StocksRepository stocksRepository;
+
+    public List&lt;StockEntity&gt; getAll() {
+<span class="fc" id="L18">        return stocksRepository.findAllByDeletedFalse();</span>
+    }
+
+    public StockEntity getById(Long id) throws StockNotFoundException {
+<span class="fc" id="L22">        return stocksRepository.findByIdAndDeletedFalse(id)</span>
+<span class="fc" id="L23">                .orElseThrow(StockNotFoundException::new);</span>
+    }
+
+    public void create(String name) throws InvalidStockNameException {
+<span class="fc" id="L27">        StockEntity stockEntity = new StockEntity(name);</span>
+
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">        if (name.isBlank()) this.throwsInvalidStockNameException();</span>
+
+<span class="fc" id="L31">        stocksRepository.save(stockEntity);</span>
+<span class="fc" id="L32">    }</span>
+
+    private void throwsInvalidStockNameException() throws InvalidStockNameException {
+<span class="fc" id="L35">        throw new InvalidStockNameException();</span>
+    }
+
+    public void update(Long id, String name) throws StockNotFoundException, InvalidStockNameException {
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        if (name.isBlank()) this.throwsInvalidStockNameException();</span>
+
+<span class="fc" id="L41">        StockEntity stockEntity = getById(id);</span>
+
+<span class="fc" id="L43">        stockEntity.setName(name);</span>
+<span class="fc" id="L44">        stocksRepository.save(stockEntity);</span>
+<span class="fc" id="L45">    }</span>
+
+    public void deleteById(Long id) throws StockNotFoundException {
+<span class="fc" id="L48">        StockEntity stockEntity = getById(id);</span>
+<span class="fc" id="L49">        stockEntity.delete();</span>
+<span class="fc" id="L50">        stocksRepository.save(stockEntity);</span>
+<span class="fc" id="L51">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CreateOrder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">erp-backend</a> &gt; <a href="../index.html" class="el_bundle">application</a> &gt; <a href="index.source.html" class="el_package">application.orders.useCases</a> &gt; <span class="el_source">CreateOrder.java</span></div><h1>CreateOrder.java</h1><pre class="source lang-java linenums">package application.orders.useCases;
+
+import application.orders.domain.*;
+import application.orders.exceptions.*;
+import application.orders.repositories.AllOrders;
+import application.orders.repositories.AllItems;
+import application.orders.repositories.AllUsers;
+import lombok.AllArgsConstructor;
+
+import java.util.List;
+import java.util.Map;
+
+<span class="fc" id="L13">@AllArgsConstructor</span>
+public class CreateOrder {
+    private final AllOrders allOrders;
+    private final AllUsers allUsers;
+    private final AllItems allItems;
+
+    public void execute(Long userId, Long stockId, Map&lt;Long, Integer&gt; itemIdPerQuantity) throws OrderOwnerNotFoundException, UserNotFoundException, InvalidItemStockException, SomeItemsWereNotFoundException, UnavailableItemQuantityException {
+<span class="fc" id="L20">        User owner = allUsers.getById(userId);</span>
+<span class="fc" id="L21">        List&lt;Item&gt; items = allItems.getByIds(itemIdPerQuantity.keySet());</span>
+
+<span class="fc" id="L23">        checkItems(items, stockId, itemIdPerQuantity);</span>
+<span class="fc" id="L24">        OrderItems orderItems = buildOrderItems(items, itemIdPerQuantity);</span>
+
+<span class="fc" id="L26">        Order order = new Order(owner, stockId, orderItems);</span>
+
+<span class="fc" id="L28">        order.updateStocks();</span>
+
+<span class="fc" id="L30">        allOrders.create(order);</span>
+<span class="fc" id="L31">        allItems.updateAll(order.getItems());</span>
+<span class="fc" id="L32">    }</span>
+
+    private void checkItems(List&lt;Item&gt; items, Long stockId, Map&lt;Long, Integer&gt; itemIdPerQuantity) throws InvalidItemStockException, UnavailableItemQuantityException {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (Item item : items) {</span>
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">            if (!item.isFromStock(stockId)) throw new InvalidItemStockException();</span>
+<span class="fc" id="L37">        }</span>
+<span class="fc" id="L38">    }</span>
+
+    private OrderItems buildOrderItems(List&lt;Item&gt; items, Map&lt;Long, Integer&gt; itemIdPerQuantity) {
+<span class="fc" id="L41">        List&lt;OrderItem&gt; orderItems = items.stream().map(item -&gt; {</span>
+<span class="fc" id="L42">            Integer quantity = itemIdPerQuantity.get(item.getId());</span>
+<span class="fc" id="L43">            return new OrderItem(null, item, quantity, item.getPrice());</span>
+<span class="fc" id="L44">        }).toList();</span>
+
+<span class="fc" id="L46">        return new OrderItems(orderItems);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

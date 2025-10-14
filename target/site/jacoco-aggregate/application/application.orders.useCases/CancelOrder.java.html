@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CancelOrder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">erp-backend</a> &gt; <a href="../index.html" class="el_bundle">application</a> &gt; <a href="index.source.html" class="el_package">application.orders.useCases</a> &gt; <span class="el_source">CancelOrder.java</span></div><h1>CancelOrder.java</h1><pre class="source lang-java linenums">package application.orders.useCases;
+
+import application.orders.domain.Order;
+import application.orders.domain.User;
+import application.orders.exceptions.InsufficientPermissionException;
+import application.orders.exceptions.InvalidStateToCancelException;
+import application.orders.exceptions.OrderNotFoundException;
+import application.orders.exceptions.UserNotFoundException;
+import application.orders.repositories.AllItems;
+import application.orders.repositories.AllOrders;
+import application.orders.repositories.AllUsers;
+import lombok.AllArgsConstructor;
+
+<span class="fc" id="L14">@AllArgsConstructor</span>
+public class CancelOrder {
+    private final AllOrders allOrders;
+    private final AllUsers allUsers;
+    private final AllItems allItems;
+
+    public void execute(Long userId, Long orderId) throws UserNotFoundException, OrderNotFoundException, InsufficientPermissionException, InvalidStateToCancelException {
+<span class="nc" id="L21">        User author = allUsers.getById(userId);</span>
+<span class="nc" id="L22">        Order order = allOrders.getById(orderId);</span>
+
+<span class="nc" id="L24">        order.cancel(author);</span>
+
+<span class="nc" id="L26">        allOrders.update(order);</span>
+<span class="nc" id="L27">        allItems.updateAll(order.getItems());</span>
+<span class="nc" id="L28">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

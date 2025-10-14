@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OrderEntity.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">erp-backend</a> &gt; <a href="../index.html" class="el_bundle">infra</a> &gt; <a href="index.source.html" class="el_package">infra.global.entities</a> &gt; <span class="el_source">OrderEntity.java</span></div><h1>OrderEntity.java</h1><pre class="source lang-java linenums">package infra.global.entities;
+
+import application.orders.enums.OrderStatus;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+
+@Entity(name=&quot;Order&quot;)
+@Table(name=&quot;orders&quot;)
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of=&quot;id&quot;)
+public class OrderEntity {
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Getter
+    @Setter
+    private Long id;
+    private boolean deleted = false;
+    @Column(columnDefinition=&quot;jsonb&quot;)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Setter
+    private OrderStatus status;
+    @Getter
+    @Setter
+    private Instant createdAt;
+    @ManyToOne
+    @JoinColumn(name = &quot;owner_id&quot;)
+    @Setter
+    private UserEntity owner;
+    @ManyToOne
+    @JoinColumn(name = &quot;stock_id&quot;)
+    @Setter
+    private StockEntity stock;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = &quot;order_id&quot;)
+    @Setter
+    @Getter
+    private List&lt;OrderItemEntity&gt; items;
+
+    public Long getStockId() {
+<span class="nc" id="L48">        return stock.getId();</span>
+    }
+
+    public Optional&lt;OrderItemEntity&gt; getItemById(Long itemId) {
+<span class="nc" id="L52">        return items.stream().filter(item -&gt; item.getId().equals(itemId)).findFirst();</span>
+    }
+
+    public String getStockName() {
+<span class="nc" id="L56">        return stock.getName();</span>
+    }
+
+    public String getOwnerName() {
+<span class="nc" id="L60">        return owner.getName();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
