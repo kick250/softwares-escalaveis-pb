@@ -12,6 +12,7 @@ import java.util.List;
 public record OrderResponse (
         Long id,
         OrderStatus status,
+        String translatedStatus,
         String stockName,
         String ownerName,
         String createdAt,
@@ -21,6 +22,7 @@ public record OrderResponse (
         this(
                 orderEntity.getId(),
                 orderEntity.getStatus(),
+                orderEntity.getStatus().getTranslated(),
                 orderEntity.getStockName(),
                 orderEntity.getOwnerName(),
                 formatDate(orderEntity.getCreatedAt()),

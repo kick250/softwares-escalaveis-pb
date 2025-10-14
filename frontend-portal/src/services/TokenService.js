@@ -4,14 +4,14 @@ export default class TokenService {
     }
 
     storeToken(token) {
-        localStorage.setItem("erpToken", token);
+        localStorage.setItem("portalToken", token);
     }
 
     getToken()  {
-        return localStorage.getItem("erpToken");
+        return localStorage.getItem("portalToken");
     }
 
     logout() {
-        localStorage.removeItem("erpToken");
+        localStorage.removeItem("portalToken");
     }
 }

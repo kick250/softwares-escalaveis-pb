@@ -48,7 +48,7 @@ public class OrdersController {
     public ResponseEntity<?> create(@AuthenticationPrincipal UserEntity currentUser, @Valid @RequestBody OrderCreateRequest request) {
         try {
             createOrder.execute(currentUser.getId(), request.stockId(), request.itemIdPerQuantity());
-            return ResponseEntity.ok().body("Pedido criado com sucesso.");
+            return ResponseEntity.status(201).body("Pedido criado com sucesso.");
         } catch (InvalidItemStockException | UnavailableItemQuantityException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (OrderOwnerNotFoundException | UserNotFoundException e) {
@@ -68,10 +68,8 @@ public class OrdersController {
             return ResponseEntity.badRequest().body("Usuário inválido.");
         } catch (OrderNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
-        } catch (InvalidStateToApproveException e) {
+        } catch (InvalidStateToApproveException | InsufficientPermissionException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (InsufficientPermissionException e) {
-            return  ResponseEntity.status(403).body(e.getMessage());
         }
     }
 
@@ -85,9 +83,7 @@ public class OrdersController {
             return ResponseEntity.badRequest().body("Usuário inválido.");
         } catch (OrderNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
-        } catch (InsufficientPermissionException e) {
-            return ResponseEntity.status(403).body(e.getMessage());
-        } catch (InvalidStateToCancelException e) {
+        } catch (InvalidStateToCancelException | InsufficientPermissionException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

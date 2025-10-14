@@ -21,3 +21,5 @@ spring:
       port: 6379
 frontend:
   host: 'http://localhost:8081'
+portal:
+  host: 'http://localhost:8082'

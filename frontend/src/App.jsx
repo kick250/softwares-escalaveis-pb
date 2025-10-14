@@ -1,4 +1,4 @@
-import {BrowserRouter, Routes, Route, useNavigate} from 'react-router-dom';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import StockHome from './pages/Stocks/Home';
 import About from './pages/About';
 import DefaultHeader from "@/components/DefaultHeader";

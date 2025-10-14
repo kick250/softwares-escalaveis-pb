@@ -22,10 +22,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfigurations {
     private final String frontendHost;
+    private final String portalHost;
     private final SecurityFilter securityFilter;
 
-    public SecurityConfigurations(@Value("${frontend.host}") String frontendHost, SecurityFilter securityFilter) {
+    public SecurityConfigurations(@Value("${frontend.host}") String frontendHost, @Value("${portal.host}") String portalHost, SecurityFilter securityFilter) {
         this.frontendHost = frontendHost;
+        this.portalHost = portalHost;
         this.securityFilter = securityFilter;
     }
 
@@ -51,6 +53,7 @@ public class SecurityConfigurations {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin(frontendHost);
+        configuration.addAllowedOrigin(portalHost);
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
