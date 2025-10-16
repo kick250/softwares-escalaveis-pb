@@ -33,6 +33,7 @@ public class StockItemEntity {
     @JoinColumn(name = "stock_id")
     private StockEntity stock;
 
+
     public StockItemEntity(double price, int quantity, ProductEntity product, StockEntity stock) {
         this.price = price;
         this.quantity = quantity;

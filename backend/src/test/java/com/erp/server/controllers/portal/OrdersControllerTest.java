@@ -16,11 +16,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -62,6 +64,7 @@ class OrdersControllerTest {
     private StockItemEntity stockItem2;
     private ProductEntity product1;
     private ProductEntity product2;
+    private OrderEntity preCreatedOrder;
 
     @BeforeEach
     public void setUp() {
@@ -106,6 +109,17 @@ class OrdersControllerTest {
         stock1.addStockItem(stockItem2);
 
         stocksRepository.save(stock1);
+
+        preCreatedOrder = new OrderEntity();
+        preCreatedOrder.setOwner(currentUser);
+        preCreatedOrder.setStatus(OrderStatus.APPROVED);
+        preCreatedOrder.setStock(stock1);
+        preCreatedOrder.setCreatedAt(Instant.now());
+        preCreatedOrder.setItems(List.of(
+                new OrderItemEntity(null, false, 5, stockItem1.getPrice(), preCreatedOrder, stockItem1),
+                new OrderItemEntity(null, false, 2, stockItem2.getPrice(), preCreatedOrder, stockItem2)
+        ));
+        ordersRepository.save(preCreatedOrder);
     }
 
     @AfterEach
@@ -120,13 +134,71 @@ class OrdersControllerTest {
     }
 
     @Test
+    public void testGetAll() throws Exception {
+        preCreatedOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+
+        mockMvc.perform(get("/portal/orders")
+                        .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].id").value(preCreatedOrder.getId()))
+                .andExpect(jsonPath("$[0].status").value(preCreatedOrder.getStatus().toString()))
+                .andExpect(jsonPath("$[0].stockName").value(preCreatedOrder.getStockName()))
+                .andExpect(jsonPath("$[0].ownerName").value(preCreatedOrder.getOwnerName()))
+                .andExpect(jsonPath("$[0].createdAt").isNotEmpty())
+                .andExpect(jsonPath("$[0].items.length()").value(2))
+                .andExpect(jsonPath("$[0].items[0].id").value(preCreatedOrder.getItems().get(0).getId()))
+                .andExpect(jsonPath("$[0].items[0].name").value(preCreatedOrder.getItems().get(0).getName()))
+                .andExpect(jsonPath("$[0].items[0].quantity").value(5))
+                .andExpect(jsonPath("$[0].items[0].pricePerUnit").value(preCreatedOrder.getItems().get(0).getPrice()))
+                .andExpect(jsonPath("$[0].items[0].totalPrice").value(preCreatedOrder.getItems().get(0).getTotalPrice()))
+                .andExpect(jsonPath("$[0].items[1].id").value(preCreatedOrder.getItems().get(1).getId()))
+                .andExpect(jsonPath("$[0].items[1].name").value(preCreatedOrder.getItems().get(1).getName()))
+                .andExpect(jsonPath("$[0].items[1].quantity").value(2))
+                .andExpect(jsonPath("$[0].items[1].pricePerUnit").value(preCreatedOrder.getItems().get(1).getPrice()))
+                .andExpect(jsonPath("$[0].items[1].totalPrice").value(preCreatedOrder.getItems().get(1).getTotalPrice()));
+    }
+
+    @Test
+    public void testGetById() throws Exception {
+        preCreatedOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+
+        mockMvc.perform(get("/portal/orders/" + preCreatedOrder.getId())
+                        .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(preCreatedOrder.getId()))
+                .andExpect(jsonPath("$.status").value(preCreatedOrder.getStatus().toString()))
+                .andExpect(jsonPath("$.stockName").value(preCreatedOrder.getStockName()))
+                .andExpect(jsonPath("$.ownerName").value(preCreatedOrder.getOwnerName()))
+                .andExpect(jsonPath("$.createdAt").isNotEmpty())
+                .andExpect(jsonPath("$.items.length()").value(2))
+                .andExpect(jsonPath("$.items[0].id").value(preCreatedOrder.getItems().get(0).getId()))
+                .andExpect(jsonPath("$.items[0].name").value(preCreatedOrder.getItems().get(0).getName()))
+                .andExpect(jsonPath("$.items[0].quantity").value(5))
+                .andExpect(jsonPath("$.items[0].pricePerUnit").value(preCreatedOrder.getItems().get(0).getPrice()))
+                .andExpect(jsonPath("$.items[0].totalPrice").value(preCreatedOrder.getItems().get(0).getTotalPrice()))
+                .andExpect(jsonPath("$.items[1].id").value(preCreatedOrder.getItems().get(1).getId()))
+                .andExpect(jsonPath("$.items[1].name").value(preCreatedOrder.getItems().get(1).getName()))
+                .andExpect(jsonPath("$.items[1].quantity").value(2))
+                .andExpect(jsonPath("$.items[1].pricePerUnit").value(preCreatedOrder.getItems().get(1).getPrice()))
+                .andExpect(jsonPath("$.items[1].totalPrice").value(preCreatedOrder.getItems().get(1).getTotalPrice()));
+    }
+
+    @Test
+    public void testGetById_whenNotFound() throws Exception {
+        mockMvc.perform(get("/portal/orders/9999")
+                        .header("Authorization", token))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void testCreate() throws Exception {
         List<OrderItemRequest> itemsRequest = new ArrayList<>();
         itemsRequest.add(new OrderItemRequest(stockItem1.getId(), 10));
         itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 5));
         OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
 
-        assertEquals(0, ordersRepository.count());
+        assertEquals(1, ordersRepository.count());
 
         mockMvc.perform(post("/portal/orders")
                         .header("Authorization", token)
@@ -134,7 +206,7 @@ class OrdersControllerTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isCreated());
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(2, ordersRepository.count());
         OrderEntity order = ordersRepository.findAll().getLast();
         order = ordersRepository.findByIdWithItems(order.getId()).get();
         assertNotNull(order);
@@ -159,7 +231,7 @@ class OrdersControllerTest {
         itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 60));
         OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
 
-        assertEquals(0, ordersRepository.count());
+        assertEquals(1, ordersRepository.count());
 
         mockMvc.perform(post("/portal/orders")
                         .header("Authorization", token)
@@ -167,7 +239,7 @@ class OrdersControllerTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isCreated());
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(2, ordersRepository.count());
         OrderEntity order = ordersRepository.findAll().getLast();
         order = ordersRepository.findByIdWithItems(order.getId()).get();
         assertNotNull(order);
@@ -192,7 +264,7 @@ class OrdersControllerTest {
         itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 60));
         OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
 
-        assertEquals(0, ordersRepository.count());
+        assertEquals(1, ordersRepository.count());
 
         mockMvc.perform(post("/portal/orders")
                         .header("Authorization", adminToken)
@@ -200,7 +272,7 @@ class OrdersControllerTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isCreated());
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(2, ordersRepository.count());
         OrderEntity order = ordersRepository.findAll().getLast();
         order = ordersRepository.findByIdWithItems(order.getId()).get();
         assertNotNull(order);
@@ -225,7 +297,7 @@ class OrdersControllerTest {
         itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 5));
         OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
 
-        assertEquals(0, ordersRepository.count());
+        assertEquals(1, ordersRepository.count());
 
         mockMvc.perform(post("/portal/orders")
                         .header("Authorization", token)
@@ -233,6 +305,114 @@ class OrdersControllerTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isBadRequest());
 
-        assertEquals(0, ordersRepository.count());
+        assertEquals(1, ordersRepository.count());
+    }
+
+    @Test
+    public void testCreate_whenSomeItemsWereNotFound() throws Exception {
+        List<OrderItemRequest> itemsRequest = new ArrayList<>();
+        itemsRequest.add(new OrderItemRequest(9999L, 10));
+        itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 5));
+        OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
+
+        assertEquals(1, ordersRepository.count());
+
+        mockMvc.perform(post("/portal/orders")
+                        .header("Authorization", token)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(body)))
+                .andExpect(status().isNotFound());
+
+        assertEquals(1, ordersRepository.count());
+    }
+
+    @Test
+    public void testApprove_whenUserIsAdmin() throws Exception {
+        preCreatedOrder.setStatus(OrderStatus.WAITING_APPROVAL);
+        ordersRepository.save(preCreatedOrder);
+
+        assertEquals(1, ordersRepository.count());
+
+        mockMvc.perform(post("/portal/orders/" + preCreatedOrder.getId() + "/approve")
+                        .header("Authorization", adminToken))
+                .andExpect(status().isCreated());
+
+        assertEquals(1, ordersRepository.count());
+        OrderEntity approvedOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+        assertNotNull(approvedOrder);
+        assertEquals(OrderStatus.APPROVED, approvedOrder.getStatus());
+    }
+
+    @Test
+    public void testApprove_whenNotAdmin() throws Exception {
+        preCreatedOrder.setStatus(OrderStatus.WAITING_APPROVAL);
+        ordersRepository.save(preCreatedOrder);
+
+        assertEquals(1, ordersRepository.count());
+
+        mockMvc.perform(post("/portal/orders/" + preCreatedOrder.getId() + "/approve")
+                        .header("Authorization", token))
+                .andExpect(status().isBadRequest());
+
+        assertEquals(1, ordersRepository.count());
+        OrderEntity approvedOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+        assertNotNull(approvedOrder);
+        assertEquals(OrderStatus.WAITING_APPROVAL, approvedOrder.getStatus());
+    }
+
+    @Test
+    public void testApprove_whenNotFound() throws Exception {
+        assertEquals(1, ordersRepository.count());
+
+        mockMvc.perform(post("/portal/orders/9999/approve")
+                        .header("Authorization", adminToken))
+                .andExpect(status().isNotFound());
+
+        assertEquals(1, ordersRepository.count());
+    }
+
+    @Test
+    public void testCancel_whenAdmin() throws Exception {
+        preCreatedOrder.setStatus(OrderStatus.WAITING_APPROVAL);
+        ordersRepository.save(preCreatedOrder);
+
+        assertEquals(1, ordersRepository.count());
+
+        mockMvc.perform(post("/portal/orders/" + preCreatedOrder.getId() + "/cancel")
+                        .header("Authorization", adminToken))
+                .andExpect(status().isOk());
+
+        assertEquals(1, ordersRepository.count());
+        OrderEntity cancelledOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+        assertNotNull(cancelledOrder);
+        assertEquals(OrderStatus.CANCELED, cancelledOrder.getStatus());
+    }
+
+    @Test
+    public void testCancel_whenNotAdmin() throws Exception {
+        preCreatedOrder.setStatus(OrderStatus.WAITING_APPROVAL);
+        ordersRepository.save(preCreatedOrder);
+
+        assertEquals(1, ordersRepository.count());
+
+        mockMvc.perform(post("/portal/orders/" + preCreatedOrder.getId() + "/cancel")
+                        .header("Authorization", token))
+                .andExpect(status().isBadRequest());
+
+        assertEquals(1, ordersRepository.count());
+        OrderEntity cancelledOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+        assertNotNull(cancelledOrder);
+        assertEquals(OrderStatus.WAITING_APPROVAL, cancelledOrder.getStatus());
+    }
+
+    @Test
+    public void testCancel_whenNotFound() throws Exception {
+        assertEquals(1, ordersRepository.count());
+
+        mockMvc.perform(post("/portal/orders/9999/cancel")
+                        .header("Authorization", adminToken))
+                .andExpect(status().isNotFound());
+
+        assertEquals(1, ordersRepository.count());
     }
 }
