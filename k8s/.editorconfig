@@ -1,0 +1,15 @@
+# EditorConfig ajuda a manter um estilo consistente entre editores/IDEs
+
+root = true
+
+# Configurações padrão
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# YAML files
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 4

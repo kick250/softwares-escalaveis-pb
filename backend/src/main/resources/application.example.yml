@@ -1,25 +1,32 @@
+enviroment: ${ENVIRONMENT:development}
+server:
+  port: ${SERVER_PORT:8080}
 spring:
   servlet:
     multipart:
       max-file-size: '5MB'
       max-request-size: '5MB'
       enabled: true
+
   application:
     name: 'NexoERP'
     security:
       token:
-        secret: "123456"
+        secret: ${JWT_SECRET:123456}
+
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/nexo_erp'
-    username: 'postgres'
-    password: 'AdminPassword'
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:nexo_erp}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:AdminPassword}
+
   cache:
     type: redis
   data:
     redis:
-      host: 'localhost'
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
 frontend:
-  host: 'http://localhost:8081'
+  host: ${FRONTEND_HOST:http://localhost:8081}
 portal:
-  host: 'http://localhost:8082'
+  host: ${PORTAL_HOST:http://localhost:8082}

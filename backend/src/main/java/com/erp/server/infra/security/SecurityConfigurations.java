@@ -18,14 +18,18 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Objects;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurations {
+    private final String currentEnvironment;
     private final String frontendHost;
     private final String portalHost;
     private final SecurityFilter securityFilter;
 
-    public SecurityConfigurations(@Value("${frontend.host}") String frontendHost, @Value("${portal.host}") String portalHost, SecurityFilter securityFilter) {
+    public SecurityConfigurations(@Value("${enviroment}") String currentEnvironment, @Value("${frontend.host}") String frontendHost, @Value("${portal.host}") String portalHost, SecurityFilter securityFilter) {
+        this.currentEnvironment = currentEnvironment;
         this.frontendHost = frontendHost;
         this.portalHost = portalHost;
         this.securityFilter = securityFilter;
@@ -52,6 +56,8 @@ public class SecurityConfigurations {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        if (Objects.equals(currentEnvironment, "development"))
+            configuration.addAllowedOriginPattern("http://localhost:*");
         configuration.addAllowedOrigin(frontendHost);
         configuration.addAllowedOrigin(portalHost);
         configuration.addAllowedMethod("*");

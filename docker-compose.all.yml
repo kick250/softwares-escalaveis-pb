@@ -1,0 +1,72 @@
+services:
+  database:
+    image: postgres:latest
+    container_name: nexo_erp_database_container
+    networks:
+      - default_network
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: AdminPassword
+      POSTGRES_DB: nexo_erp
+
+  redis:
+    image: redis:latest
+    container_name: nexo_erp_redis_container
+    networks:
+      - default_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend.dockerfile
+    container_name: nexo_erp_backend_container
+    depends_on:
+      - database
+      - redis
+    networks:
+      - default_network
+    environment:
+      ENVIRONMENT: development
+      SERVER_PORT: 8080
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: nexo_erp
+      DB_USER: postgres
+      DB_PASSWORD: AdminPassword
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: 123456
+      FRONTEND_HOST: http://localhost:8081
+      PORTAL_HOST: http://localhost:8082
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.dockerfile
+    container_name: nexo_erp_frontend_container
+    depends_on:
+      - backend
+    ports:
+      - "8081:80"
+    networks:
+      - default_network
+    environment:
+      BACKEND_URL: http://backend:8080/
+
+  portal:
+    build:
+      context: .
+      dockerfile: portal.dockerfile
+    container_name: nexo_erp_portal_container
+    depends_on:
+      - backend
+    ports:
+      - "8082:80"
+    networks:
+      - default_network
+    environment:
+      BACKEND_URL: http://backend:8080/
+
+networks:
+  default_network:
+    driver: bridge
