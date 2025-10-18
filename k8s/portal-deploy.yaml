@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: portal-deployment
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: portal
+    template:
+        metadata:
+            labels:
+                app: portal
+        spec:
+            containers:
+                - name: portal
+                  image: kicklob/nexo-erp-portal:latest
+                  imagePullPolicy: Always
+                  ports:
+                      - containerPort: 80
+                  env:
+                      - name: BACKEND_URL
+                        value: "http://backend-svc:3000/"
