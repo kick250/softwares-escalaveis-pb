@@ -7,6 +7,7 @@ import application.orders.exceptions.InvalidItemStockException;
 import application.orders.exceptions.OrderOwnerNotFoundException;
 import application.orders.exceptions.SomeItemsWereNotFoundException;
 import application.orders.exceptions.UserNotFoundException;
+import application.orders.repositories.AllCarts;
 import application.orders.repositories.AllItems;
 import application.orders.repositories.AllOrders;
 import application.orders.repositories.AllUsers;
@@ -25,6 +26,7 @@ public class CreateOrderTest {
     private AllOrders allOrders;
     private AllUsers allUsers;
     private AllItems allItems;
+    private AllCarts allCarts;
 
     private Map<Long, Integer> itemIdPerQuantity;
 
@@ -33,7 +35,8 @@ public class CreateOrderTest {
         allOrders = mock(AllOrders.class);
         allUsers = mock(AllUsers.class);
         allItems = mock(AllItems.class);
-        createOrder = new CreateOrder(allOrders, allUsers, allItems);
+        allCarts = mock(AllCarts.class);
+        createOrder = new CreateOrder(allOrders, allUsers, allItems, allCarts);
 
         itemIdPerQuantity = Map.of(1L, 3, 2L, 6);
     }
@@ -60,6 +63,7 @@ public class CreateOrderTest {
 
         verify(allOrders, times(1)).create(any(Order.class));
         verify(allItems, times(1)).updateAll(any());
+        verify(allCarts, times(1)).deactivateCart(userId);
     }
 
     @Test

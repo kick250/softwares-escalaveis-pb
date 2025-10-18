@@ -1,13 +1,13 @@
 package com.erp.server.services;
 
-import infra.global.entities.AttachmentEntity;
-import infra.global.entities.ProductEntity;
+import infra.global.relational.entities.AttachmentEntity;
+import infra.global.relational.entities.ProductEntity;
 import com.erp.server.exceptions.ProductDescriptionRequiredException;
 import com.erp.server.exceptions.ProductImageRequiredException;
 import com.erp.server.exceptions.ProductNameRequiredException;
 import com.erp.server.exceptions.ProductNotFoundException;
-import infra.global.repositories.AttachmentsRepository;
-import infra.global.repositories.ProductsRepository;
+import infra.global.relational.repositories.AttachmentsJpaRepository;
+import infra.global.relational.repositories.ProductsJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,21 +25,21 @@ import static org.mockito.Mockito.*;
 
 class ProductsServiceTest {
     private ProductsService productsService;
-    private ProductsRepository productsRepository;
-    private AttachmentsRepository attachmentsRepository;
+    private ProductsJpaRepository productsRepository;
+    private AttachmentsJpaRepository attachmentsJpaRepository;
     private RedisTemplate<String, byte[]> redisImageTemplate;
     private RedisTemplate<String, String> redisImageTypeTemplate;
 
     @BeforeEach
     void setUp() {
-        productsRepository = mock(ProductsRepository.class);
-        attachmentsRepository = mock(AttachmentsRepository.class);
+        productsRepository = mock(ProductsJpaRepository.class);
+        attachmentsJpaRepository = mock(AttachmentsJpaRepository.class);
         redisImageTemplate = mock(RedisTemplate.class);
         when(redisImageTemplate.opsForValue()).thenReturn(mock(ValueOperations.class));
         redisImageTypeTemplate = mock(RedisTemplate.class);
         when(redisImageTypeTemplate.opsForValue()).thenReturn(mock(ValueOperations.class));
 
-        productsService = new ProductsService(productsRepository, attachmentsRepository, redisImageTemplate, redisImageTypeTemplate);
+        productsService = new ProductsService(productsRepository, attachmentsJpaRepository, redisImageTemplate, redisImageTypeTemplate);
     }
 
     @Test
@@ -85,7 +85,7 @@ class ProductsServiceTest {
 
         productsService.create(name, description, image, imageType);
 
-        verify(attachmentsRepository).save(Mockito.any());
+        verify(attachmentsJpaRepository).save(Mockito.any());
         verify(productsRepository).save(Mockito.any());
     }
 
@@ -98,7 +98,7 @@ class ProductsServiceTest {
 
         Exception exception = assertThrows(ProductNameRequiredException.class, () -> productsService.create(name, description, image, imageType));
 
-        verify(attachmentsRepository, never()).save(Mockito.any());
+        verify(attachmentsJpaRepository, never()).save(Mockito.any());
         verify(productsRepository, never()).save(Mockito.any());
         assertEquals("O nome do produto é obrigatório", exception.getMessage());
     }
@@ -112,7 +112,7 @@ class ProductsServiceTest {
 
         Exception exception = assertThrows(ProductDescriptionRequiredException.class, () -> productsService.create(name, description, image, imageType));
 
-        verify(attachmentsRepository, never()).save(Mockito.any());
+        verify(attachmentsJpaRepository, never()).save(Mockito.any());
         verify(productsRepository, never()).save(Mockito.any());
 
         assertEquals("A descrição do produto é obrigatória", exception.getMessage());
@@ -127,7 +127,7 @@ class ProductsServiceTest {
 
         Exception exception = assertThrows(ProductImageRequiredException.class, () -> productsService.create(name, description, image, imageType));
 
-        verify(attachmentsRepository, never()).save(Mockito.any());
+        verify(attachmentsJpaRepository, never()).save(Mockito.any());
         verify(productsRepository, never()).save(Mockito.any());
         assertEquals("A imagem do produto é obrigatória", exception.getMessage());
     }
@@ -148,7 +148,7 @@ class ProductsServiceTest {
         productsService.update(productId, name, description, image, imageContentType);
 
         verify(productsRepository).save(productEntity);
-        verify(attachmentsRepository, Mockito.times(2)).save(Mockito.any());
+        verify(attachmentsJpaRepository, Mockito.times(2)).save(Mockito.any());
         verify(productEntity).setName(name);
         verify(productEntity).setDescription(description);
         verify(productEntity).setAttachmentEntity(Mockito.any());
@@ -168,7 +168,7 @@ class ProductsServiceTest {
         Exception exception = assertThrows(ProductNameRequiredException.class, () -> productsService.update(productId, name, description, image, imageContentType));
 
         verify(productsRepository, never()).save(Mockito.any());
-        verify(attachmentsRepository, never()).save(Mockito.any());
+        verify(attachmentsJpaRepository, never()).save(Mockito.any());
         assertEquals("O nome do produto é obrigatório", exception.getMessage());
     }
 
@@ -183,7 +183,7 @@ class ProductsServiceTest {
         Exception exception = assertThrows(ProductDescriptionRequiredException.class, () -> productsService.update(productId, name, description, image, imageContentType));
 
         verify(productsRepository, never()).save(Mockito.any());
-        verify(attachmentsRepository, never()).save(Mockito.any());
+        verify(attachmentsJpaRepository, never()).save(Mockito.any());
         assertEquals("A descrição do produto é obrigatória", exception.getMessage());
     }
 

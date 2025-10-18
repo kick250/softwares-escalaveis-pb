@@ -4,10 +4,10 @@ import com.erp.server.factories.StocksFactory;
 import com.erp.server.factories.UsersFactory;
 import com.erp.server.services.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import infra.global.entities.StockEntity;
-import infra.global.entities.UserEntity;
-import infra.global.repositories.StocksRepository;
-import infra.global.repositories.UsersRepository;
+import infra.global.relational.entities.StockEntity;
+import infra.global.relational.entities.UserEntity;
+import infra.global.relational.repositories.StocksJpaRepository;
+import infra.global.relational.repositories.UsersJpaRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,9 +30,9 @@ class StocksControllerTest {
     private final StocksFactory stocksFactory = new StocksFactory();
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UsersJpaRepository usersJpaRepository;
     @Autowired
-    private StocksRepository stocksRepository;
+    private StocksJpaRepository stocksJpaRepository;
     @Autowired
     private TokenService tokenService;
 
@@ -44,23 +43,23 @@ class StocksControllerTest {
 
     @BeforeEach
     void setUp() {
-        stocksRepository.deleteAll();
-        usersRepository.deleteAll();
+        stocksJpaRepository.deleteAll();
+        usersJpaRepository.deleteAll();
 
         currentUser = usersFactory.createPortalUser();
-        usersRepository.save(currentUser);
+        usersJpaRepository.save(currentUser);
         token = "Bearer " + tokenService.generateToken(currentUser);
 
         stock1 = stocksFactory.createStock();
-        stocksRepository.save(stock1);
+        stocksJpaRepository.save(stock1);
         stock2 = stocksFactory.createStock();
-        stocksRepository.save(stock2);
+        stocksJpaRepository.save(stock2);
     }
 
     @AfterEach
     void tearDown() {
-        stocksRepository.deleteAll();
-        usersRepository.deleteAll();
+        stocksJpaRepository.deleteAll();
+        usersJpaRepository.deleteAll();
     }
 
     @Test

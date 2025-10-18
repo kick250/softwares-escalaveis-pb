@@ -1,6 +1,6 @@
 package com.erp.server.responses.portal;
 
-import infra.global.entities.OrderItemEntity;
+import infra.global.relational.entities.OrderItemEntity;
 
 public record OrderItemResponse(
         Long id,

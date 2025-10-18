@@ -1,7 +1,7 @@
 package infra.orders.mappers;
 
 import application.orders.domain.Item;
-import infra.global.entities.StockItemEntity;
+import infra.global.relational.entities.StockItemEntity;
 import org.springframework.stereotype.Component;
 
 @Component

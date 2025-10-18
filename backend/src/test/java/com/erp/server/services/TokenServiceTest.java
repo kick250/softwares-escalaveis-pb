@@ -2,7 +2,7 @@ package com.erp.server.services;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import infra.global.entities.UserEntity;
+import infra.global.relational.entities.UserEntity;
 import com.erp.server.infra.TimeConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

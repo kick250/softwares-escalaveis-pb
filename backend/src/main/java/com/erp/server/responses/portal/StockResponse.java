@@ -1,6 +1,6 @@
 package com.erp.server.responses.portal;
 
-import infra.global.entities.StockEntity;
+import infra.global.relational.entities.StockEntity;
 
 public record StockResponse(
         Long id,

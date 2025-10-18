@@ -1,6 +1,6 @@
 package com.erp.server.infra;
 
-import infra.global.repositories.UsersRepository;
+import infra.global.relational.repositories.UsersJpaRepository;
 import com.erp.server.services.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,10 +15,10 @@ import java.io.IOException;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
-    private final UsersRepository userRepository;
+    private final UsersJpaRepository userRepository;
     private final TokenService tokenService;
 
-    public SecurityFilter(UsersRepository userRepository, TokenService tokenService) {
+    public SecurityFilter(UsersJpaRepository userRepository, TokenService tokenService) {
         this.userRepository = userRepository;
         this.tokenService = tokenService;
     }

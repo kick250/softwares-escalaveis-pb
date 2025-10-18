@@ -1,6 +1,6 @@
 package com.erp.server.services;
 
-import infra.global.repositories.UsersRepository;
+import infra.global.relational.repositories.UsersJpaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class AuthenticationService implements UserDetailsService {
-    private final UsersRepository usersRepository;
+    private final UsersJpaRepository usersJpaRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = this.usersRepository.findByUsername(username);
+        var user = this.usersJpaRepository.findByUsername(username);
 
         if (user.isEmpty()) throw new UsernameNotFoundException("Usuário não encontrado: " + username);
 

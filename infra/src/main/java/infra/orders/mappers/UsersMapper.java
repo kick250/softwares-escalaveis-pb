@@ -1,7 +1,7 @@
 package infra.orders.mappers;
 
 import application.orders.domain.User;
-import infra.global.entities.UserEntity;
+import infra.global.relational.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component

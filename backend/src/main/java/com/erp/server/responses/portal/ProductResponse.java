@@ -1,7 +1,7 @@
 package com.erp.server.responses.portal;
 
-import infra.global.entities.ProductEntity;
-import infra.global.entities.StockItemEntity;
+import infra.global.relational.entities.ProductEntity;
+import infra.global.relational.entities.StockItemEntity;
 
 public record ProductResponse(
         Long id,

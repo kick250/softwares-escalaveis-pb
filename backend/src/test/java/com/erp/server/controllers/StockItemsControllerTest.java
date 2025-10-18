@@ -5,8 +5,8 @@ import com.erp.server.requests.StockItemCreateRequest;
 import com.erp.server.requests.StockItemUpdateRequest;
 import com.erp.server.services.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import infra.global.entities.*;
-import infra.global.repositories.*;
+import infra.global.relational.entities.*;
+import infra.global.relational.repositories.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,15 +34,15 @@ class StockItemsControllerTest {
     private String token;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UsersJpaRepository usersJpaRepository;
     @Autowired
-    private StocksRepository stocksRepository;
+    private StocksJpaRepository stocksJpaRepository;
     @Autowired
-    private StockItemsRepository stockItemsRepository;
+    private StockItemsJpaRepository stockItemsJpaRepository;
     @Autowired
-    private ProductsRepository productsRepository;
+    private ProductsJpaRepository productsRepository;
     @Autowired
-    private AttachmentsRepository attachmentsRepository;
+    private AttachmentsJpaRepository attachmentsJpaRepository;
     @Autowired
     private TokenService tokenService;
 
@@ -56,28 +56,28 @@ class StockItemsControllerTest {
 
     @BeforeEach
     public void setUp() {
-        usersRepository.deleteAll();
-        stockItemsRepository.deleteAll();
-        stocksRepository.deleteAll();
+        usersJpaRepository.deleteAll();
+        stockItemsJpaRepository.deleteAll();
+        stocksJpaRepository.deleteAll();
         productsRepository.deleteAll();
-        attachmentsRepository.deleteAll();
+        attachmentsJpaRepository.deleteAll();
 
         UsersFactory usersFactory = new UsersFactory();
         UserEntity userEntity = usersFactory.createUser();
-        usersRepository.save(userEntity);
+        usersJpaRepository.save(userEntity);
 
         token = "Bearer " + tokenService.generateToken(userEntity);
 
         stockEntity1 = stocksFactory.createStock();
         stockEntity2 = stocksFactory.createStock();
 
-        stocksRepository.save(stockEntity1);
-        stocksRepository.save(stockEntity2);
+        stocksJpaRepository.save(stockEntity1);
+        stocksJpaRepository.save(stockEntity2);
 
         AttachmentEntity attachmentEntity1 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachmentEntity1);
+        attachmentsJpaRepository.save(attachmentEntity1);
         AttachmentEntity attachmentEntity2 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachmentEntity2);
+        attachmentsJpaRepository.save(attachmentEntity2);
 
         productEntity1 = productsFactory.createProduct();
         productEntity1.setAttachmentEntity(attachmentEntity1);
@@ -87,27 +87,27 @@ class StockItemsControllerTest {
         productsRepository.save(productEntity2);
 
         stockItem1 = stockItemsFactory.createStockItemWithProduct(productEntity1);
-        stockItemsRepository.save(stockItem1);
+        stockItemsJpaRepository.save(stockItem1);
         stockItem2 = stockItemsFactory.createStockItemWithProduct(productEntity2);
-        stockItemsRepository.save(stockItem2);
+        stockItemsJpaRepository.save(stockItem2);
         stockItem3 = stockItemsFactory.createStockItemWithProduct(productEntity1);
-        stockItemsRepository.save(stockItem3);
+        stockItemsJpaRepository.save(stockItem3);
 
         stockEntity1.addStockItem(stockItem1);
         stockEntity1.addStockItem(stockItem2);
         stockEntity2.addStockItem(stockItem3);
 
-        stocksRepository.save(stockEntity1);
-        stocksRepository.save(stockEntity2);
+        stocksJpaRepository.save(stockEntity1);
+        stocksJpaRepository.save(stockEntity2);
     }
 
     @AfterEach
     public void tearDown() {
-        usersRepository.deleteAll();
-        stockItemsRepository.deleteAll();
-        stocksRepository.deleteAll();
+        usersJpaRepository.deleteAll();
+        stockItemsJpaRepository.deleteAll();
+        stocksJpaRepository.deleteAll();
         productsRepository.deleteAll();
-        attachmentsRepository.deleteAll();
+        attachmentsJpaRepository.deleteAll();
     }
 
     @Test
@@ -135,7 +135,7 @@ class StockItemsControllerTest {
     public void testCreate() throws Exception {
         StockItemCreateRequest request = new StockItemCreateRequest(100.0, 10, productEntity2.getId(), stockEntity2.getId());
 
-        assertEquals(3, stockItemsRepository.count());
+        assertEquals(3, stockItemsJpaRepository.count());
 
         mockMvc.perform(post("/stock_items")
                 .header("Authorization", token)
@@ -144,14 +144,14 @@ class StockItemsControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").value("Item de estoque criado com sucesso."));
 
-        assertEquals(4, stockItemsRepository.count());
+        assertEquals(4, stockItemsJpaRepository.count());
     }
 
     @Test
     public void testCreate_whenStockAlreadyHasProduct() throws Exception {
         StockItemCreateRequest request = new StockItemCreateRequest(100.0, 10, productEntity1.getId(), stockEntity1.getId());
 
-        assertEquals(3, stockItemsRepository.count());
+        assertEquals(3, stockItemsJpaRepository.count());
 
         mockMvc.perform(post("/stock_items")
                 .header("Authorization", token)
@@ -160,14 +160,14 @@ class StockItemsControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Esse estoque já possui um item com esse produto."));
 
-        assertEquals(3, stockItemsRepository.count());
+        assertEquals(3, stockItemsJpaRepository.count());
     }
 
     @Test
     public void testCreate_whenInvalidPrice() throws Exception {
         StockItemCreateRequest request = new StockItemCreateRequest(-100.0, 10, productEntity2.getId(), stockEntity2.getId());
 
-        assertEquals(3, stockItemsRepository.count());
+        assertEquals(3, stockItemsJpaRepository.count());
 
         mockMvc.perform(post("/stock_items")
                 .header("Authorization", token)
@@ -175,14 +175,14 @@ class StockItemsControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
 
-        assertEquals(3, stockItemsRepository.count());
+        assertEquals(3, stockItemsJpaRepository.count());
     }
 
     @Test
     public void testCreate_whenInvalidQuantity() throws Exception {
         StockItemCreateRequest request = new StockItemCreateRequest(100.0, -10, productEntity2.getId(), stockEntity2.getId());
 
-        assertEquals(3, stockItemsRepository.count());
+        assertEquals(3, stockItemsJpaRepository.count());
 
         mockMvc.perform(post("/stock_items")
                 .header("Authorization", token)
@@ -190,14 +190,14 @@ class StockItemsControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
 
-        assertEquals(3, stockItemsRepository.count());
+        assertEquals(3, stockItemsJpaRepository.count());
     }
 
     @Test
     public void testUpdate() throws Exception {
         StockItemUpdateRequest request = new StockItemUpdateRequest(150.0, 20);
 
-        StockItemEntity stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
+        StockItemEntity stockItem = stockItemsJpaRepository.findById(stockItem1.getId()).orElseThrow();
         assertNotEquals(request.price(), stockItem.getPrice());
         assertNotEquals(request.quantity(), stockItem.getQuantity());
 
@@ -207,7 +207,7 @@ class StockItemsControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
 
-        stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
+        stockItem = stockItemsJpaRepository.findById(stockItem1.getId()).orElseThrow();
         assertEquals(request.price(), stockItem.getPrice());
         assertEquals(request.quantity(), stockItem.getQuantity());
     }
@@ -216,7 +216,7 @@ class StockItemsControllerTest {
     public void testUpdate_whenInvalidPrice() throws Exception {
         StockItemUpdateRequest request = new StockItemUpdateRequest(-150.0, 20);
 
-        StockItemEntity stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
+        StockItemEntity stockItem = stockItemsJpaRepository.findById(stockItem1.getId()).orElseThrow();
         assertNotEquals(request.price(), stockItem.getPrice());
         assertNotEquals(request.quantity(), stockItem.getQuantity());
 
@@ -226,7 +226,7 @@ class StockItemsControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
 
-        stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
+        stockItem = stockItemsJpaRepository.findById(stockItem1.getId()).orElseThrow();
         assertNotEquals(request.price(), stockItem.getPrice());
         assertNotEquals(request.quantity(), stockItem.getQuantity());
     }
@@ -235,7 +235,7 @@ class StockItemsControllerTest {
     public void testUpdate_whenInvalidQuantity() throws Exception {
         StockItemUpdateRequest request = new StockItemUpdateRequest(150.0, -20);
 
-        StockItemEntity stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
+        StockItemEntity stockItem = stockItemsJpaRepository.findById(stockItem1.getId()).orElseThrow();
         assertNotEquals(request.price(), stockItem.getPrice());
         assertNotEquals(request.quantity(), stockItem.getQuantity());
 
@@ -245,7 +245,7 @@ class StockItemsControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
 
-        stockItem = stockItemsRepository.findById(stockItem1.getId()).orElseThrow();
+        stockItem = stockItemsJpaRepository.findById(stockItem1.getId()).orElseThrow();
         assertNotEquals(request.price(), stockItem.getPrice());
         assertNotEquals(request.quantity(), stockItem.getQuantity());
     }
@@ -263,25 +263,25 @@ class StockItemsControllerTest {
 
     @Test
     public void testDelete() throws Exception {
-        assertEquals(3, stockItemsRepository.count());
+        assertEquals(3, stockItemsJpaRepository.count());
 
         mockMvc.perform(delete("/stock_items/" + stockItem1.getId())
                 .header("Authorization", token))
                 .andExpect(status().isOk());
 
-        assertEquals(3, stockItemsRepository.count());
-        assertEquals(2, stockItemsRepository.countAllByDeletedFalse());
+        assertEquals(3, stockItemsJpaRepository.count());
+        assertEquals(2, stockItemsJpaRepository.countAllByDeletedFalse());
     }
 
     @Test
     public void testDelete_whenNotFound() throws Exception {
-        assertEquals(3, stockItemsRepository.count());
+        assertEquals(3, stockItemsJpaRepository.count());
 
         mockMvc.perform(delete("/stock_items/9999")
                         .header("Authorization", token))
                 .andExpect(status().isNotFound());
 
-        assertEquals(3, stockItemsRepository.count());
-        assertEquals(3, stockItemsRepository.countAllByDeletedFalse());
+        assertEquals(3, stockItemsJpaRepository.count());
+        assertEquals(3, stockItemsJpaRepository.countAllByDeletedFalse());
     }
 }

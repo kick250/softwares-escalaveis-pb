@@ -1,7 +1,7 @@
 package infra.orders.mappers;
 
 import application.orders.domain.*;
-import infra.global.entities.*;
+import infra.global.relational.entities.*;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Component;
 

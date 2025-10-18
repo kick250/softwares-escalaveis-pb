@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import infra.global.entities.UserEntity;
+import infra.global.relational.entities.UserEntity;
 import com.erp.server.exceptions.InvalidTokenException;
 import com.erp.server.infra.TimeConfig;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,9 +1,9 @@
 package com.erp.server.services;
 
-import infra.global.entities.StockEntity;
+import infra.global.relational.entities.StockEntity;
 import com.erp.server.exceptions.InvalidStockNameException;
 import com.erp.server.exceptions.StockNotFoundException;
-import infra.global.repositories.StocksRepository;
+import infra.global.relational.repositories.StocksJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,13 +16,13 @@ import static org.mockito.Mockito.*;
 
 class StocksServiceTest {
     private StocksService stocksService;
-    private StocksRepository stocksRepository;
+    private StocksJpaRepository stocksJpaRepository;
 
     @BeforeEach
     public void setUp() {
-        stocksRepository = mock(StocksRepository.class);
+        stocksJpaRepository = mock(StocksJpaRepository.class);
 
-        stocksService = new StocksService(stocksRepository);
+        stocksService = new StocksService(stocksJpaRepository);
     }
 
     @Test
@@ -32,7 +32,7 @@ class StocksServiceTest {
         stockEntities.add(mock(StockEntity.class));
         stockEntities.add(mock(StockEntity.class));
 
-        when(stocksRepository.findAllByDeletedFalse()).thenReturn(stockEntities);
+        when(stocksJpaRepository.findAllByDeletedFalse()).thenReturn(stockEntities);
 
         List<StockEntity> result = stocksService.getAll();
 
@@ -45,7 +45,7 @@ class StocksServiceTest {
 
         StockEntity stockEntity = mock(StockEntity.class);
 
-        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stockEntity));
+        when(stocksJpaRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stockEntity));
 
         StockEntity result = stocksService.getById(id);
 
@@ -56,7 +56,7 @@ class StocksServiceTest {
     public void testGetById_whenNotFound_throwsException() {
         Long id = 1L;
 
-        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.empty());
+        when(stocksJpaRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(StockNotFoundException.class, () -> stocksService.getById(id));
         assertEquals("Estoque não encontrado", exception.getMessage());
@@ -68,7 +68,7 @@ class StocksServiceTest {
 
         stocksService.create(name);
 
-        verify(stocksRepository).save(any(StockEntity.class));
+        verify(stocksJpaRepository).save(any(StockEntity.class));
     }
 
     @Test
@@ -86,12 +86,12 @@ class StocksServiceTest {
 
         StockEntity stockEntity = mock(StockEntity.class);
 
-        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stockEntity));
+        when(stocksJpaRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stockEntity));
 
         stocksService.update(id, name);
 
         verify(stockEntity).setName(name);
-        verify(stocksRepository).save(any(StockEntity.class));
+        verify(stocksJpaRepository).save(any(StockEntity.class));
     }
 
     @Test
@@ -99,7 +99,7 @@ class StocksServiceTest {
         Long id = 1L;
         String name = "New name";
 
-        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.empty());
+        when(stocksJpaRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(StockNotFoundException.class, () -> stocksService.update(id, name));
         assertEquals("Estoque não encontrado", exception.getMessage());
@@ -120,19 +120,19 @@ class StocksServiceTest {
 
         StockEntity stockEntity = mock(StockEntity.class);
 
-        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stockEntity));
+        when(stocksJpaRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.of(stockEntity));
 
         stocksService.deleteById(id);
 
         verify(stockEntity).delete();
-        verify(stocksRepository).save(any(StockEntity.class));
+        verify(stocksJpaRepository).save(any(StockEntity.class));
     }
 
     @Test
     public void testDeleteById_whenNotFound_throwsException() {
         Long id = 1L;
 
-        when(stocksRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.empty());
+        when(stocksJpaRepository.findByIdAndDeletedFalse(id)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(StockNotFoundException.class, () -> stocksService.deleteById(id));
         assertEquals("Estoque não encontrado", exception.getMessage());

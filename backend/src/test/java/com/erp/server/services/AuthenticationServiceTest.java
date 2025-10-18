@@ -1,7 +1,7 @@
 package com.erp.server.services;
 
-import infra.global.entities.UserEntity;
-import infra.global.repositories.UsersRepository;
+import infra.global.relational.entities.UserEntity;
+import infra.global.relational.repositories.UsersJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,12 +15,12 @@ import static org.mockito.Mockito.when;
 
 public class AuthenticationServiceTest {
     private AuthenticationService authenticationService;
-    private UsersRepository usersRepository;
+    private UsersJpaRepository usersJpaRepository;
 
     @BeforeEach
     public void setUp() {
-        usersRepository = mock(UsersRepository.class);
-        authenticationService = new AuthenticationService(usersRepository);
+        usersJpaRepository = mock(UsersJpaRepository.class);
+        authenticationService = new AuthenticationService(usersJpaRepository);
     }
 
     @Test
@@ -30,7 +30,7 @@ public class AuthenticationServiceTest {
         UserEntity user = mock(UserEntity.class);
         Optional<UserEntity> optionalUser = Optional.of(user);
 
-        when(usersRepository.findByUsername(username)).thenReturn(optionalUser);
+        when(usersJpaRepository.findByUsername(username)).thenReturn(optionalUser);
 
         UserDetails loadedUser = authenticationService.loadUserByUsername(username);
 
@@ -44,7 +44,7 @@ public class AuthenticationServiceTest {
 
         Optional<UserEntity> optionalUser = Optional.empty();
 
-        when(usersRepository.findByUsername(username)).thenReturn(optionalUser);
+        when(usersJpaRepository.findByUsername(username)).thenReturn(optionalUser);
 
         Exception exception = assertThrows(UsernameNotFoundException.class, () -> authenticationService.loadUserByUsername(username));
         assertEquals("Usuário não encontrado: " + username, exception.getMessage());

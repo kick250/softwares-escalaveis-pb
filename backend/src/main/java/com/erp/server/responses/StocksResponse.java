@@ -1,6 +1,6 @@
 package com.erp.server.responses;
 
-import infra.global.entities.StockEntity;
+import infra.global.relational.entities.StockEntity;
 
 import java.util.List;
 

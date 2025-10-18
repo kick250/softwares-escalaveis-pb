@@ -1,6 +1,6 @@
 package com.erp.server.responses;
 
-import infra.global.entities.ProductEntity;
+import infra.global.relational.entities.ProductEntity;
 
 public record ProductResponse(
         Long id,

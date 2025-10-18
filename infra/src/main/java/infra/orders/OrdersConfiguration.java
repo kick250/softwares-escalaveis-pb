@@ -1,5 +1,6 @@
 package infra.orders;
 
+import application.orders.repositories.AllCarts;
 import application.orders.useCases.ApproveOrder;
 import application.orders.useCases.CancelOrder;
 import application.orders.useCases.CreateOrder;
@@ -13,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
 public class OrdersConfiguration {
 
     @Bean
-    public CreateOrder createOrder(AllOrders allOrders, AllUsers allUsers, AllItems allProducts) {
-        return new CreateOrder(allOrders, allUsers, allProducts);
+    public CreateOrder createOrder(AllOrders allOrders, AllUsers allUsers, AllItems allProducts, AllCarts allCarts) {
+        return new CreateOrder(allOrders, allUsers, allProducts, allCarts);
     }
 
     @Bean

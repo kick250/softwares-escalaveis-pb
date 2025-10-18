@@ -1,6 +1,6 @@
 package com.erp.server.controllers;
 
-import infra.global.entities.ProductEntity;
+import infra.global.relational.entities.ProductEntity;
 import com.erp.server.exceptions.ProductDescriptionRequiredException;
 import com.erp.server.exceptions.ProductImageRequiredException;
 import com.erp.server.exceptions.ProductNameRequiredException;

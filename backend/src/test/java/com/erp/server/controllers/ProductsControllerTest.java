@@ -1,14 +1,14 @@
 package com.erp.server.controllers;
 
-import infra.global.entities.AttachmentEntity;
-import infra.global.entities.ProductEntity;
-import infra.global.entities.UserEntity;
+import infra.global.relational.entities.AttachmentEntity;
+import infra.global.relational.entities.ProductEntity;
+import infra.global.relational.entities.UserEntity;
 import com.erp.server.factories.AttachmentsFactory;
 import com.erp.server.factories.ProductsFactory;
 import com.erp.server.factories.UsersFactory;
-import infra.global.repositories.AttachmentsRepository;
-import infra.global.repositories.ProductsRepository;
-import infra.global.repositories.UsersRepository;
+import infra.global.relational.repositories.AttachmentsJpaRepository;
+import infra.global.relational.repositories.ProductsJpaRepository;
+import infra.global.relational.repositories.UsersJpaRepository;
 import com.erp.server.services.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -39,11 +39,11 @@ class ProductsControllerTest {
     private String token;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UsersJpaRepository usersJpaRepository;
     @Autowired
-    private ProductsRepository productsRepository;
+    private ProductsJpaRepository productsRepository;
     @Autowired
-    private AttachmentsRepository attachmentsRepository;
+    private AttachmentsJpaRepository attachmentsJpaRepository;
     @Autowired
     private TokenService tokenService;
 
@@ -52,21 +52,21 @@ class ProductsControllerTest {
 
     @BeforeEach
     void setUp() {
-        usersRepository.deleteAll();
+        usersJpaRepository.deleteAll();
         productsRepository.deleteAll();
-        attachmentsRepository.deleteAll();
+        attachmentsJpaRepository.deleteAll();
 
         UsersFactory usersFactory = new UsersFactory();
         UserEntity userEntity = usersFactory.createUser();
 
-        usersRepository.save(userEntity);
+        usersJpaRepository.save(userEntity);
 
         token = "Bearer " + tokenService.generateToken(userEntity);
 
         AttachmentEntity attachmentEntity1 = attachmentsFactory.createAttachment();
         AttachmentEntity attachmentEntity2 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachmentEntity1);
-        attachmentsRepository.save(attachmentEntity2);
+        attachmentsJpaRepository.save(attachmentEntity1);
+        attachmentsJpaRepository.save(attachmentEntity2);
 
         createdProductEntity1 = productsFactory.createProduct();
         createdProductEntity1.setAttachmentEntity(attachmentEntity1);
@@ -79,9 +79,9 @@ class ProductsControllerTest {
 
     @AfterEach
     void tearDown() {
-        usersRepository.deleteAll();
+        usersJpaRepository.deleteAll();
         productsRepository.deleteAll();
-        attachmentsRepository.deleteAll();
+        attachmentsJpaRepository.deleteAll();
     }
 
     @Test
@@ -144,7 +144,7 @@ class ProductsControllerTest {
         String description = "Descrição de teste";
 
         assertEquals(2, productsRepository.count());
-        assertEquals(2, attachmentsRepository.count());
+        assertEquals(2, attachmentsJpaRepository.count());
 
         mockMvc.perform(multipart("/products")
                         .file(imageFile)
@@ -158,7 +158,7 @@ class ProductsControllerTest {
         ProductEntity productEntity = productsRepository.findAll().getLast();
         assertEquals(name, productEntity.getName());
         assertEquals(description, productEntity.getDescription());
-        assertEquals(3, attachmentsRepository.count());
+        assertEquals(3, attachmentsJpaRepository.count());
     }
 
     @Test
@@ -168,7 +168,7 @@ class ProductsControllerTest {
         String description = "Descrição de teste";
 
         assertEquals(2, productsRepository.count());
-        assertEquals(2, attachmentsRepository.count());
+        assertEquals(2, attachmentsJpaRepository.count());
 
         mockMvc.perform(multipart("/products")
                         .file(imageFile)
@@ -179,7 +179,7 @@ class ProductsControllerTest {
                 .andExpect(status().isBadRequest());
 
         assertEquals(2, productsRepository.count());
-        assertEquals(2, attachmentsRepository.count());
+        assertEquals(2, attachmentsJpaRepository.count());
     }
 
     @Test
@@ -189,7 +189,7 @@ class ProductsControllerTest {
         String description = "";
 
         assertEquals(2, productsRepository.count());
-        assertEquals(2, attachmentsRepository.count());
+        assertEquals(2, attachmentsJpaRepository.count());
 
         mockMvc.perform(multipart("/products")
                         .file(imageFile)
@@ -200,7 +200,7 @@ class ProductsControllerTest {
                 .andExpect(status().isBadRequest());
 
         assertEquals(2, productsRepository.count());
-        assertEquals(2, attachmentsRepository.count());
+        assertEquals(2, attachmentsJpaRepository.count());
     }
 
     @Test
@@ -209,7 +209,7 @@ class ProductsControllerTest {
         String description = "Descrição de teste";
 
         assertEquals(2, productsRepository.count());
-        assertEquals(2, attachmentsRepository.count());
+        assertEquals(2, attachmentsJpaRepository.count());
 
         mockMvc.perform(multipart("/products")
                         .param("name", name)
@@ -219,7 +219,7 @@ class ProductsControllerTest {
                 .andExpect(status().isBadRequest());
 
         assertEquals(2, productsRepository.count());
-        assertEquals(2, attachmentsRepository.count());
+        assertEquals(2, attachmentsJpaRepository.count());
     }
 
     @Test
@@ -240,8 +240,8 @@ class ProductsControllerTest {
         ProductEntity updatedProductEntity = productsRepository.findById(createdProductEntity1.getId()).orElseThrow();
         assertEquals(name, updatedProductEntity.getName());
         assertEquals(description, updatedProductEntity.getDescription());
-        assertEquals(2, attachmentsRepository.countAllByDeletedFalse());
-        assertEquals(3, attachmentsRepository.count());
+        assertEquals(2, attachmentsJpaRepository.countAllByDeletedFalse());
+        assertEquals(3, attachmentsJpaRepository.count());
     }
 
     @Test
@@ -262,8 +262,8 @@ class ProductsControllerTest {
         ProductEntity updatedProductEntity = productsRepository.findById(createdProductEntity1.getId()).orElseThrow();
         assertNotEquals(name, updatedProductEntity.getName());
         assertNotEquals(description, updatedProductEntity.getDescription());
-        assertEquals(2, attachmentsRepository.countAllByDeletedFalse());
-        assertEquals(2, attachmentsRepository.count());
+        assertEquals(2, attachmentsJpaRepository.countAllByDeletedFalse());
+        assertEquals(2, attachmentsJpaRepository.count());
     }
 
     @Test
@@ -284,8 +284,8 @@ class ProductsControllerTest {
         ProductEntity updatedProductEntity = productsRepository.findById(createdProductEntity1.getId()).orElseThrow();
         assertNotEquals(name, updatedProductEntity.getName());
         assertNotEquals(description, updatedProductEntity.getDescription());
-        assertEquals(2, attachmentsRepository.countAllByDeletedFalse());
-        assertEquals(2, attachmentsRepository.count());
+        assertEquals(2, attachmentsJpaRepository.countAllByDeletedFalse());
+        assertEquals(2, attachmentsJpaRepository.count());
     }
 
     @Test
@@ -304,8 +304,8 @@ class ProductsControllerTest {
         ProductEntity updatedProductEntity = productsRepository.findById(createdProductEntity1.getId()).orElseThrow();
         assertEquals(name, updatedProductEntity.getName());
         assertEquals(description, updatedProductEntity.getDescription());
-        assertEquals(2, attachmentsRepository.countAllByDeletedFalse());
-        assertEquals(2, attachmentsRepository.count());
+        assertEquals(2, attachmentsJpaRepository.countAllByDeletedFalse());
+        assertEquals(2, attachmentsJpaRepository.count());
     }
 
     @Test
@@ -316,7 +316,7 @@ class ProductsControllerTest {
                 .andExpect(status().isOk());
 
         assertEquals(2, productsRepository.count());
-        assertEquals(1, attachmentsRepository.countAllByDeletedFalse());
+        assertEquals(1, attachmentsJpaRepository.countAllByDeletedFalse());
     }
 
     @Test
@@ -327,7 +327,7 @@ class ProductsControllerTest {
                 .andExpect(status().isNotFound());
 
         assertEquals(2, productsRepository.count());
-        assertEquals(2, attachmentsRepository.countAllByDeletedFalse());
+        assertEquals(2, attachmentsJpaRepository.countAllByDeletedFalse());
     }
 
     @Test

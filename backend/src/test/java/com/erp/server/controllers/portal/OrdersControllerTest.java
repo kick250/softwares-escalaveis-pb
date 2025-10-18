@@ -2,12 +2,12 @@ package com.erp.server.controllers.portal;
 
 import application.orders.enums.OrderStatus;
 import com.erp.server.factories.*;
-import com.erp.server.requests.OrderCreateRequest;
-import com.erp.server.requests.OrderItemRequest;
+import com.erp.server.requests.portal.OrderCreateRequest;
+import com.erp.server.requests.portal.OrderItemRequest;
 import com.erp.server.services.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import infra.global.entities.*;
-import infra.global.repositories.*;
+import infra.global.relational.entities.*;
+import infra.global.relational.repositories.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,19 +43,19 @@ class OrdersControllerTest {
     private String adminToken;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UsersJpaRepository usersJpaRepository;
     @Autowired
-    private StocksRepository stocksRepository;
+    private StocksJpaRepository stocksJpaRepository;
     @Autowired
-    private StockItemsRepository stockItemsRepository;
+    private StockItemsJpaRepository stockItemsJpaRepository;
     @Autowired
-    private ProductsRepository productsRepository;
+    private ProductsJpaRepository productsRepository;
     @Autowired
-    private AttachmentsRepository attachmentsRepository;
+    private AttachmentsJpaRepository attachmentsJpaRepository;
     @Autowired
-    private OrdersRepository ordersRepository;
+    private OrdersJpaRepository ordersJpaRepository;
     @Autowired
-    private OrderItemsRepository ordersItemsRepository;
+    private OrderItemsJpaRepository ordersItemsRepository;
     @Autowired
     private TokenService tokenService;
 
@@ -69,29 +69,29 @@ class OrdersControllerTest {
     @BeforeEach
     public void setUp() {
         ordersItemsRepository.deleteAll();
-        ordersRepository.deleteAll();
-        usersRepository.deleteAll();
-        stockItemsRepository.deleteAll();
-        stocksRepository.deleteAll();
+        ordersJpaRepository.deleteAll();
+        usersJpaRepository.deleteAll();
+        stockItemsJpaRepository.deleteAll();
+        stocksJpaRepository.deleteAll();
         productsRepository.deleteAll();
-        attachmentsRepository.deleteAll();
+        attachmentsJpaRepository.deleteAll();
 
         currentUser = usersFactory.createPortalUser();
-        usersRepository.save(currentUser);
+        usersJpaRepository.save(currentUser);
         token = "Bearer " + tokenService.generateToken(currentUser);
 
         adminUser = usersFactory.createAdminUser();
-        usersRepository.save(adminUser);
+        usersJpaRepository.save(adminUser);
         adminToken = "Bearer " + tokenService.generateToken(adminUser);
 
         stock1 = stocksFactory.createStock();
 
-        stocksRepository.save(stock1);
+        stocksJpaRepository.save(stock1);
 
         AttachmentEntity attachmentEntity1 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachmentEntity1);
+        attachmentsJpaRepository.save(attachmentEntity1);
         AttachmentEntity attachmentEntity2 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachmentEntity2);
+        attachmentsJpaRepository.save(attachmentEntity2);
 
         product1 = productsFactory.createProduct();
         product1.setAttachmentEntity(attachmentEntity1);
@@ -101,14 +101,14 @@ class OrdersControllerTest {
         productsRepository.save(product2);
 
         stockItem1 = stockItemsFactory.createStockItemWithProduct(product1);
-        stockItemsRepository.save(stockItem1);
+        stockItemsJpaRepository.save(stockItem1);
         stockItem2 = stockItemsFactory.createStockItemWithProduct(product2);
-        stockItemsRepository.save(stockItem2);
+        stockItemsJpaRepository.save(stockItem2);
 
         stock1.addStockItem(stockItem1);
         stock1.addStockItem(stockItem2);
 
-        stocksRepository.save(stock1);
+        stocksJpaRepository.save(stock1);
 
         preCreatedOrder = new OrderEntity();
         preCreatedOrder.setOwner(currentUser);
@@ -119,23 +119,23 @@ class OrdersControllerTest {
                 new OrderItemEntity(null, false, 5, stockItem1.getPrice(), preCreatedOrder, stockItem1),
                 new OrderItemEntity(null, false, 2, stockItem2.getPrice(), preCreatedOrder, stockItem2)
         ));
-        ordersRepository.save(preCreatedOrder);
+        ordersJpaRepository.save(preCreatedOrder);
     }
 
     @AfterEach
     public void tearDown() {
         ordersItemsRepository.deleteAll();
-        ordersRepository.deleteAll();
-        usersRepository.deleteAll();
-        stockItemsRepository.deleteAll();
-        stocksRepository.deleteAll();
+        ordersJpaRepository.deleteAll();
+        usersJpaRepository.deleteAll();
+        stockItemsJpaRepository.deleteAll();
+        stocksJpaRepository.deleteAll();
         productsRepository.deleteAll();
-        attachmentsRepository.deleteAll();
+        attachmentsJpaRepository.deleteAll();
     }
 
     @Test
     public void testGetAll() throws Exception {
-        preCreatedOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+        preCreatedOrder = ordersJpaRepository.findByIdWithItems(preCreatedOrder.getId()).get();
 
         mockMvc.perform(get("/portal/orders")
                         .header("Authorization", token))
@@ -161,7 +161,7 @@ class OrdersControllerTest {
 
     @Test
     public void testGetById() throws Exception {
-        preCreatedOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+        preCreatedOrder = ordersJpaRepository.findByIdWithItems(preCreatedOrder.getId()).get();
 
         mockMvc.perform(get("/portal/orders/" + preCreatedOrder.getId())
                         .header("Authorization", token))
@@ -198,7 +198,7 @@ class OrdersControllerTest {
         itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 5));
         OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
 
         mockMvc.perform(post("/portal/orders")
                         .header("Authorization", token)
@@ -206,9 +206,9 @@ class OrdersControllerTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isCreated());
 
-        assertEquals(2, ordersRepository.count());
-        OrderEntity order = ordersRepository.findAll().getLast();
-        order = ordersRepository.findByIdWithItems(order.getId()).get();
+        assertEquals(2, ordersJpaRepository.count());
+        OrderEntity order = ordersJpaRepository.findAll().getLast();
+        order = ordersJpaRepository.findByIdWithItems(order.getId()).get();
         assertNotNull(order);
         assertEquals(OrderStatus.APPROVED, order.getStatus());
         assertNotNull(order.getCreatedAt());
@@ -231,7 +231,7 @@ class OrdersControllerTest {
         itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 60));
         OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
 
         mockMvc.perform(post("/portal/orders")
                         .header("Authorization", token)
@@ -239,9 +239,9 @@ class OrdersControllerTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isCreated());
 
-        assertEquals(2, ordersRepository.count());
-        OrderEntity order = ordersRepository.findAll().getLast();
-        order = ordersRepository.findByIdWithItems(order.getId()).get();
+        assertEquals(2, ordersJpaRepository.count());
+        OrderEntity order = ordersJpaRepository.findAll().getLast();
+        order = ordersJpaRepository.findByIdWithItems(order.getId()).get();
         assertNotNull(order);
         assertEquals(OrderStatus.WAITING_APPROVAL, order.getStatus());
         assertNotNull(order.getCreatedAt());
@@ -264,7 +264,7 @@ class OrdersControllerTest {
         itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 60));
         OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
 
         mockMvc.perform(post("/portal/orders")
                         .header("Authorization", adminToken)
@@ -272,9 +272,9 @@ class OrdersControllerTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isCreated());
 
-        assertEquals(2, ordersRepository.count());
-        OrderEntity order = ordersRepository.findAll().getLast();
-        order = ordersRepository.findByIdWithItems(order.getId()).get();
+        assertEquals(2, ordersJpaRepository.count());
+        OrderEntity order = ordersJpaRepository.findAll().getLast();
+        order = ordersJpaRepository.findByIdWithItems(order.getId()).get();
         assertNotNull(order);
         assertEquals(OrderStatus.APPROVED, order.getStatus());
         assertNotNull(order.getCreatedAt());
@@ -297,7 +297,7 @@ class OrdersControllerTest {
         itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 5));
         OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
 
         mockMvc.perform(post("/portal/orders")
                         .header("Authorization", token)
@@ -305,7 +305,7 @@ class OrdersControllerTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isBadRequest());
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
     }
 
     @Test
@@ -315,7 +315,7 @@ class OrdersControllerTest {
         itemsRequest.add(new OrderItemRequest(stockItem2.getId(), 5));
         OrderCreateRequest body = new OrderCreateRequest(stock1.getId(), itemsRequest);
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
 
         mockMvc.perform(post("/portal/orders")
                         .header("Authorization", token)
@@ -323,22 +323,22 @@ class OrdersControllerTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isNotFound());
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
     }
 
     @Test
     public void testApprove_whenUserIsAdmin() throws Exception {
         preCreatedOrder.setStatus(OrderStatus.WAITING_APPROVAL);
-        ordersRepository.save(preCreatedOrder);
+        ordersJpaRepository.save(preCreatedOrder);
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
 
         mockMvc.perform(post("/portal/orders/" + preCreatedOrder.getId() + "/approve")
                         .header("Authorization", adminToken))
                 .andExpect(status().isCreated());
 
-        assertEquals(1, ordersRepository.count());
-        OrderEntity approvedOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+        assertEquals(1, ordersJpaRepository.count());
+        OrderEntity approvedOrder = ordersJpaRepository.findByIdWithItems(preCreatedOrder.getId()).get();
         assertNotNull(approvedOrder);
         assertEquals(OrderStatus.APPROVED, approvedOrder.getStatus());
     }
@@ -346,44 +346,44 @@ class OrdersControllerTest {
     @Test
     public void testApprove_whenNotAdmin() throws Exception {
         preCreatedOrder.setStatus(OrderStatus.WAITING_APPROVAL);
-        ordersRepository.save(preCreatedOrder);
+        ordersJpaRepository.save(preCreatedOrder);
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
 
         mockMvc.perform(post("/portal/orders/" + preCreatedOrder.getId() + "/approve")
                         .header("Authorization", token))
                 .andExpect(status().isBadRequest());
 
-        assertEquals(1, ordersRepository.count());
-        OrderEntity approvedOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+        assertEquals(1, ordersJpaRepository.count());
+        OrderEntity approvedOrder = ordersJpaRepository.findByIdWithItems(preCreatedOrder.getId()).get();
         assertNotNull(approvedOrder);
         assertEquals(OrderStatus.WAITING_APPROVAL, approvedOrder.getStatus());
     }
 
     @Test
     public void testApprove_whenNotFound() throws Exception {
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
 
         mockMvc.perform(post("/portal/orders/9999/approve")
                         .header("Authorization", adminToken))
                 .andExpect(status().isNotFound());
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
     }
 
     @Test
     public void testCancel_whenAdmin() throws Exception {
         preCreatedOrder.setStatus(OrderStatus.WAITING_APPROVAL);
-        ordersRepository.save(preCreatedOrder);
+        ordersJpaRepository.save(preCreatedOrder);
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
 
         mockMvc.perform(post("/portal/orders/" + preCreatedOrder.getId() + "/cancel")
                         .header("Authorization", adminToken))
                 .andExpect(status().isOk());
 
-        assertEquals(1, ordersRepository.count());
-        OrderEntity cancelledOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+        assertEquals(1, ordersJpaRepository.count());
+        OrderEntity cancelledOrder = ordersJpaRepository.findByIdWithItems(preCreatedOrder.getId()).get();
         assertNotNull(cancelledOrder);
         assertEquals(OrderStatus.CANCELED, cancelledOrder.getStatus());
     }
@@ -391,28 +391,28 @@ class OrdersControllerTest {
     @Test
     public void testCancel_whenNotAdmin() throws Exception {
         preCreatedOrder.setStatus(OrderStatus.WAITING_APPROVAL);
-        ordersRepository.save(preCreatedOrder);
+        ordersJpaRepository.save(preCreatedOrder);
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
 
         mockMvc.perform(post("/portal/orders/" + preCreatedOrder.getId() + "/cancel")
                         .header("Authorization", token))
                 .andExpect(status().isBadRequest());
 
-        assertEquals(1, ordersRepository.count());
-        OrderEntity cancelledOrder = ordersRepository.findByIdWithItems(preCreatedOrder.getId()).get();
+        assertEquals(1, ordersJpaRepository.count());
+        OrderEntity cancelledOrder = ordersJpaRepository.findByIdWithItems(preCreatedOrder.getId()).get();
         assertNotNull(cancelledOrder);
         assertEquals(OrderStatus.WAITING_APPROVAL, cancelledOrder.getStatus());
     }
 
     @Test
     public void testCancel_whenNotFound() throws Exception {
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
 
         mockMvc.perform(post("/portal/orders/9999/cancel")
                         .header("Authorization", adminToken))
                 .andExpect(status().isNotFound());
 
-        assertEquals(1, ordersRepository.count());
+        assertEquals(1, ordersJpaRepository.count());
     }
 }

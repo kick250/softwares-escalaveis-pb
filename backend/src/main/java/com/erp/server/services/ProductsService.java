@@ -1,13 +1,13 @@
 package com.erp.server.services;
 
-import infra.global.entities.AttachmentEntity;
-import infra.global.entities.ProductEntity;
+import infra.global.relational.entities.AttachmentEntity;
+import infra.global.relational.entities.ProductEntity;
 import com.erp.server.exceptions.ProductDescriptionRequiredException;
 import com.erp.server.exceptions.ProductImageRequiredException;
 import com.erp.server.exceptions.ProductNameRequiredException;
 import com.erp.server.exceptions.ProductNotFoundException;
-import infra.global.repositories.AttachmentsRepository;
-import infra.global.repositories.ProductsRepository;
+import infra.global.relational.repositories.AttachmentsJpaRepository;
+import infra.global.relational.repositories.ProductsJpaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 @AllArgsConstructor
 public class ProductsService {
-    private final ProductsRepository productsRepository;
-    private final AttachmentsRepository attachmentsRepository;
+    private final ProductsJpaRepository productsRepository;
+    private final AttachmentsJpaRepository attachmentsJpaRepository;
     private final RedisTemplate<String, byte[]> redisImageTemplate;
     private final RedisTemplate<String, String> redisImageTypeTemplate;
 
@@ -41,7 +41,7 @@ public class ProductsService {
         if (image == null || imageType == null) throwProductImageRequiredException();
 
         AttachmentEntity attachmentEntity = new AttachmentEntity(Base64.getEncoder().encodeToString(image), imageType);
-        attachmentsRepository.save(attachmentEntity);
+        attachmentsJpaRepository.save(attachmentEntity);
         ProductEntity productEntity = new ProductEntity(name, description, attachmentEntity);
         productsRepository.save(productEntity);
     }
@@ -66,7 +66,7 @@ public class ProductsService {
         AttachmentEntity oldAttachmentEntity = null;
         if (image != null && imageContentType != null) {
             attachmentEntity = new AttachmentEntity(Base64.getEncoder().encodeToString(image), imageContentType);
-            attachmentsRepository.save(attachmentEntity);
+            attachmentsJpaRepository.save(attachmentEntity);
         }
 
         ProductEntity productEntity = getById(id);
@@ -80,7 +80,7 @@ public class ProductsService {
         }
         productsRepository.save(productEntity);
         if (oldAttachmentEntity != null) {
-            attachmentsRepository.save(oldAttachmentEntity);
+            attachmentsJpaRepository.save(oldAttachmentEntity);
         }
     }
 

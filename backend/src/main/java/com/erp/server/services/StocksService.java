@@ -1,9 +1,9 @@
 package com.erp.server.services;
 
-import infra.global.entities.StockEntity;
+import infra.global.relational.entities.StockEntity;
 import com.erp.server.exceptions.InvalidStockNameException;
 import com.erp.server.exceptions.StockNotFoundException;
-import infra.global.repositories.StocksRepository;
+import infra.global.relational.repositories.StocksJpaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +12,14 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class StocksService {
-    private final StocksRepository stocksRepository;
+    private final StocksJpaRepository stocksJpaRepository;
 
     public List<StockEntity> getAll() {
-        return stocksRepository.findAllByDeletedFalse();
+        return stocksJpaRepository.findAllByDeletedFalse();
     }
 
     public StockEntity getById(Long id) throws StockNotFoundException {
-        return stocksRepository.findByIdAndDeletedFalse(id)
+        return stocksJpaRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(StockNotFoundException::new);
     }
 
@@ -28,7 +28,7 @@ public class StocksService {
 
         if (name.isBlank()) this.throwsInvalidStockNameException();
 
-        stocksRepository.save(stockEntity);
+        stocksJpaRepository.save(stockEntity);
     }
 
     private void throwsInvalidStockNameException() throws InvalidStockNameException {
@@ -41,12 +41,12 @@ public class StocksService {
         StockEntity stockEntity = getById(id);
 
         stockEntity.setName(name);
-        stocksRepository.save(stockEntity);
+        stocksJpaRepository.save(stockEntity);
     }
 
     public void deleteById(Long id) throws StockNotFoundException {
         StockEntity stockEntity = getById(id);
         stockEntity.delete();
-        stocksRepository.save(stockEntity);
+        stocksJpaRepository.save(stockEntity);
     }
 }

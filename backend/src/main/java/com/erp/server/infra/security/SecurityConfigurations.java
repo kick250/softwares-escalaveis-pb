@@ -1,6 +1,6 @@
 package com.erp.server.infra.security;
 
-import com.erp.server.enums.Role;
+import infra.global.relational.enums.Role;
 import com.erp.server.infra.SecurityFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

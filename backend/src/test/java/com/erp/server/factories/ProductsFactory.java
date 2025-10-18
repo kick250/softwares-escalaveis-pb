@@ -1,5 +1,5 @@
 package com.erp.server.factories;
-import infra.global.entities.ProductEntity;
+import infra.global.relational.entities.ProductEntity;
 import org.instancio.Instancio;
 import org.instancio.Select;
 

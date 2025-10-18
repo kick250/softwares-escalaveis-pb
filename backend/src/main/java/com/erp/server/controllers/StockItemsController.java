@@ -1,6 +1,6 @@
 package com.erp.server.controllers;
 
-import infra.global.entities.StockItemEntity;
+import infra.global.relational.entities.StockItemEntity;
 import com.erp.server.exceptions.*;
 import com.erp.server.requests.StockItemCreateRequest;
 import com.erp.server.requests.StockItemUpdateRequest;

@@ -1,7 +1,7 @@
 package com.erp.server.factories;
 
-import infra.global.entities.UserEntity;
-import com.erp.server.enums.Role;
+import infra.global.relational.entities.UserEntity;
+import infra.global.relational.enums.Role;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

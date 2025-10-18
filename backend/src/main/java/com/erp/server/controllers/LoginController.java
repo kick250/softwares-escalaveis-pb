@@ -1,6 +1,6 @@
 package com.erp.server.controllers;
 
-import infra.global.entities.UserEntity;
+import infra.global.relational.entities.UserEntity;
 import com.erp.server.requests.LoginRequest;
 import com.erp.server.responses.TokenResponse;
 import com.erp.server.services.TokenService;

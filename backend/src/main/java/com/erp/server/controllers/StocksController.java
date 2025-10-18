@@ -1,6 +1,6 @@
 package com.erp.server.controllers;
 
-import infra.global.entities.StockEntity;
+import infra.global.relational.entities.StockEntity;
 import com.erp.server.exceptions.InvalidStockNameException;
 import com.erp.server.exceptions.StockNotFoundException;
 import com.erp.server.requests.StockCreateRequest;

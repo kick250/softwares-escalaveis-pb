@@ -1,8 +1,7 @@
 package com.erp.server.responses.portal;
 
-import application.orders.domain.OrderItem;
 import application.orders.enums.OrderStatus;
-import infra.global.entities.OrderEntity;
+import infra.global.relational.entities.OrderEntity;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

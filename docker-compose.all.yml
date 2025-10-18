@@ -15,6 +15,12 @@ services:
     networks:
       - default_network
 
+  mongodb:
+    image: mongo:latest
+    container_name: nexo_erp_mongodb_container
+    networks:
+      - default_network
+
   backend:
     build:
       context: .
@@ -22,6 +28,7 @@ services:
     container_name: nexo_erp_backend_container
     depends_on:
       - database
+      - mongodb
       - redis
     networks:
       - default_network
@@ -33,6 +40,9 @@ services:
       DB_NAME: nexo_erp
       DB_USER: postgres
       DB_PASSWORD: AdminPassword
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_DB: nexo_erp
       REDIS_HOST: redis
       REDIS_PORT: 6379
       JWT_SECRET: 123456

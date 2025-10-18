@@ -3,8 +3,8 @@ package com.erp.server.controllers.portal;
 import com.erp.server.factories.*;
 import com.erp.server.services.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import infra.global.entities.*;
-import infra.global.repositories.*;
+import infra.global.relational.entities.*;
+import infra.global.relational.repositories.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,15 +31,15 @@ class ProductsControllerTest {
     private final AttachmentsFactory attachmentsFactory = new AttachmentsFactory();
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UsersJpaRepository usersJpaRepository;
     @Autowired
-    private StocksRepository stocksRepository;
+    private StocksJpaRepository stocksJpaRepository;
     @Autowired
-    private StockItemsRepository stockItemsRepository;
+    private StockItemsJpaRepository stockItemsJpaRepository;
     @Autowired
-    private ProductsRepository productsRepository;
+    private ProductsJpaRepository productsRepository;
     @Autowired
-    private AttachmentsRepository attachmentsRepository;
+    private AttachmentsJpaRepository attachmentsJpaRepository;
     @Autowired
     private TokenService tokenService;
 
@@ -54,25 +54,25 @@ class ProductsControllerTest {
 
     @BeforeEach
     void setUp() {
-        stockItemsRepository.deleteAll();
+        stockItemsJpaRepository.deleteAll();
         productsRepository.deleteAll();
-        stocksRepository.deleteAll();
-        usersRepository.deleteAll();
-        attachmentsRepository.deleteAll();
+        stocksJpaRepository.deleteAll();
+        usersJpaRepository.deleteAll();
+        attachmentsJpaRepository.deleteAll();
 
         currentUser = usersFactory.createPortalUser();
-        usersRepository.save(currentUser);
+        usersJpaRepository.save(currentUser);
         token = "Bearer " + tokenService.generateToken(currentUser);
 
         stock1 = stocksFactory.createStock();
-        stocksRepository.save(stock1);
+        stocksJpaRepository.save(stock1);
         StockEntity stock2 = stocksFactory.createStock();
-        stocksRepository.save(stock2);
+        stocksJpaRepository.save(stock2);
 
         AttachmentEntity attachmentEntity1 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachmentEntity1);
+        attachmentsJpaRepository.save(attachmentEntity1);
         AttachmentEntity attachmentEntity2 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachmentEntity2);
+        attachmentsJpaRepository.save(attachmentEntity2);
 
         product1 = productsFactory.createProduct();
         product1.setAttachmentEntity(attachmentEntity1);
@@ -82,38 +82,38 @@ class ProductsControllerTest {
         productsRepository.save(product2);
 
         stockItem1 = stockItemsFactory.createStockItemWithProduct(product1);
-        stockItemsRepository.save(stockItem1);
+        stockItemsJpaRepository.save(stockItem1);
         stockItem2 = stockItemsFactory.createStockItemWithProduct(product2);
-        stockItemsRepository.save(stockItem2);
+        stockItemsJpaRepository.save(stockItem2);
 
         stock1.addStockItem(stockItem1);
         stock1.addStockItem(stockItem2);
 
-        stocksRepository.save(stock1);
+        stocksJpaRepository.save(stock1);
 
         AttachmentEntity attachmentEntity3 = attachmentsFactory.createAttachment();
-        attachmentsRepository.save(attachmentEntity3);
+        attachmentsJpaRepository.save(attachmentEntity3);
         ProductEntity product3 = productsFactory.createProduct();
         product3.setAttachmentEntity(attachmentEntity3);
         productsRepository.save(product3);
         StockItemEntity stockItem3 = stockItemsFactory.createStockItemWithProduct(product3);
-        stockItemsRepository.save(stockItem3);
+        stockItemsJpaRepository.save(stockItem3);
         stock2.addStockItem(stockItem3);
-        stocksRepository.save(stock2);
+        stocksJpaRepository.save(stock2);
     }
 
     @AfterEach
     void tearDown() {
-        stockItemsRepository.deleteAll();
+        stockItemsJpaRepository.deleteAll();
         productsRepository.deleteAll();
-        stocksRepository.deleteAll();
-        usersRepository.deleteAll();
-        attachmentsRepository.deleteAll();
+        stocksJpaRepository.deleteAll();
+        usersJpaRepository.deleteAll();
+        attachmentsJpaRepository.deleteAll();
     }
 
     @Test
     public void testGetAll() throws Exception {
-        assertEquals(3, stockItemsRepository.count());
+        assertEquals(3, stockItemsJpaRepository.count());
 
         mockMvc.perform(get("/portal/products?stockId=" + stock1.getId())
                         .header("Authorization", token))

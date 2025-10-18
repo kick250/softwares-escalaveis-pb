@@ -1,6 +1,6 @@
 package com.erp.server.factories;
 
-import infra.global.entities.StockEntity;
+import infra.global.relational.entities.StockEntity;
 import org.instancio.Instancio;
 import org.instancio.Select;
 

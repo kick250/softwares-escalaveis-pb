@@ -4,14 +4,22 @@ import {useNavigate} from "react-router-dom";
 
 export default function New() {
     const navigate = useNavigate();
-    const { selectedStockId, getStocks, getStockProducts, getCartProducts, loadStocks, loadProducts, setProductQuantity, clearCart, sendOrder} = newOrderStore();
-    const [addProductMode, setAddProductMode] = useState(false);
+    const { selectedStockId, loadCart, getStocks, getStockProducts, getCartProducts,
+        loadStocks, loadProducts, getProductQuantity, setProductQuantity, updateCart, clearCart, sendOrder
+    } = newOrderStore();
+    const [addProductMode, setAddProductMode] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        loadStocks();
+        (async () => {
+            await loadStocks();
+            await loadCart();
+            setIsLoading(false);
+        })();
     }, []);
 
     const selectStockHandler = (event) => {
+        clearCart();
         const stockId = event.target.value;
         loadProducts(stockId);
     };
@@ -27,12 +35,38 @@ export default function New() {
         setProductQuantity(product, quantity);
     };
 
+    const addToCartHandler = () => {
+        setAddProductMode(false);
+        updateCart();
+    }
+
     const sendOrderHandler = async () => {
         await sendOrder();
         clearCart();
         setAddProductMode(false);
         alert("Pedido enviado com sucesso!");
         navigate("/");
+    }
+
+    if (isLoading) {
+        return (
+            <div>
+                <div className="row mx-2 w-100 justify-content-between align-items-center">
+                    <div className="col-4">
+                        <button className="btn btn-secondary" onClick={() => navigate(-1)}>Voltar</button>
+                    </div>
+                    <div className="col-4 text-center">
+                        <h1>Novo pedido</h1>
+                    </div>
+                    <div className="col-4">
+                    </div>
+                    <div className="col-12 mt-3 text-center">
+                        <div className="spinner-border text-primary" role="status">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -50,7 +84,7 @@ export default function New() {
             <div className="row justify-content-center">
                 <div className="col-2 text-center">
                     <label className="form-label">Estoque</label>
-                    <select className="form-select" onChange={selectStockHandler} value={selectedStockId} defaultValue="-1">
+                    <select className="form-select" onChange={selectStockHandler} value={selectedStockId}>
                         <option value="-1" disabled={true}>Selecione um estoque</option>
                         {getStocks().map(stock => (
                             <option key={stock.id} value={stock.id}>{stock.name}</option>
@@ -58,7 +92,7 @@ export default function New() {
                     </select>
                 </div>
             </div>
-            { !addProductMode &&
+            { !isLoading && addProductMode &&
                 <div className="row m-5">
                     <div className="col-12 text-center mb-3">
                         <h2>Produtos</h2>
@@ -82,7 +116,7 @@ export default function New() {
                                         </div>
                                         <div>
                                             <label className="fw-bold">Quantidade solicitada:</label>
-                                            <input type="number" className="form-control text-center" defaultValue={0} min="1"
+                                            <input type="number" className="form-control text-center" defaultValue={getProductQuantity(product.id)} min="1"
                                                    onInput={(e) => {productQuantityHandler(e, product);}}
                                                    onKeyDown={(e) => {
                                                        if (e.key === '-' || e.key.toLowerCase() === 'e' || e.key === '+') e.preventDefault();
@@ -95,13 +129,13 @@ export default function New() {
                     ))}
                     {getCartProducts().length > 0 && (
                         <div className="col-12 text-center mt-3">
-                            <button className="btn btn-primary" onClick={() => setAddProductMode(true)}>Adicionar ao carrinho</button>
+                            <button className="btn btn-primary" onClick={addToCartHandler}>Adicionar ao carrinho</button>
                         </div>
                     )}
                 </div>
             }
             {
-                addProductMode &&
+                !isLoading && !addProductMode &&
                     <div className="row m-5">
                         <div className="col-12 text-center mb-3">
                             <h2>Carrinho</h2>

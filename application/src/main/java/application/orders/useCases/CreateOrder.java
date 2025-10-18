@@ -2,6 +2,7 @@ package application.orders.useCases;
 
 import application.orders.domain.*;
 import application.orders.exceptions.*;
+import application.orders.repositories.AllCarts;
 import application.orders.repositories.AllOrders;
 import application.orders.repositories.AllItems;
 import application.orders.repositories.AllUsers;
@@ -15,6 +16,7 @@ public class CreateOrder {
     private final AllOrders allOrders;
     private final AllUsers allUsers;
     private final AllItems allItems;
+    private final AllCarts allCarts;
 
     public void execute(Long userId, Long stockId, Map<Long, Integer> itemIdPerQuantity) throws OrderOwnerNotFoundException, UserNotFoundException, InvalidItemStockException, SomeItemsWereNotFoundException, UnavailableItemQuantityException {
         User owner = allUsers.getById(userId);
@@ -29,6 +31,7 @@ public class CreateOrder {
 
         allOrders.create(order);
         allItems.updateAll(order.getItems());
+        allCarts.deactivateCart(userId);
     }
 
     private void checkItems(List<Item> items, Long stockId, Map<Long, Integer> itemIdPerQuantity) throws InvalidItemStockException, UnavailableItemQuantityException {

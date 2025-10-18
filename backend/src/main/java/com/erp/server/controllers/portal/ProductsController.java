@@ -2,7 +2,7 @@ package com.erp.server.controllers.portal;
 
 import com.erp.server.responses.portal.ProductResponse;
 import com.erp.server.services.StockItemsService;
-import infra.global.entities.StockItemEntity;
+import infra.global.relational.entities.StockItemEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

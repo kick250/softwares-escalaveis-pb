@@ -1,8 +1,8 @@
 package com.erp.server.controllers;
 
-import infra.global.entities.UserEntity;
+import infra.global.relational.entities.UserEntity;
 import com.erp.server.factories.UsersFactory;
-import infra.global.repositories.UsersRepository;
+import infra.global.relational.repositories.UsersJpaRepository;
 import com.erp.server.requests.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -29,21 +29,21 @@ class LoginControllerTest {
     private UserEntity userEntity;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UsersJpaRepository usersJpaRepository;
 
     @BeforeEach
     public void setUp() {
-        usersRepository.deleteAll();
+        usersJpaRepository.deleteAll();
 
         UsersFactory usersFactory = new UsersFactory();
         userEntity = usersFactory.createUser();
 
-        usersRepository.save(userEntity);
+        usersJpaRepository.save(userEntity);
     }
 
     @AfterEach
     public void tearDown() {
-        usersRepository.deleteAll();
+        usersJpaRepository.deleteAll();
     }
 
     @Test

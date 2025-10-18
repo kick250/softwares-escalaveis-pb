@@ -1,7 +1,7 @@
 services:
     database:
         image: postgres:latest
-        container_name: nexo_erp_database_container
+        container_name: nexo_erp_database_development_container
         networks:
             - development_network
         environment:
@@ -12,11 +12,18 @@ services:
             - "5432:5432"
     redis:
         image: redis:latest
-        container_name: nexo_erp_redis_container
+        container_name: nexo_erp_redis_development_container
         networks:
             - development_network
         ports:
             - "6379:6379"
+    mongodb:
+        image: mongo:latest
+        container_name: nexo_erp_mongodb_development_container
+        networks:
+            - development_network
+        ports:
+            - "27017:27017"
 
 networks:
     development_network:
