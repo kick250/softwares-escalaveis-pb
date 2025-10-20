@@ -74,8 +74,5 @@ O sistema ficará disponível nas seguintes portas:
 
 ## Vídeos
 
-Aqui serão adicionados vídeos demonstrativos do sistema.
-
-
 https://github.com/user-attachments/assets/3bcc13cc-d8fe-4684-8897-27d42a6c613c
 
